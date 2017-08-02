@@ -6,7 +6,6 @@ import net.blay09.mods.firstaid.network.MessageDie;
 import net.blay09.mods.firstaid.network.MessageFirstAid;
 import net.blay09.mods.firstaid.network.NetworkHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiChat;
@@ -18,13 +17,10 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -32,15 +28,16 @@ import org.lwjgl.input.Mouse;
 
 public class ClientProxy extends CommonProxy {
 
-	private float enableButtonTimer;
-	private GuiButton buttonDie;
-	private DamageSource damageSource;
 	private boolean isKnockedOut;
 	private int deathTime;
-	private boolean hasGivenUp;
-	private boolean isRescuing;
+
+	// GUI things
+	private float enableButtonTimer;
+	private GuiButton buttonDie;
 	private float prevChatHeight = -1f;
 
+	// Rescuing
+	private boolean isRescuing;
 	private int targetEntity = -1;
 	private float targetProgress;
 
@@ -48,7 +45,7 @@ public class ClientProxy extends CommonProxy {
 	public void onOpenGui(GuiOpenEvent event) {
 		Minecraft mc = Minecraft.getMinecraft();
 		if (mc.player != null) {
-			if (event.getGui() instanceof GuiGameOver && deathTime < ModConfig.maxDeathTicks && !hasGivenUp) {
+			if (event.getGui() instanceof GuiGameOver && !isKnockedOut) { // Minor hack: isKnockedOut is always set AFTER the game over screen pops up, so we can abuse that here
 				event.setGui(null);
 			} else if (isKnockedOut && event.getGui() instanceof GuiInventory) {
 				event.setGui(null);
@@ -112,14 +109,16 @@ public class ClientProxy extends CommonProxy {
 
 	@SubscribeEvent
 	public void onClientTick(TickEvent.ClientTickEvent event) {
-		if (event.side == Side.CLIENT/* && event.phase == TickEvent.Phase.START*/) {
+		if (event.side == Side.CLIENT) {
 			Minecraft mc = Minecraft.getMinecraft();
 			if (mc.player != null) {
 				if(mc.player.getHealth() <= 0f) {
 					if(!isKnockedOut) {
+						// The player is now knocked out
 						deathTime = 0;
 						isKnockedOut = true;
 						if(mc.currentScreen != null) {
+							// Re-initialize the GUI to fire button hooks
 							ScaledResolution resolution = new ScaledResolution(mc);
 							mc.currentScreen.setWorldAndResolution(mc, resolution.getScaledWidth(), resolution.getScaledHeight());
 						}
@@ -128,13 +127,10 @@ public class ClientProxy extends CommonProxy {
 					if(mc.player.deathTime == 19) {
 						mc.player.deathTime = 18;
 					}
+					// Instead, increase our own counter
 					deathTime++;
-//					if ((deathTime >= ModConfig.maxDeathTicks || hasGivenUp) && (mc.currentScreen == null || mc.currentScreen instanceof GuiChat)) {
-//						mc.displayGuiScreen(new GuiGameOver(new TextComponentTranslation("gui.firstaid.no_rescue")));
-//					}
 				} else {
 					isKnockedOut = false;
-					hasGivenUp = false;
 					deathTime = 0;
 
 					// If right mouse is held down, send first aid packet
@@ -170,7 +166,6 @@ public class ClientProxy extends CommonProxy {
 	public void onActionPerformed(GuiScreenEvent.ActionPerformedEvent.Pre event) {
 		if(event.getButton() == buttonDie) {
 			event.getButton().playPressSound(Minecraft.getMinecraft().getSoundHandler());
-			hasGivenUp = true;
 			NetworkHandler.instance.sendToServer(new MessageDie());
 		}
 	}
@@ -202,19 +197,6 @@ public class ClientProxy extends CommonProxy {
 			gui.drawCenteredString(mc.fontRenderer, I18n.format("gui.firstaid.rescue_time_left", (ModConfig.maxDeathTicks - deathTime) / 20), gui.width / 2, gui.height / 2 + 10, 16777215);
 		} else if(buttonDie != null) {
 			buttonDie.visible = false;
-		}
-	}
-
-	@SubscribeEvent
-	public void onPlayerDeath(LivingDeathEvent event) {
-		if(event.getEntityLiving() instanceof EntityPlayerSP) {
-			if(false || event.getSource() == DamageSource.OUT_OF_WORLD) { // TODO testing code
-				hasGivenUp = true;
-			} else {
-				isKnockedOut = true;
-				damageSource = event.getSource();
-				deathTime = 0;
-			}
 		}
 	}
 

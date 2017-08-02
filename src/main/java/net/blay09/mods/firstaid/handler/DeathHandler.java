@@ -14,6 +14,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class DeathHandler {
@@ -21,17 +22,30 @@ public class DeathHandler {
 	public void onPlayerDeath(LivingDeathEvent event) {
 		if (event.getEntityLiving() instanceof EntityPlayerMP) {
 			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
-			// If FirstAidDeath is set, this should be treated as a normal death
-			if(event.getSource() == FirstAid.notRescuedInTime || player.getEntityData().getBoolean("FirstAidDeath")) {
+
+			// If the player fell into the void, there's no rescuing
+			if(event.getSource() == DamageSource.OUT_OF_WORLD) {
+				player.getEntityData().setBoolean("IgnoreFirstAidDeath", true);
 				return;
 			}
-			MinecraftForge.EVENT_BUS.post(new PlayerKnockedOutEvent(player, event.getSource()));
-			for (PotionEffect potionEffect : player.getActivePotionEffects()) {
-				player.removeActivePotionEffect(potionEffect.getPotion());
+
+			// If FirstAidDeath is set, this should be treated as a normal death
+			if(event.getSource() == FirstAid.notRescuedInTime || player.getEntityData().getBoolean("IgnoreFirstAidDeath")) {
+				return;
 			}
-			player.setSneaking(false);
+
+			// Fire event for compatibility addons
+			MinecraftForge.EVENT_BUS.post(new PlayerKnockedOutEvent(player, event.getSource()));
+
+//			for (PotionEffect potionEffect : player.getActivePotionEffects()) {
+//				player.removeActivePotionEffect(potionEffect.getPotion());
+//			}
+//			player.setSneaking(false);
+
+			// Cancel event - we're taking over from here
 			event.setCanceled(true);
 
+			// If enabled, show a death message
 			if (player.world.getGameRules().getBoolean("showDeathMessages")) {
 				MinecraftServer server = player.world.getMinecraftServer();
 				if(server != null) {
@@ -53,7 +67,7 @@ public class DeathHandler {
 	@SubscribeEvent
 	public void onDeathUpdate(TickEvent.PlayerTickEvent event) {
 		if(event.phase == TickEvent.Phase.START) {
-			if(event.player.getHealth() <= 0f && !event.player.getEntityData().getBoolean("FirstAidDeath")) {
+			if(event.player.getHealth() <= 0f && !event.player.getEntityData().getBoolean("IgnoreFirstAidDeath")) {
 				// Prevent deathTime from removing the entity from the world
 				if(event.player.deathTime == 19) {
 					event.player.deathTime = 18;
@@ -63,12 +77,17 @@ public class DeathHandler {
 				if(firstAid != null) {
 					firstAid.setDeathTime(firstAid.getDeathTime() + 1);
 					if(firstAid.getDeathTime() >= ModConfig.maxDeathTicks) {
-						event.player.getEntityData().setBoolean("FirstAidDeath", true);
+						event.player.getEntityData().setBoolean("IgnoreFirstAidDeath", true);
 						event.player.getCombatTracker().trackDamage(FirstAid.notRescuedInTime, 0, 0);
 						event.player.onDeath(FirstAid.notRescuedInTime);
 					}
 				}
 			}
 		}
+	}
+
+	@SubscribeEvent
+	public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
+		event.player.getEntityData().removeTag("IgnoreFirstAidDeath");
 	}
 }
