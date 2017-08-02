@@ -1,0 +1,16 @@
+[
+{
+  "modid": "firstaid",
+  "name": "First Aid",
+  "description": "AIDIDAIDIADIAID",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["BlayTheNinth"],
+  "credits": "BlayTheNinth",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
