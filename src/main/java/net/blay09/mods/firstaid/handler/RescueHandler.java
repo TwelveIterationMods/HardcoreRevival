@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -78,7 +79,9 @@ public class RescueHandler {
 			if(target != null) {
 				MinecraftServer server = target.getServer();
 				if (server != null) {
-					target.setSpawnPoint(target.getPosition(), true); // TODO test spawnpoint issues
+					BlockPos prevSpawnPos = target.getBedLocation(target.dimension);
+					boolean prevSpawnForced = target.isSpawnForced(target.dimension);
+					target.setSpawnPoint(target.getPosition(), true);
 					EntityPlayerMP newPlayer = server.getPlayerList().recreatePlayerEntity((EntityPlayerMP) target, target.dimension, false);
 					((EntityPlayerMP) target).connection.player = newPlayer;
 					newPlayer.setHealth(1f);
@@ -90,7 +93,8 @@ public class RescueHandler {
 					newPlayer.experienceTotal = target.experienceTotal;
 					newPlayer.experience = target.experience;
 					newPlayer.setScore(target.getScore());
-					NetworkHandler.instance.sendToAllAround(new MessageFirstAidSuccess(newPlayer.getPosition()), new NetworkRegistry.TargetPoint(newPlayer.dimension, newPlayer.posX, newPlayer.posY, newPlayer.posZ, 32));
+					newPlayer.setSpawnPoint(prevSpawnPos, prevSpawnForced);
+					NetworkHandler.instance.sendToAllAround(new MessageFirstAidSuccess(newPlayer.getEntityId()), new NetworkRegistry.TargetPoint(newPlayer.dimension, newPlayer.posX, newPlayer.posY, newPlayer.posZ, 32));
 				}
 			}
 		}

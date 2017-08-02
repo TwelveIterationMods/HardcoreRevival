@@ -71,9 +71,9 @@ public class PingAddon {
 		}
 	}
 
-	private void sendPingBelowPlayer(EntityPlayer player) { // TODO doesn't work on autoPing?
+	private void sendPingBelowPlayer(EntityPlayer player) {
 		float prevPitch = player.rotationPitch;
-		player.rotationPitch = 90;
+		player.rotationPitch = 90; // TODO doesn't work on autoPing?
 		try {
 			sendPingMethod.invoke(null, pingType);
 		} catch (IllegalAccessException | InvocationTargetException e) {
