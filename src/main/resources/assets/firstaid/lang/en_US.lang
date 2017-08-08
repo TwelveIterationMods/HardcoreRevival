@@ -1,9 +1,0 @@
-gui.firstaid.knocked_out=You are K.O.
-gui.firstaid.die=Accept your Fate
-gui.firstaid.open_death_screen=Press T to open death screen.
-gui.firstaid.rescue_time_left=%d seconds left to be rescued
-gui.firstaid.rescuing=Rescuing %s
-
-death.attack.not_rescued_in_time=%1$s was not rescued in time
-
-gui.firstaid.send_ping=Send Ping

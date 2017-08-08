@@ -1,8 +1,8 @@
 [
 {
-  "modid": "firstaid",
-  "name": "First Aid",
-  "description": "AIDIDAIDIADIAID",
+  "modid": "hardcorerevival",
+  "name": "Hardcore Revival",
+  "description": "Help your friends back up after they die",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",

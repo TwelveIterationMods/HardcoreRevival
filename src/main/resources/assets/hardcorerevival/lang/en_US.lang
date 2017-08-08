@@ -1,0 +1,9 @@
+gui.hardcorerevival.knocked_out=You are K.O.
+gui.hardcorerevival.die=Accept your Fate
+gui.hardcorerevival.open_death_screen=Press T to open death screen.
+gui.hardcorerevival.rescue_time_left=%d seconds left to be rescued
+gui.hardcorerevival.rescuing=Rescuing %s
+
+death.attack.not_rescued_in_time=%1$s was not rescued in time
+
+gui.hardcorerevival.send_ping=Send Ping
