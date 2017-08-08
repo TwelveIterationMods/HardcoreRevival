@@ -5,6 +5,7 @@ import net.blay09.mods.hardcorerevival.ModConfig;
 import net.blay09.mods.hardcorerevival.PlayerKnockedOutEvent;
 import net.blay09.mods.hardcorerevival.capability.CapabilityHardcoreRevival;
 import net.blay09.mods.hardcorerevival.capability.IHardcoreRevival;
+import net.blay09.mods.hardcorerevival.network.MessageDeathTime;
 import net.blay09.mods.hardcorerevival.network.MessageDie;
 import net.blay09.mods.hardcorerevival.network.NetworkHandler;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,6 +30,7 @@ public class DeathHandler {
 			// If the player fell into the void, there's no rescuing
 			if(event.getSource() == DamageSource.OUT_OF_WORLD) {
 				player.getEntityData().setBoolean(IGNORE_REVIVAL_DEATH, true);
+				NetworkHandler.instance.sendTo(new MessageDie(), (EntityPlayerMP) player);
 				return;
 			}
 
@@ -39,11 +41,6 @@ public class DeathHandler {
 
 			// Fire event for compatibility addons
 			MinecraftForge.EVENT_BUS.post(new PlayerKnockedOutEvent(player, event.getSource()));
-
-//			for (PotionEffect potionEffect : player.getActivePotionEffects()) {
-//				player.removeActivePotionEffect(potionEffect.getPotion());
-//			}
-//			player.setSneaking(false);
 
 			// Cancel event - we're taking over from here
 			event.setCanceled(true);

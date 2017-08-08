@@ -113,10 +113,9 @@ public class ClientProxy extends CommonProxy {
 			Minecraft mc = Minecraft.getMinecraft();
 			if (mc.player != null) {
 				if(mc.player.getHealth() <= 0f) {
-					if(!isKnockedOut) {
+					if(!isKnockedOut && !acceptedDeath) {
 						// The player is now knocked out
 						deathTime = 0;
-						acceptedDeath = false;
 						isKnockedOut = true;
 						mc.displayGuiScreen(new GuiChat());
 //						if(mc.currentScreen != null) {
@@ -133,6 +132,7 @@ public class ClientProxy extends CommonProxy {
 					deathTime++;
 				} else {
 					isKnockedOut = false;
+					acceptedDeath = false;
 					deathTime = 0;
 
 					// If right mouse is held down, send revival packet
@@ -216,6 +216,7 @@ public class ClientProxy extends CommonProxy {
 
 	@Override
 	public void receiveDeath() {
+		isKnockedOut = true;
 		acceptedDeath = true;
 	}
 }

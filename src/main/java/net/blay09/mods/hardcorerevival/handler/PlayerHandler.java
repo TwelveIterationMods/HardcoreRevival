@@ -1,8 +1,10 @@
 package net.blay09.mods.hardcorerevival.handler;
 
+import net.blay09.mods.hardcorerevival.ModConfig;
 import net.blay09.mods.hardcorerevival.capability.CapabilityHardcoreRevival;
 import net.blay09.mods.hardcorerevival.capability.IHardcoreRevival;
 import net.blay09.mods.hardcorerevival.network.MessageDeathTime;
+import net.blay09.mods.hardcorerevival.network.MessageDie;
 import net.blay09.mods.hardcorerevival.network.NetworkHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,6 +32,9 @@ public class PlayerHandler {
 			}
 
 			NetworkHandler.instance.sendTo(new MessageDeathTime(revival != null ? revival.getDeathTime() : 0), (EntityPlayerMP) event.player);
+			if(revival != null && revival.getDeathTime() >= ModConfig.maxDeathTicks) {
+				NetworkHandler.instance.sendTo(new MessageDie(), (EntityPlayerMP) event.player);
+			}
 		}
 	}
 
