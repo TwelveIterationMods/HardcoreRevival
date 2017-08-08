@@ -16,6 +16,8 @@ public class HandlerRevivalSuccess implements IMessageHandler<MessageRevivalSucc
 		NetworkHandler.getThreadListener(ctx).addScheduledTask(() -> {
 			Minecraft mc = Minecraft.getMinecraft();
 			if(message.getEntityId() == mc.player.getEntityId()) {
+				mc.player.extinguish();
+				mc.player.setFlag(0, false); // burning flag
 				mc.displayGuiScreen(null);
 			}
 			Entity entity = mc.world.getEntityByID(message.getEntityId());

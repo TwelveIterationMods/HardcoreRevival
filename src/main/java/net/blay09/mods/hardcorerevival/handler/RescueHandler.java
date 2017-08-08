@@ -23,7 +23,7 @@ public class RescueHandler {
 
 	@SubscribeEvent
 	public void onItemUse(LivingEntityUseItemEvent event) {
-		if(event.getEntityLiving() instanceof EntityPlayer) {
+		if (event.getEntityLiving() instanceof EntityPlayer) {
 			// Stop rescuing if the player does something other than rescuing
 			abortRescue((EntityPlayer) event.getEntityLiving());
 		}
@@ -37,7 +37,7 @@ public class RescueHandler {
 
 	public static void startRescue(EntityPlayer player, EntityPlayer target) {
 		IHardcoreRevival revival = player.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null);
-		if(revival != null) {
+		if (revival != null) {
 			revival.setRescueTarget(target);
 			revival.setRescueTime(0);
 			NetworkHandler.instance.sendTo(new MessageRevivalProgress(target.getEntityId(), 0f), (EntityPlayerMP) player);
@@ -46,11 +46,11 @@ public class RescueHandler {
 
 	@SubscribeEvent
 	public void onPlayerTick(TickEvent.PlayerTickEvent event) {
-		if(event.side == Side.SERVER && event.phase == TickEvent.Phase.END) {
+		if (event.side == Side.SERVER && event.phase == TickEvent.Phase.END) {
 			IHardcoreRevival revival = event.player.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null);
-			if(revival != null && revival.getRescueTarget() != null) {
+			if (revival != null && revival.getRescueTarget() != null) {
 				// Stop rescuing if the target logged out
-				if(revival.getRescueTarget().isDead) {
+				if (revival.getRescueTarget().isDead) {
 					abortRescue(event.player);
 				} else {
 					// Stop rescuing if the player is out of range
@@ -61,9 +61,9 @@ public class RescueHandler {
 						int rescueTime = revival.getRescueTime() + 1;
 						revival.setRescueTime(rescueTime);
 						int step = ModConfig.rescueTime / 4;
-						if(rescueTime >= ModConfig.rescueTime) {
+						if (rescueTime >= ModConfig.rescueTime) {
 							finishRescue(event.player);
-						} else if(rescueTime % step == 0) {
+						} else if (rescueTime % step == 0) {
 							NetworkHandler.instance.sendTo(new MessageRevivalProgress(revival.getRescueTarget().getEntityId(), (float) rescueTime / (float) ModConfig.rescueTime), (EntityPlayerMP) event.player);
 						}
 					}
@@ -74,9 +74,9 @@ public class RescueHandler {
 
 	public static void finishRescue(EntityPlayer player) {
 		IHardcoreRevival revival = player.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null);
-		if(revival != null) {
+		if (revival != null) {
 			EntityPlayer target = revival.getRescueTarget();
-			if(target != null) {
+			if (target != null) {
 				MinecraftServer server = target.getServer();
 				if (server != null) {
 					BlockPos prevSpawnPos = target.getBedLocation(target.dimension);
@@ -92,6 +92,10 @@ public class RescueHandler {
 					newPlayer.experienceLevel = target.experienceLevel;
 					newPlayer.experienceTotal = target.experienceTotal;
 					newPlayer.experience = target.experience;
+
+					newPlayer.extinguish();
+					newPlayer.setFlag(0, false); // burning flag
+
 					newPlayer.setScore(target.getScore());
 					newPlayer.setSpawnPoint(prevSpawnPos, prevSpawnForced);
 					NetworkHandler.instance.sendToAllAround(new MessageRevivalSuccess(newPlayer.getEntityId()), new NetworkRegistry.TargetPoint(newPlayer.dimension, newPlayer.posX, newPlayer.posY, newPlayer.posZ, 32));
@@ -102,7 +106,7 @@ public class RescueHandler {
 
 	public static void abortRescue(EntityPlayer player) {
 		IHardcoreRevival revival = player.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null);
-		if(revival != null) {
+		if (revival != null) {
 			revival.setRescueTime(0);
 			revival.setRescueTarget(null);
 			NetworkHandler.instance.sendTo(new MessageRevivalProgress(-1, -1), (EntityPlayerMP) player);
