@@ -46,7 +46,7 @@ public class PlayerHandler {
 
 				@Override
 				public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-					return true;
+					return capability == CapabilityHardcoreRevival.REVIVAL_CAPABILITY;
 				}
 
 				@Nullable
