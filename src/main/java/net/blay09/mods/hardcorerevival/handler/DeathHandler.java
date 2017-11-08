@@ -15,6 +15,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -22,7 +23,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 public class DeathHandler {
 	public static final String IGNORE_REVIVAL_DEATH = "IgnoreRevivalDeath";
 
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void onPlayerDeath(LivingDeathEvent event) {
 		if (event.getEntityLiving() instanceof EntityPlayerMP) {
 			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
