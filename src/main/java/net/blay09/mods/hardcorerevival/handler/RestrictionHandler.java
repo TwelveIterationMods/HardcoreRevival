@@ -29,7 +29,7 @@ public class RestrictionHandler {
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void onPlayerUse(LivingEntityUseItemEvent event) {
-		if (event.getEntityLiving() instanceof EntityPlayer) {
+		if (event.isCancelable() && event.getEntityLiving() instanceof EntityPlayer) {
 //			if(ModConfig.allowBows && event.getItem().getItem() instanceof ItemBow) {
 //				return;
 //			}
