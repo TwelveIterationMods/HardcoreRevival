@@ -218,5 +218,11 @@ public class ClientProxy extends CommonProxy {
 	public void receiveDeath() {
 		isKnockedOut = true;
 		acceptedDeath = true;
+
+		// Manually mark the player as dead to have JourneyMap create a death point
+		Minecraft mc = Minecraft.getMinecraft();
+		if (mc.player != null) {
+			mc.player.isDead = true;
+		}
 	}
 }
