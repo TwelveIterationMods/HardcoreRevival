@@ -79,7 +79,7 @@ public class ClientProxy extends CommonProxy {
 				GuiHelper.drawGradientRectW(0, 0, mc.displayWidth, mc.displayHeight, 0x60500000, 0x90FF0000);
 				GlStateManager.popMatrix();
 				if (mc.currentScreen == null) {
-					mc.fontRenderer.drawStringWithShadow(I18n.format("gui.hardcorerevival.open_death_screen"), 5, 5, 0xFFFFFFFF);
+					mc.fontRenderer.drawStringWithShadow(I18n.format("gui.hardcorerevival.open_death_screen", mc.gameSettings.keyBindChat.getDisplayName()), 5, 5, 0xFFFFFFFF);
 					mc.fontRenderer.drawString(I18n.format("gui.hardcorerevival.rescue_time_left", Math.max(0, (ModConfig.maxDeathTicks - deathTime) / 20)), 5, 7 + mc.fontRenderer.FONT_HEIGHT, 16777215);
 					mc.getTextureManager().bindTexture(Gui.ICONS);
 				}
