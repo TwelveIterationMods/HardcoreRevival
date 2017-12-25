@@ -222,6 +222,10 @@ public class ClientProxy extends CommonProxy {
 		// Manually mark the player as dead to have JourneyMap create a death point
 		Minecraft mc = Minecraft.getMinecraft();
 		if (mc.player != null) {
+			if(ModConfig.glowOnDeath) {
+				mc.player.setGlowing(false);
+				mc.player.setFlag(6, false); // glowing flag
+			}
 			mc.player.isDead = true;
 		}
 	}

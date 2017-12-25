@@ -29,19 +29,24 @@ public class DeathHandler {
 			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 
 			// If the player fell into the void, there's no rescuing
-			if(event.getSource() == DamageSource.OUT_OF_WORLD) {
+			if (event.getSource() == DamageSource.OUT_OF_WORLD) {
 				player.getEntityData().setBoolean(IGNORE_REVIVAL_DEATH, true);
 				NetworkHandler.instance.sendTo(new MessageDie(), (EntityPlayerMP) player);
 				return;
 			}
 
 			// If IGNORE_REVIVAL_DEATH is set, this should be treated as a normal death
-			if(event.getSource() == HardcoreRevival.notRescuedInTime || player.getEntityData().getBoolean(IGNORE_REVIVAL_DEATH)) {
+			if (event.getSource() == HardcoreRevival.notRescuedInTime || player.getEntityData().getBoolean(IGNORE_REVIVAL_DEATH)) {
 				return;
 			}
 
 			// Fire event for compatibility addons
 			MinecraftForge.EVENT_BUS.post(new PlayerKnockedOutEvent(player, event.getSource()));
+
+			// Dead players glow
+			if (ModConfig.glowOnDeath) {
+				player.setGlowing(true);
+			}
 
 			// Cancel event - we're taking over from here
 			event.setCanceled(true);
@@ -49,7 +54,7 @@ public class DeathHandler {
 			// If enabled, show a death message
 			if (player.world.getGameRules().getBoolean("showDeathMessages")) {
 				MinecraftServer server = player.world.getMinecraftServer();
-				if(server != null) {
+				if (server != null) {
 					Team team = player.getTeam();
 					if (team != null && team.getDeathMessageVisibility() != Team.EnumVisible.ALWAYS) {
 						if (team.getDeathMessageVisibility() == Team.EnumVisible.HIDE_FOR_OTHER_TEAMS) {
@@ -67,17 +72,17 @@ public class DeathHandler {
 
 	@SubscribeEvent
 	public void onDeathUpdate(TickEvent.PlayerTickEvent event) {
-		if(event.phase == TickEvent.Phase.START) {
-			if(event.player.getHealth() <= 0f && !event.player.getEntityData().getBoolean(IGNORE_REVIVAL_DEATH)) {
+		if (event.phase == TickEvent.Phase.START) {
+			if (event.player.getHealth() <= 0f && !event.player.getEntityData().getBoolean(IGNORE_REVIVAL_DEATH)) {
 				// Prevent deathTime from removing the entity from the world
-				if(event.player.deathTime == 19) {
+				if (event.player.deathTime == 19) {
 					event.player.deathTime = 18;
 				}
 				// Update our death timer instead
 				IHardcoreRevival revival = event.player.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null);
-				if(revival != null) {
+				if (revival != null) {
 					revival.setDeathTime(revival.getDeathTime() + 1);
-					if(revival.getDeathTime() >= ModConfig.maxDeathTicks) {
+					if (revival.getDeathTime() >= ModConfig.maxDeathTicks) {
 						event.player.getEntityData().setBoolean(IGNORE_REVIVAL_DEATH, true);
 						NetworkHandler.instance.sendTo(new MessageDie(), (EntityPlayerMP) event.player);
 						event.player.getCombatTracker().trackDamage(HardcoreRevival.notRescuedInTime, 0, 0);
@@ -91,5 +96,8 @@ public class DeathHandler {
 	@SubscribeEvent
 	public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
 		event.player.getEntityData().removeTag(IGNORE_REVIVAL_DEATH);
+		if (ModConfig.glowOnDeath) {
+			event.player.setGlowing(false);
+		}
 	}
 }

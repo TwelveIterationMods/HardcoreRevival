@@ -36,6 +36,11 @@ public class ModConfig {
 	@Config.LangKey("config.hardcorerevival.rescueTime")
 	public static int rescueTime = 40;
 
+	@Config.Name("Glow on Death")
+	@Config.Comment("If true, knocked out players will glow, making them visible through blocks.")
+	@Config.LangKey("config.hardcorerevival.glowOnDeath")
+	public static boolean glowOnDeath = true;
+
 	// These would be cool but they'd require coremod hacks and it's not worth it:
 
 //	@Config.Name("Allow Unarmed Melee when knocked out")

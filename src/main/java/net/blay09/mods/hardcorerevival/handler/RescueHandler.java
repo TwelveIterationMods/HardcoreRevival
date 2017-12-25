@@ -82,6 +82,9 @@ public class RescueHandler {
 					BlockPos prevSpawnPos = target.getBedLocation(target.dimension);
 					boolean prevSpawnForced = target.isSpawnForced(target.dimension);
 					target.setSpawnPoint(target.getPosition(), true);
+					if (ModConfig.glowOnDeath) {
+						target.setGlowing(false);
+					}
 					EntityPlayerMP newPlayer = server.getPlayerList().recreatePlayerEntity((EntityPlayerMP) target, target.dimension, false);
 					((EntityPlayerMP) target).connection.player = newPlayer;
 					newPlayer.setHealth(1f);
