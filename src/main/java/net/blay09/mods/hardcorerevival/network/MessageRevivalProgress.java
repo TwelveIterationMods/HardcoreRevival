@@ -1,37 +1,35 @@
 package net.blay09.mods.hardcorerevival.network;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.blay09.mods.hardcorerevival.HardcoreRevival;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MessageRevivalProgress implements IMessage {
-	private int entityId;
-	private float progress;
+import java.util.function.Supplier;
 
-	public MessageRevivalProgress() {
-	}
+public class MessageRevivalProgress {
+    private final int entityId;
+    private final float progress;
 
-	public MessageRevivalProgress(int entityId, float progress) {
-		this.entityId = entityId;
-		this.progress = progress;
-	}
+    public MessageRevivalProgress(int entityId, float progress) {
+        this.entityId = entityId;
+        this.progress = progress;
+    }
 
-	@Override
-	public void fromBytes(ByteBuf buf) {
-		entityId = buf.readInt();
-		progress = buf.readFloat();
-	}
+    public static void encode(MessageRevivalProgress message, PacketBuffer buf) {
+        buf.writeInt(message.entityId);
+        buf.writeFloat(message.progress);
+    }
 
-	@Override
-	public void toBytes(ByteBuf buf) {
-		buf.writeInt(entityId);
-		buf.writeFloat(progress);
-	}
+    public static MessageRevivalProgress decode(PacketBuffer buf) {
+        int entityId = buf.readInt();
+        float progress = buf.readFloat();
+        return new MessageRevivalProgress(entityId, progress);
+    }
 
-	public int getEntityId() {
-		return entityId;
-	}
-
-	public float getProgress() {
-		return progress;
-	}
+    public static void handle(MessageRevivalProgress message, Supplier<NetworkEvent.Context> contextSupplier) {
+        NetworkEvent.Context context = contextSupplier.get();
+        context.enqueueWork(() -> {
+            HardcoreRevival.client.ifPresent(it -> it.setRevivalProgress(message.entityId, message.progress)); // TODO maybe unsafe
+        });
+    }
 }

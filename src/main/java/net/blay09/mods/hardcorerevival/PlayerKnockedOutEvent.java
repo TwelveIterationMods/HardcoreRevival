@@ -2,7 +2,7 @@ package net.blay09.mods.hardcorerevival;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.eventbus.api.Event;
 
 public class PlayerKnockedOutEvent extends Event {
 	private final EntityPlayer player;

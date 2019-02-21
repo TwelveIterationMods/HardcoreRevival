@@ -1,0 +1,13 @@
+modLoader="javafml"
+loaderVersion="[24,)"
+issueTrackerURL="https://github.com/blay09/HardcoreRevival/issues"
+displayURL="https://minecraft.curseforge.com/projects/hardcore-revival"
+authors="BlayTheNinth"
+
+[[mods]]
+modId="hardcorerevival"
+version="${file.jarVersion}"
+displayName="Hardcore Revival"
+description='''
+Help your friends back up after they die (if you can make it in time)
+'''

@@ -1,29 +1,31 @@
 package net.blay09.mods.hardcorerevival.network;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.blay09.mods.hardcorerevival.HardcoreRevival;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MessageDeathTime implements IMessage {
-	private int deathTime;
+import java.util.function.Supplier;
 
-	public MessageDeathTime() {
-	}
+public class MessageDeathTime {
+    private final int deathTime;
 
-	public MessageDeathTime(int deathTime) {
-		this.deathTime = deathTime;
-	}
+    public MessageDeathTime(int deathTime) {
+        this.deathTime = deathTime;
+    }
 
-	@Override
-	public void fromBytes(ByteBuf buf) {
-		deathTime = buf.readInt();
-	}
+    public static void encode(MessageDeathTime message, PacketBuffer buf) {
+        buf.writeInt(message.deathTime);
+    }
 
-	@Override
-	public void toBytes(ByteBuf buf) {
-		buf.writeInt(deathTime);
-	}
+    public static MessageDeathTime decode(PacketBuffer buf) {
+        int deathTime = buf.readInt();
+        return new MessageDeathTime(deathTime);
+    }
 
-	public int getDeathTime() {
-		return deathTime;
-	}
+    public static void handle(MessageDeathTime message, Supplier<NetworkEvent.Context> contextSupplier) {
+        NetworkEvent.Context context = contextSupplier.get();
+        context.enqueueWork(() -> {
+            HardcoreRevival.client.ifPresent(it -> it.setDeathTime(message.deathTime)); // TODO maybe unsafe
+        });
+    }
 }

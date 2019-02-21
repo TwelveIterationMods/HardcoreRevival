@@ -1,4 +1,0 @@
-dependencies {
-    // deobfCompile "team-up:TeamUp:1.1.3:1.12.0"
-    // deobfCompile "ping:Ping:1.12:1.4.1" // crashes on server currently
-}

@@ -1,34 +1,18 @@
 package net.blay09.mods.hardcorerevival.network;
 
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.IThreadListener;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class NetworkHandler {
-	public static final SimpleNetworkWrapper instance = NetworkRegistry.INSTANCE.newSimpleChannel(HardcoreRevival.MOD_ID);
+    public static final SimpleChannel channel = NetworkRegistry.newSimpleChannel(new ResourceLocation(HardcoreRevival.MOD_ID, "network"), () -> "1.0", it -> true, it -> true);
 
-	public static void init() {
-		instance.registerMessage(HandlerDeathTime.class, MessageDeathTime.class, 0, Side.CLIENT);
-		instance.registerMessage(HandlerRevivalSuccess.class, MessageRevivalSuccess.class, 1, Side.CLIENT);
-		instance.registerMessage(HandlerRevival.class, MessageRevival.class, 2, Side.SERVER);
-		instance.registerMessage(HandlerRevivalProgress.class, MessageRevivalProgress.class, 3, Side.CLIENT);
-		instance.registerMessage(HandlerDie.class, MessageDie.class, 4, Side.SERVER);
-		instance.registerMessage(HandlerDie.class, MessageDie.class, 5, Side.CLIENT);
-	}
-
-	public static IThreadListener getThreadListener(MessageContext ctx) {
-		return ctx.side == Side.SERVER ? (WorldServer) ctx.getServerHandler().player.world : getClientThreadListener();
-	}
-
-	@SideOnly(Side.CLIENT)
-	public static IThreadListener getClientThreadListener() {
-		return Minecraft.getMinecraft();
-	}
-
+    public static void init() {
+        channel.registerMessage(0, MessageDeathTime.class, MessageDeathTime::encode, MessageDeathTime::decode, MessageDeathTime::handle);
+        channel.registerMessage(1, MessageRevivalSuccess.class, MessageRevivalSuccess::encode, MessageRevivalSuccess::decode, MessageRevivalSuccess::handle);
+        channel.registerMessage(2, MessageRevival.class, MessageRevival::encode, MessageRevival::decode, MessageRevival::handle);
+        channel.registerMessage(3, MessageRevivalProgress.class, MessageRevivalProgress::encode, MessageRevivalProgress::decode, MessageRevivalProgress::handle);
+        channel.registerMessage(4, MessageDie.class, (message, buf) -> {}, it -> new MessageDie(), MessageDie::handle);
+    }
 }

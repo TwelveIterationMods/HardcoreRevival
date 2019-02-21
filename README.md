@@ -1,2 +1,0 @@
-# Hardcore Revival
-Minecraft Mod.

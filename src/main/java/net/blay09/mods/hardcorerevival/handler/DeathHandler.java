@@ -1,7 +1,7 @@
 package net.blay09.mods.hardcorerevival.handler;
 
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
-import net.blay09.mods.hardcorerevival.ModConfig;
+import net.blay09.mods.hardcorerevival.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.PlayerKnockedOutEvent;
 import net.blay09.mods.hardcorerevival.capability.CapabilityHardcoreRevival;
 import net.blay09.mods.hardcorerevival.capability.IHardcoreRevival;
@@ -13,11 +13,13 @@ import net.minecraft.scoreboard.Team;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 public class DeathHandler {
     public static final String IGNORE_REVIVAL_DEATH = "IgnoreRevivalDeath";
@@ -30,7 +32,7 @@ public class DeathHandler {
             // If the player fell into the void, there's no rescuing
             if (event.getSource() == DamageSource.OUT_OF_WORLD) {
                 player.getEntityData().setBoolean(IGNORE_REVIVAL_DEATH, true);
-                NetworkHandler.instance.sendTo(new MessageDie(), (EntityPlayerMP) player);
+                NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (EntityPlayerMP) player), new MessageDie());
                 return;
             }
 
@@ -43,7 +45,7 @@ public class DeathHandler {
             MinecraftForge.EVENT_BUS.post(new PlayerKnockedOutEvent(player, event.getSource()));
 
             // Dead players glow
-            if (ModConfig.glowOnDeath) {
+            if (HardcoreRevivalConfig.COMMON.glowOnDeath.get()) {
                 player.setGlowing(true);
             }
 
@@ -52,7 +54,7 @@ public class DeathHandler {
 
             // If enabled, show a death message
             if (player.world.getGameRules().getBoolean("showDeathMessages")) {
-                MinecraftServer server = player.world.getMinecraftServer();
+                MinecraftServer server = player.world.getServer();
                 if (server != null) {
                     Team team = player.getTeam();
                     if (team != null && team.getDeathMessageVisibility() != Team.EnumVisible.ALWAYS) {
@@ -78,32 +80,30 @@ public class DeathHandler {
                     event.player.deathTime = 18;
                 }
                 // Update our death timer instead
-                IHardcoreRevival revival = event.player.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null);
-                if (revival != null) {
-                    revival.setDeathTime(revival.getDeathTime() + 1);
-                    if (revival.getDeathTime() >= ModConfig.maxDeathTicks) {
+                LazyOptional<IHardcoreRevival> revival = event.player.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null);
+                revival.ifPresent(it -> {
+                    it.setDeathTime(it.getDeathTime() + 1);
+                    if (it.getDeathTime() >= HardcoreRevivalConfig.COMMON.maxDeathTicks.get()) {
                         event.player.getEntityData().setBoolean(IGNORE_REVIVAL_DEATH, true);
-                        NetworkHandler.instance.sendTo(new MessageDie(), (EntityPlayerMP) event.player);
+                        NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (EntityPlayerMP) event.player), new MessageDie());
                         event.player.getCombatTracker().trackDamage(HardcoreRevival.notRescuedInTime, 0, 0);
                         event.player.onDeath(HardcoreRevival.notRescuedInTime);
-                        revival.setDeathTime(0);
+                        it.setDeathTime(0);
                     }
-                }
+                });
             }
         }
     }
 
     @SubscribeEvent
     public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        event.player.getEntityData().removeTag(IGNORE_REVIVAL_DEATH);
+        event.getPlayer().getEntityData().removeTag(IGNORE_REVIVAL_DEATH);
 
-        if (ModConfig.glowOnDeath) {
-            event.player.setGlowing(false);
+        if (HardcoreRevivalConfig.COMMON.glowOnDeath.get()) {
+            event.getPlayer().setGlowing(false);
         }
 
-        IHardcoreRevival revival = event.player.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null);
-        if (revival != null) {
-            revival.setDeathTime(0);
-        }
+        LazyOptional<IHardcoreRevival> revival = event.getPlayer().getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null);
+        revival.ifPresent(it -> it.setDeathTime(0));
     }
 }

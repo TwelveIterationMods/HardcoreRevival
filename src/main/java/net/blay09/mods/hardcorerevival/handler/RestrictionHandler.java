@@ -6,8 +6,8 @@ import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class RestrictionHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -31,7 +31,7 @@ public class RestrictionHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerUse(LivingEntityUseItemEvent event) {
         if (event.isCancelable() && event.getEntityLiving() instanceof EntityPlayer) {
-//			if(ModConfig.allowBows && event.getItem().getItem() instanceof ItemBow) {
+//			if(HardcoreRevivalConfig.allowBows && event.getItem().getItem() instanceof ItemBow) {
 //				return;
 //			}
             if (event.getEntityLiving().getHealth() <= 0f) {
@@ -54,7 +54,7 @@ public class RestrictionHandler {
     public void onAttack(AttackEntityEvent event) {
         EntityPlayer player = event.getEntityPlayer();
         if (player != null && player.getHealth() <= 0f) {
-//			if(ModConfig.allowUnarmedMelee && player.getHeldItemMainhand().isEmpty()) {
+//			if(HardcoreRevivalConfig.allowUnarmedMelee && player.getHeldItemMainhand().isEmpty()) {
 //				return;
 //			}
             event.setCanceled(true);

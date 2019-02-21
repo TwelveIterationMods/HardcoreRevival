@@ -1,64 +1,60 @@
 package net.blay09.mods.hardcorerevival;
 
 import net.blay09.mods.hardcorerevival.capability.CapabilityHardcoreRevival;
+import net.blay09.mods.hardcorerevival.client.HardcoreRevivalClient;
 import net.blay09.mods.hardcorerevival.handler.DeathHandler;
 import net.blay09.mods.hardcorerevival.handler.PlayerHandler;
 import net.blay09.mods.hardcorerevival.handler.RescueHandler;
 import net.blay09.mods.hardcorerevival.handler.RestrictionHandler;
 import net.blay09.mods.hardcorerevival.network.NetworkHandler;
 import net.minecraft.util.DamageSource;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.DeferredWorkQueue;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import org.apache.logging.log4j.Logger;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-@Mod(modid = HardcoreRevival.MOD_ID, name = "Hardcore Revival", acceptedMinecraftVersions = "1.12")
+import java.util.Optional;
+
+@Mod(HardcoreRevival.MOD_ID)
 @Mod.EventBusSubscriber
 public class HardcoreRevival {
-	public static final String MOD_ID = "hardcorerevival";
+    public static final String MOD_ID = "hardcorerevival";
 
-	@Mod.Instance(MOD_ID)
-	public static HardcoreRevival instance;
+    public static final DamageSource notRescuedInTime = new DamageSource("not_rescued_in_time");
 
-	@SidedProxy(clientSide = "net.blay09.mods.hardcorerevival.client.ClientProxy", serverSide = "net.blay09.mods.hardcorerevival.CommonProxy")
-	public static CommonProxy proxy;
+    public static Optional<HardcoreRevivalClient> client = Optional.empty();
 
-	public static Logger logger;
+    public HardcoreRevival() {
+        MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(new RestrictionHandler());
+        MinecraftForge.EVENT_BUS.register(new PlayerHandler());
+        MinecraftForge.EVENT_BUS.register(new DeathHandler());
+        MinecraftForge.EVENT_BUS.register(new RescueHandler());
 
-	public static final DamageSource notRescuedInTime = new DamageSource("not_rescued_in_time");
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient);
 
-	@Mod.EventHandler
-	public void preInit(FMLPreInitializationEvent event) {
-		logger = event.getModLog();
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, HardcoreRevivalConfig.commonSpec);
+    }
 
-		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(new RestrictionHandler());
-		MinecraftForge.EVENT_BUS.register(new PlayerHandler());
-		MinecraftForge.EVENT_BUS.register(new DeathHandler());
-		MinecraftForge.EVENT_BUS.register(new RescueHandler());
-		MinecraftForge.EVENT_BUS.register(proxy);
+    private void setup(FMLCommonSetupEvent event) {
+        DeferredWorkQueue.runLater(() -> {
+            NetworkHandler.init();
+            CapabilityHardcoreRevival.register();
+        });
+    }
 
-		CapabilityHardcoreRevival.register();
-	}
+    private void setupClient(FMLClientSetupEvent event) {
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+            client = Optional.of(new HardcoreRevivalClient());
+            DeferredWorkQueue.runLater(() -> client.ifPresent(MinecraftForge.EVENT_BUS::register));
+        });
 
-	@Mod.EventHandler
-	public void init(FMLInitializationEvent event) {
-		NetworkHandler.init();
-	}
-
-	@Mod.EventHandler
-	public void postInit(FMLPostInitializationEvent event) {
-		if(event.getSide() == Side.CLIENT && ModConfig.teamUpIntegration) {
-			event.buildSoftDependProxy("teamup", "net.blay09.mods.hardcorerevival.compat.TeamUpAddon");
-		}
-
-		if(event.getSide() == Side.CLIENT && ModConfig.pingIntegration) {
-			event.buildSoftDependProxy("ping", "net.blay09.mods.hardcorerevival.compat.PingAddon");
-		}
-	}
-
+    }
 }

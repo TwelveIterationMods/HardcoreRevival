@@ -1,6 +1,6 @@
 package net.blay09.mods.hardcorerevival.handler;
 
-import net.blay09.mods.hardcorerevival.ModConfig;
+import net.blay09.mods.hardcorerevival.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.capability.CapabilityHardcoreRevival;
 import net.blay09.mods.hardcorerevival.capability.IHardcoreRevival;
 import net.blay09.mods.hardcorerevival.network.MessageDeathTime;
@@ -9,72 +9,73 @@ import net.blay09.mods.hardcorerevival.network.NetworkHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.INBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 public class PlayerHandler {
-	@SubscribeEvent
-	public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-		if(event.player instanceof EntityPlayerMP) {
-			NBTTagCompound data = event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
-			IHardcoreRevival revival = event.player.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null);
-			if(revival != null) {
-				CapabilityHardcoreRevival.REVIVAL_CAPABILITY.readNBT(revival, null, data.getCompoundTag("HardcoreRevival"));
-			}
+    @SubscribeEvent
+    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+        EntityPlayer player = event.getPlayer();
+        if (player instanceof EntityPlayerMP) {
+            NBTTagCompound data = player.getEntityData().getCompound(EntityPlayer.PERSISTED_NBT_TAG);
+            LazyOptional<IHardcoreRevival> revival = player.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null);
+            revival.ifPresent(it -> CapabilityHardcoreRevival.REVIVAL_CAPABILITY.readNBT(it, null, data.getCompound("HardcoreRevival")));
+            NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (EntityPlayerMP) player), new MessageDeathTime(revival.map(IHardcoreRevival::getDeathTime).orElse(0)));
+            revival.ifPresent(it -> {
+                if (it.getDeathTime() >= HardcoreRevivalConfig.COMMON.maxDeathTicks.get()) {
+                    NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (EntityPlayerMP) player), new MessageDie());
+                }
+            });
+        }
+    }
 
-			NetworkHandler.instance.sendTo(new MessageDeathTime(revival != null ? revival.getDeathTime() : 0), (EntityPlayerMP) event.player);
-			if(revival != null && revival.getDeathTime() >= ModConfig.maxDeathTicks) {
-				NetworkHandler.instance.sendTo(new MessageDie(), (EntityPlayerMP) event.player);
-			}
-		}
-	}
+    @SubscribeEvent
+    public void onCapabilityInject(AttachCapabilitiesEvent<Entity> event) {
+        if (event.getObject() instanceof EntityPlayerMP) {
+            event.addCapability(CapabilityHardcoreRevival.REGISTRY_NAME, new ICapabilityProvider() {
+                private LazyOptional<IHardcoreRevival> revival;
 
-	@SubscribeEvent
-	public void onCapabilityInject(AttachCapabilitiesEvent<Entity> event) {
-		if(event.getObject() instanceof EntityPlayerMP) {
-			event.addCapability(CapabilityHardcoreRevival.REGISTRY_NAME, new ICapabilityProvider() {
-				private IHardcoreRevival revival;
+                private LazyOptional<IHardcoreRevival> getRevivalCapabilityInstance() {
+                    if (revival == null) {
+                        IHardcoreRevival instance = CapabilityHardcoreRevival.REVIVAL_CAPABILITY.getDefaultInstance();
+                        revival = LazyOptional.of(() -> Objects.requireNonNull(instance));
+                    }
 
-				@Override
-				public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-					return capability == CapabilityHardcoreRevival.REVIVAL_CAPABILITY;
-				}
+                    return revival;
+                }
 
-				@Nullable
-				@Override
-				@SuppressWarnings("unchecked")
-				public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-					if (capability == CapabilityHardcoreRevival.REVIVAL_CAPABILITY) {
-						if (revival == null) {
-							revival = CapabilityHardcoreRevival.REVIVAL_CAPABILITY.getDefaultInstance();
-						}
-						return (T) revival;
-					}
-					return null;
-				}
-			});
-		}
-	}
+                @Nonnull
+                @Override
+                public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing facing) {
+                    return CapabilityHardcoreRevival.REVIVAL_CAPABILITY.orEmpty(cap, getRevivalCapabilityInstance());
+                }
+            });
+        }
+    }
 
-	@SubscribeEvent
-	public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
-		NBTTagCompound data = event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
-		IHardcoreRevival revival = event.player.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null);
-		if(revival != null) {
-			NBTBase tag = CapabilityHardcoreRevival.REVIVAL_CAPABILITY.writeNBT(revival, null);
-			if (tag != null) {
-				data.setTag("HardcoreRevival", tag);
-				event.player.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, data);
-			}
-		}
-	}
+    @SubscribeEvent
+    public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+        EntityPlayer player = event.getPlayer();
+        NBTTagCompound data = player.getEntityData().getCompound(EntityPlayer.PERSISTED_NBT_TAG);
+        LazyOptional<IHardcoreRevival> revival = player.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null);
+        revival.ifPresent(it -> {
+            INBTBase tag = CapabilityHardcoreRevival.REVIVAL_CAPABILITY.writeNBT(it, null);
+            if (tag != null) {
+                data.setTag("HardcoreRevival", tag);
+                player.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, data);
+            }
+        });
+    }
 }
