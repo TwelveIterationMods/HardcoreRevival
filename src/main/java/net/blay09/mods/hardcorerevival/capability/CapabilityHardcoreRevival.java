@@ -1,9 +1,9 @@
 package net.blay09.mods.hardcorerevival.capability;
 
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
-import net.minecraft.nbt.INBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -17,15 +17,15 @@ public class CapabilityHardcoreRevival {
     public static void register() {
         CapabilityManager.INSTANCE.register(IHardcoreRevival.class, new Capability.IStorage<IHardcoreRevival>() {
             @Override
-            public INBTBase writeNBT(Capability<IHardcoreRevival> capability, IHardcoreRevival instance, EnumFacing side) {
-                NBTTagCompound tagCompound = new NBTTagCompound();
-                tagCompound.setInt("DeathTime", instance.getDeathTime());
+            public INBT writeNBT(Capability<IHardcoreRevival> capability, IHardcoreRevival instance, Direction side) {
+                CompoundNBT tagCompound = new CompoundNBT();
+                tagCompound.putInt("DeathTime", instance.getDeathTime());
                 return tagCompound;
             }
 
             @Override
-            public void readNBT(Capability<IHardcoreRevival> capability, IHardcoreRevival instance, EnumFacing side, INBTBase base) {
-                NBTTagCompound tagCompound = (NBTTagCompound) base;
+            public void readNBT(Capability<IHardcoreRevival> capability, IHardcoreRevival instance, Direction side, INBT base) {
+                CompoundNBT tagCompound = (CompoundNBT) base;
                 instance.setDeathTime(tagCompound.getInt("DeathTime"));
             }
         }, HardcoreRevivalImpl::new);

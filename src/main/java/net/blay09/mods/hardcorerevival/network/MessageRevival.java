@@ -2,7 +2,7 @@ package net.blay09.mods.hardcorerevival.network;
 
 import net.blay09.mods.hardcorerevival.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.handler.RescueHandler;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -28,17 +28,17 @@ public class MessageRevival {
     public static void handle(MessageRevival message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
-            EntityPlayer player = context.getSender();
+            PlayerEntity player = context.getSender();
             if (player == null || player.getHealth() <= 0) {
                 return;
             }
 
             if (message.active) {
                 final double range = HardcoreRevivalConfig.COMMON.maxRescueDist.get();
-                List<EntityPlayer> candidates = player.world.getEntitiesWithinAABB(EntityPlayer.class, player.getBoundingBox().grow(range), p -> p != null && p.getHealth() <= 0f);
+                List<PlayerEntity> candidates = player.world.getEntitiesWithinAABB(PlayerEntity.class, player.getBoundingBox().grow(range), p -> p != null && p.getHealth() <= 0f);
                 float minDist = Float.MAX_VALUE;
-                EntityPlayer target = null;
-                for (EntityPlayer candidate : candidates) {
+                PlayerEntity target = null;
+                for (PlayerEntity candidate : candidates) {
                     float dist = candidate.getDistance(player);
                     if (dist < minDist) {
                         target = candidate;

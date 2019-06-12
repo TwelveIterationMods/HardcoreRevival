@@ -42,13 +42,4 @@ public class HardcoreRevivalConfig {
         COMMON = specPair.getLeft();
     }
 
-    // These would be cool but they'd require coremod hacks and it's not worth it: TODO check if they are possible in 1.13 without coremods
-
-//	@Config.Name("Allow Unarmed Melee when knocked out")
-//	@Config.Comment("Whether knocked out players can still perform unarmed melee attacks.")
-//	public static boolean allowUnarmedMelee = true;
-//
-//	@Config.Name("Allow Bows when knocked out")
-//	@Config.Comment("Whether knocked out players can still fire arrows.")
-//	public static boolean allowBows = true;
 }

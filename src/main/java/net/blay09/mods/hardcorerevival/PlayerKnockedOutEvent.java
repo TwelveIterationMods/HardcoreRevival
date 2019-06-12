@@ -1,19 +1,19 @@
 package net.blay09.mods.hardcorerevival;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.eventbus.api.Event;
 
 public class PlayerKnockedOutEvent extends Event {
-	private final EntityPlayer player;
+	private final PlayerEntity player;
 	private final DamageSource source;
 
-	public PlayerKnockedOutEvent(EntityPlayer player, DamageSource source) {
+	public PlayerKnockedOutEvent(PlayerEntity player, DamageSource source) {
 		this.player = player;
 		this.source = source;
 	}
 
-	public EntityPlayer getPlayer() {
+	public PlayerEntity getPlayer() {
 		return player;
 	}
 

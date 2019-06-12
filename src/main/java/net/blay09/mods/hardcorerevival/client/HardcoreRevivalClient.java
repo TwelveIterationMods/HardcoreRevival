@@ -1,26 +1,22 @@
 package net.blay09.mods.hardcorerevival.client;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.network.MessageDie;
 import net.blay09.mods.hardcorerevival.network.MessageRevival;
 import net.blay09.mods.hardcorerevival.network.NetworkHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiChat;
-import net.minecraft.client.gui.GuiGameOver;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.inventory.GuiInventory;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.client.gui.screen.DeathScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.inventory.InventoryScreen;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.client.event.FOVUpdateEvent;
-import net.minecraftforge.client.event.GuiOpenEvent;
-import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class HardcoreRevivalClient {
@@ -31,7 +27,7 @@ public class HardcoreRevivalClient {
 
     // GUI things
     private float enableButtonTimer;
-    private GuiButton buttonDie;
+    private Button buttonDie;
     private double prevChatHeight = -1;
 
     // Rescuing
@@ -43,9 +39,9 @@ public class HardcoreRevivalClient {
     public void onOpenGui(GuiOpenEvent event) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null) {
-            if (event.getGui() instanceof GuiGameOver && isKnockedOut && !acceptedDeath) { // Minor hack: isKnockedOut is always set AFTER the game over screen pops up, so we can abuse that here
+            if (event.getGui() instanceof DeathScreen && isKnockedOut && !acceptedDeath) { // Minor hack: isKnockedOut is always set AFTER the game over screen pops up, so we can abuse that here
                 event.setGui(null);
-            } else if (isKnockedOut && event.getGui() instanceof GuiInventory) {
+            } else if (isKnockedOut && event.getGui() instanceof InventoryScreen) {
                 event.setGui(null);
             }
         }
@@ -61,7 +57,7 @@ public class HardcoreRevivalClient {
     @SubscribeEvent
     public void onRenderGameOverlay(RenderGameOverlayEvent.Chat event) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player != null && isKnockedOut && mc.currentScreen != null) {
+        if (mc.player != null && isKnockedOut && mc.field_71462_r != null) {
             prevChatHeight = mc.gameSettings.chatHeightFocused;
             mc.gameSettings.chatHeightFocused = 0.1f;
         }
@@ -76,16 +72,18 @@ public class HardcoreRevivalClient {
                 GlStateManager.translatef(0, 0, -300);
                 GuiHelper.drawGradientRectW(0, 0, mc.mainWindow.getWidth(), mc.mainWindow.getHeight(), 0x60500000, 0x90FF0000);
                 GlStateManager.popMatrix();
-                if (mc.currentScreen == null) {
-                    mc.fontRenderer.drawStringWithShadow(I18n.format("gui.hardcorerevival.open_death_screen", mc.gameSettings.keyBindChat.getTranslationKey()), 5, 5, 0xFFFFFFFF);
+                if (mc.field_71462_r == null) {
+
+                    String openDeathScreenKey = mc.gameSettings.keyBindChat.getLocalizedName();
+                    mc.fontRenderer.drawStringWithShadow(I18n.format("gui.hardcorerevival.open_death_screen", openDeathScreenKey), 5, 5, 0xFFFFFFFF);
                     mc.fontRenderer.drawString(I18n.format("gui.hardcorerevival.rescue_time_left", Math.max(0, (HardcoreRevivalConfig.COMMON.maxDeathTicks.get() - deathTime) / 20)), 5, 7 + mc.fontRenderer.FONT_HEIGHT, 16777215);
-                    mc.getTextureManager().bindTexture(Gui.ICONS);
+                    mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
                 }
             } else {
                 if (targetEntity != -1) {
                     Entity entity = mc.world.getEntityByID(targetEntity);
-                    if (entity instanceof EntityPlayer) {
-                        String s = I18n.format("gui.hardcorerevival.rescuing", entity.getDisplayName()); // TODO getUnformattedString necessary?
+                    if (entity instanceof PlayerEntity) {
+                        String s = I18n.format("gui.hardcorerevival.rescuing", entity.getDisplayName().getFormattedText());
                         if (targetProgress >= 0.75f) {
                             s += " ...";
                         } else if (targetProgress >= 0.5f) {
@@ -94,7 +92,7 @@ public class HardcoreRevivalClient {
                             s += " .";
                         }
                         mc.fontRenderer.drawString(s, mc.mainWindow.getScaledWidth() / 2f - mc.fontRenderer.getStringWidth(s) / 2f, mc.mainWindow.getScaledHeight() / 2f + 30, 0xFFFFFFFF);
-                        mc.getTextureManager().bindTexture(Gui.ICONS);
+                        mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
                     }
                 }
             }
@@ -125,12 +123,7 @@ public class HardcoreRevivalClient {
                         // The player is now knocked out
                         deathTime = 0;
                         isKnockedOut = true;
-                        mc.displayGuiScreen(new GuiChat());
-//						if(mc.currentScreen != null) {
-//							 Re-initialize the GUI to fire button hooks
-//							ScaledResolution resolution = new ScaledResolution(mc);
-//							mc.currentScreen.setWorldAndResolution(mc, resolution.getScaledWidth(), resolution.getScaledHeight());
-//						}
+                        mc.displayGuiScreen(new ChatScreen(""));
                     }
                     // Prevent deathTime from removing the entity from the world
                     if (mc.player.deathTime == 19) {
@@ -162,39 +155,36 @@ public class HardcoreRevivalClient {
 
     @SubscribeEvent
     public void onInitGui(GuiScreenEvent.InitGuiEvent.Post event) {
-        Minecraft mc = event.getGui().mc;
-        if (mc.player != null && isKnockedOut && event.getGui() instanceof GuiChat) {
-            GuiScreen gui = event.getGui();
+        Minecraft mc = event.getGui().getMinecraft();
+        if (mc.player != null && isKnockedOut && event.getGui() instanceof ChatScreen) {
+            Screen gui = event.getGui();
             enableButtonTimer = 0;
-            buttonDie = new GuiButton(-2, gui.width / 2 - 100, gui.height / 2 - 30, I18n.format("gui.hardcorerevival.die")) {
-                @Override
-                public void onClick(double mouseX, double mouseY) {
-                    playPressSound(Minecraft.getInstance().getSoundHandler());
-                    NetworkHandler.channel.sendToServer(new MessageDie());
-                    acceptedDeath = true;
-                }
-            };
-            buttonDie.enabled = false;
-            event.getButtonList().add(buttonDie);
+            buttonDie = new Button(gui.width / 2 - 100, gui.height / 2 - 30, 200, 20, I18n.format("gui.hardcorerevival.die"), it -> {
+                buttonDie.playDownSound(Minecraft.getInstance().getSoundHandler());
+                NetworkHandler.channel.sendToServer(new MessageDie());
+                acceptedDeath = true;
+            });
+            buttonDie.active = false;
+            event.addWidget(buttonDie);
         }
     }
 
     @SubscribeEvent
     public void onDrawScreen(GuiScreenEvent.DrawScreenEvent.Post event) {
-        GuiScreen gui = event.getGui();
-        Minecraft mc = gui.mc;
-        if (mc.player != null && isKnockedOut && gui instanceof GuiChat) {
+        Screen gui = event.getGui();
+        Minecraft mc = gui.getMinecraft();
+        if (mc.player != null && isKnockedOut && gui instanceof ChatScreen) {
             enableButtonTimer += event.getRenderPartialTicks();
             if (buttonDie != null) {
                 if (enableButtonTimer >= 40) {
-                    buttonDie.enabled = true;
-                    buttonDie.displayString = I18n.format("gui.hardcorerevival.die");
+                    buttonDie.active = true;
+                    buttonDie.setMessage(I18n.format("gui.hardcorerevival.die"));
                 } else if (enableButtonTimer >= 30) {
-                    buttonDie.displayString = "... " + I18n.format("gui.hardcorerevival.die") + " ...";
+                    buttonDie.setMessage("... " + I18n.format("gui.hardcorerevival.die") + " ...");
                 } else if (enableButtonTimer >= 20) {
-                    buttonDie.displayString = ".. " + I18n.format("gui.hardcorerevival.die") + " ..";
+                    buttonDie.setMessage(".. " + I18n.format("gui.hardcorerevival.die") + " ..");
                 } else if (enableButtonTimer >= 10) {
-                    buttonDie.displayString = ". " + I18n.format("gui.hardcorerevival.die") + " .";
+                    buttonDie.setMessage(". " + I18n.format("gui.hardcorerevival.die") + " .");
                 }
             }
 
@@ -229,7 +219,7 @@ public class HardcoreRevivalClient {
                 mc.player.setGlowing(false);
                 mc.player.setFlag(6, false); // glowing flag
             }
-            mc.player.removed = true;
+            mc.player.remove(true);
         }
     }
 }

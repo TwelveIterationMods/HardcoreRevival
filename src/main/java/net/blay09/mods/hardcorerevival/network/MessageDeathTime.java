@@ -24,8 +24,8 @@ public class MessageDeathTime {
 
     public static void handle(MessageDeathTime message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
-        context.enqueueWork(() -> {
-            HardcoreRevival.client.ifPresent(it -> it.setDeathTime(message.deathTime)); // TODO maybe unsafe
-        });
+        NetworkHandler.ensureClientSide(context);
+
+        context.enqueueWork(() -> HardcoreRevival.client.ifPresent(it -> it.setDeathTime(message.deathTime)));
     }
 }

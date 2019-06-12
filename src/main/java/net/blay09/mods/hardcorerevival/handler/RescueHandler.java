@@ -6,10 +6,10 @@ import net.blay09.mods.hardcorerevival.capability.IHardcoreRevival;
 import net.blay09.mods.hardcorerevival.network.MessageRevivalProgress;
 import net.blay09.mods.hardcorerevival.network.MessageRevivalSuccess;
 import net.blay09.mods.hardcorerevival.network.NetworkHandler;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.MobEffects;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
@@ -26,9 +26,9 @@ public class RescueHandler {
 
     @SubscribeEvent
     public void onItemUse(LivingEntityUseItemEvent event) {
-        if (event.getEntityLiving() instanceof EntityPlayer) {
+        if (event.getEntityLiving() instanceof PlayerEntity) {
             // Stop rescuing if the player does something other than rescuing
-            abortRescue((EntityPlayer) event.getEntityLiving());
+            abortRescue((PlayerEntity) event.getEntityLiving());
         }
     }
 
@@ -38,12 +38,12 @@ public class RescueHandler {
         abortRescue(event.getEntityPlayer());
     }
 
-    public static void startRescue(EntityPlayer player, EntityPlayer target) {
+    public static void startRescue(PlayerEntity player, PlayerEntity target) {
         LazyOptional<IHardcoreRevival> revival = player.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null);
         revival.ifPresent(it -> {
             it.setRescueTarget(target);
             it.setRescueTime(0);
-            NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (EntityPlayerMP) player), new MessageRevivalProgress(target.getEntityId(), 0f));
+            NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), new MessageRevivalProgress(target.getEntityId(), 0f));
         });
     }
 
@@ -54,7 +54,7 @@ public class RescueHandler {
             revival.ifPresent(it -> {
                 if (it.getRescueTarget() != null) {
                     // Stop rescuing if the target logged out
-                    if (it.getRescueTarget().removed) {
+                    if (it.getRescueTarget().removed) { // we can't use isAlive like deprecation notes suggest because it also checks health
                         abortRescue(event.player);
                     } else {
                         // Stop rescuing if the player is out of range
@@ -68,7 +68,7 @@ public class RescueHandler {
                             if (rescueTime >= HardcoreRevivalConfig.COMMON.rescueTime.get()) {
                                 finishRescue(event.player);
                             } else if (rescueTime % step == 0) {
-                                NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (EntityPlayerMP) event.player), new MessageRevivalProgress(it.getRescueTarget().getEntityId(), (float) rescueTime / (float) HardcoreRevivalConfig.COMMON.rescueTime.get()));
+                                NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) event.player), new MessageRevivalProgress(it.getRescueTarget().getEntityId(), (float) rescueTime / (float) HardcoreRevivalConfig.COMMON.rescueTime.get()));
                             }
                         }
                     }
@@ -79,7 +79,7 @@ public class RescueHandler {
 
     @SubscribeEvent
     public void onPlayerClone(PlayerEvent.Clone event) {
-        EntityPlayer original = event.getOriginal();
+        PlayerEntity original = event.getOriginal();
         LazyOptional<IHardcoreRevival> revival = original.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null);
         revival.ifPresent(it -> {
             if (it.getDeathTime() > 0) {
@@ -88,10 +88,10 @@ public class RescueHandler {
         });
     }
 
-    public static void finishRescue(EntityPlayer player) {
+    public static void finishRescue(PlayerEntity player) {
         LazyOptional<IHardcoreRevival> revival = player.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null);
         revival.ifPresent(it -> {
-            EntityPlayer target = it.getRescueTarget();
+            PlayerEntity target = it.getRescueTarget();
             if (target != null) {
                 MinecraftServer server = target.getServer();
                 if (server != null) {
@@ -100,19 +100,18 @@ public class RescueHandler {
                     boolean prevSpawnForced = target.isSpawnForced(target.dimension);
                     DimensionType prevSpawnDimension = target.getSpawnDimension();
 
-                    //noinspection ConstantConditions missing @Nullable for BlockPos parameter
-                    target.setSpawnPoint(null, false, target.dimension);
+                    target.setSpawnPoint(target.getPosition(), true, target.dimension);
 
                     if (HardcoreRevivalConfig.COMMON.glowOnDeath.get()) {
                         target.setGlowing(false);
                     }
 
-                    EntityPlayerMP newPlayer = server.getPlayerList().recreatePlayerEntity((EntityPlayerMP) target, target.dimension, false);
-                    ((EntityPlayerMP) target).connection.player = newPlayer;
+                    ServerPlayerEntity newPlayer = server.getPlayerList().recreatePlayerEntity((ServerPlayerEntity) target, target.dimension, false);
+                    ((ServerPlayerEntity) target).connection.field_147369_b = newPlayer;
                     newPlayer.setHealth(1f);
                     newPlayer.getFoodStats().setFoodLevel(5);
-                    newPlayer.addPotionEffect(new PotionEffect(MobEffects.HUNGER, 20 * 30));
-                    newPlayer.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 20 * 60));
+                    newPlayer.addPotionEffect(new EffectInstance(Effects.field_76438_s, 20 * 30)); // Hunger
+                    newPlayer.addPotionEffect(new EffectInstance(Effects.field_76437_t, 20 * 60)); // Weakness
                     newPlayer.inventory.copyInventory(target.inventory);
                     newPlayer.experienceLevel = target.experienceLevel;
                     newPlayer.experienceTotal = target.experienceTotal;
@@ -132,12 +131,12 @@ public class RescueHandler {
         });
     }
 
-    public static void abortRescue(EntityPlayer player) {
+    public static void abortRescue(PlayerEntity player) {
         LazyOptional<IHardcoreRevival> revival = player.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null);
         revival.ifPresent(it -> {
             it.setRescueTime(0);
             it.setRescueTarget(null);
-            NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (EntityPlayerMP) player), new MessageRevivalProgress(-1, -1));
+            NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), new MessageRevivalProgress(-1, -1));
         });
     }
 

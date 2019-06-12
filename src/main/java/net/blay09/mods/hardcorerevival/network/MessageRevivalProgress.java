@@ -28,8 +28,8 @@ public class MessageRevivalProgress {
 
     public static void handle(MessageRevivalProgress message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
-        context.enqueueWork(() -> {
-            HardcoreRevival.client.ifPresent(it -> it.setRevivalProgress(message.entityId, message.progress)); // TODO maybe unsafe
-        });
+        NetworkHandler.ensureClientSide(context);
+
+        context.enqueueWork(() -> HardcoreRevival.client.ifPresent(it -> it.setRevivalProgress(message.entityId, message.progress)));
     }
 }

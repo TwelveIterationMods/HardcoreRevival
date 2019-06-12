@@ -1,6 +1,6 @@
 package net.blay09.mods.hardcorerevival.handler;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
@@ -12,7 +12,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class RestrictionHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onBreakProgress(PlayerEvent.BreakSpeed event) {
-        EntityPlayer player = event.getEntityPlayer();
+        PlayerEntity player = event.getEntityPlayer();
         if (player != null && player.getHealth() <= 0f) {
             event.setNewSpeed(0f);
         }
@@ -20,7 +20,7 @@ public class RestrictionHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event) {
-        EntityPlayer player = event.getEntityPlayer();
+        PlayerEntity player = event.getEntityPlayer();
         if (player != null && player.getHealth() <= 0f) {
             if (!(event instanceof PlayerInteractEvent.RightClickEmpty || event instanceof PlayerInteractEvent.LeftClickEmpty)) {
                 event.setCanceled(true);
@@ -30,7 +30,7 @@ public class RestrictionHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerUse(LivingEntityUseItemEvent event) {
-        if (event.isCancelable() && event.getEntityLiving() instanceof EntityPlayer) {
+        if (event.isCancelable() && event.getEntityLiving() instanceof PlayerEntity) {
 //			if(HardcoreRevivalConfig.allowBows && event.getItem().getItem() instanceof ItemBow) {
 //				return;
 //			}
@@ -52,7 +52,7 @@ public class RestrictionHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onAttack(AttackEntityEvent event) {
-        EntityPlayer player = event.getEntityPlayer();
+        PlayerEntity player = event.getEntityPlayer();
         if (player != null && player.getHealth() <= 0f) {
 //			if(HardcoreRevivalConfig.allowUnarmedMelee && player.getHeldItemMainhand().isEmpty()) {
 //				return;

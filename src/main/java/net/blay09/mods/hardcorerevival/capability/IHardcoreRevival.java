@@ -1,6 +1,6 @@
 package net.blay09.mods.hardcorerevival.capability;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 
 import javax.annotation.Nullable;
 
@@ -9,7 +9,7 @@ public interface IHardcoreRevival {
 	int getDeathTime();
 	void setRescueTime(int rescueTime);
 	int getRescueTime();
-	void setRescueTarget(@Nullable EntityPlayer rescueTarget);
+	void setRescueTarget(@Nullable PlayerEntity rescueTarget);
 	@Nullable
-	EntityPlayer getRescueTarget();
+	PlayerEntity getRescueTarget();
 }

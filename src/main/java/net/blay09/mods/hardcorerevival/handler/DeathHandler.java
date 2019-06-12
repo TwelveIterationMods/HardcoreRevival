@@ -7,8 +7,8 @@ import net.blay09.mods.hardcorerevival.capability.CapabilityHardcoreRevival;
 import net.blay09.mods.hardcorerevival.capability.IHardcoreRevival;
 import net.blay09.mods.hardcorerevival.network.MessageDie;
 import net.blay09.mods.hardcorerevival.network.NetworkHandler;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
@@ -26,13 +26,13 @@ public class DeathHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerDeath(LivingDeathEvent event) {
-        if (event.getEntityLiving() instanceof EntityPlayerMP) {
-            EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+        if (event.getEntityLiving() instanceof ServerPlayerEntity) {
+            PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
             // If the player fell into the void, there's no rescuing
             if (event.getSource() == DamageSource.OUT_OF_WORLD) {
-                player.getEntityData().setBoolean(IGNORE_REVIVAL_DEATH, true);
-                NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (EntityPlayerMP) player), new MessageDie());
+                player.getEntityData().putBoolean(IGNORE_REVIVAL_DEATH, true);
+                NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), new MessageDie());
                 return;
             }
 
@@ -57,10 +57,10 @@ public class DeathHandler {
                 MinecraftServer server = player.world.getServer();
                 if (server != null) {
                     Team team = player.getTeam();
-                    if (team != null && team.getDeathMessageVisibility() != Team.EnumVisible.ALWAYS) {
-                        if (team.getDeathMessageVisibility() == Team.EnumVisible.HIDE_FOR_OTHER_TEAMS) {
+                    if (team != null && team.getDeathMessageVisibility() != Team.Visible.ALWAYS) {
+                        if (team.getDeathMessageVisibility() == Team.Visible.HIDE_FOR_OTHER_TEAMS) {
                             server.getPlayerList().sendMessageToAllTeamMembers(player, player.getCombatTracker().getDeathMessage());
-                        } else if (team.getDeathMessageVisibility() == Team.EnumVisible.HIDE_FOR_OWN_TEAM) {
+                        } else if (team.getDeathMessageVisibility() == Team.Visible.HIDE_FOR_OWN_TEAM) {
                             server.getPlayerList().sendMessageToTeamOrAllPlayers(player, player.getCombatTracker().getDeathMessage());
                         }
                     } else {
@@ -84,8 +84,8 @@ public class DeathHandler {
                 revival.ifPresent(it -> {
                     it.setDeathTime(it.getDeathTime() + 1);
                     if (it.getDeathTime() >= HardcoreRevivalConfig.COMMON.maxDeathTicks.get()) {
-                        event.player.getEntityData().setBoolean(IGNORE_REVIVAL_DEATH, true);
-                        NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (EntityPlayerMP) event.player), new MessageDie());
+                        event.player.getEntityData().putBoolean(IGNORE_REVIVAL_DEATH, true);
+                        NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) event.player), new MessageDie());
                         event.player.getCombatTracker().trackDamage(HardcoreRevival.notRescuedInTime, 0, 0);
                         event.player.onDeath(HardcoreRevival.notRescuedInTime);
                         it.setDeathTime(0);
@@ -97,7 +97,7 @@ public class DeathHandler {
 
     @SubscribeEvent
     public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        event.getPlayer().getEntityData().removeTag(IGNORE_REVIVAL_DEATH);
+        event.getPlayer().getEntityData().remove(IGNORE_REVIVAL_DEATH);
 
         if (HardcoreRevivalConfig.COMMON.glowOnDeath.get()) {
             event.getPlayer().setGlowing(false);

@@ -1,11 +1,11 @@
 package net.blay09.mods.hardcorerevival.capability;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 
 public class HardcoreRevivalImpl implements IHardcoreRevival {
 	private int deathTime;
 	private int rescueTime;
-	private EntityPlayer rescueTarget;
+	private PlayerEntity rescueTarget;
 
 	@Override
 	public void setDeathTime(int deathTime) {
@@ -28,12 +28,12 @@ public class HardcoreRevivalImpl implements IHardcoreRevival {
 	}
 
 	@Override
-	public void setRescueTarget(EntityPlayer rescueTarget) {
+	public void setRescueTarget(PlayerEntity rescueTarget) {
 		this.rescueTarget = rescueTarget;
 	}
 
 	@Override
-	public EntityPlayer getRescueTarget() {
+	public PlayerEntity getRescueTarget() {
 		return rescueTarget;
 	}
 }

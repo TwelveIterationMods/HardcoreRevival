@@ -4,8 +4,8 @@ import io.netty.buffer.ByteBuf;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.init.Particles;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -28,6 +28,8 @@ public class MessageRevivalSuccess {
 
     public static void handle(MessageRevivalSuccess message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
+        NetworkHandler.ensureClientSide(context);
+
         context.enqueueWork(() -> {
             Minecraft mc = Minecraft.getInstance();
             if (message.entityId == mc.player.getEntityId()) {
@@ -39,9 +41,10 @@ public class MessageRevivalSuccess {
                 }
                 mc.displayGuiScreen(null);
             }
+
             Entity entity = mc.world.getEntityByID(message.entityId);
             if (entity != null) {
-                mc.world.spawnParticle(Particles.EXPLOSION, entity.posX, entity.posY, entity.posZ, 0, 0, 0);
+                mc.world.addParticle(ParticleTypes.EXPLOSION, entity.posX, entity.posY, entity.posZ, 0, 0, 0);
             }
         });
     }
