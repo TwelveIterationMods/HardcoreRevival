@@ -107,11 +107,11 @@ public class RescueHandler {
                     }
 
                     ServerPlayerEntity newPlayer = server.getPlayerList().recreatePlayerEntity((ServerPlayerEntity) target, target.dimension, false);
-                    ((ServerPlayerEntity) target).connection.field_147369_b = newPlayer;
+                    ((ServerPlayerEntity) target).connection.player = newPlayer;
                     newPlayer.setHealth(1f);
                     newPlayer.getFoodStats().setFoodLevel(5);
-                    newPlayer.addPotionEffect(new EffectInstance(Effects.field_76438_s, 20 * 30)); // Hunger
-                    newPlayer.addPotionEffect(new EffectInstance(Effects.field_76437_t, 20 * 60)); // Weakness
+                    newPlayer.addPotionEffect(new EffectInstance(Effects.HUNGER, 20 * 30)); // Hunger
+                    newPlayer.addPotionEffect(new EffectInstance(Effects.WEAKNESS, 20 * 60)); // Weakness
                     newPlayer.inventory.copyInventory(target.inventory);
                     newPlayer.experienceLevel = target.experienceLevel;
                     newPlayer.experienceTotal = target.experienceTotal;

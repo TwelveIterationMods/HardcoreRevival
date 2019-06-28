@@ -12,6 +12,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
+import net.minecraft.world.GameRules;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -53,7 +54,7 @@ public class DeathHandler {
             event.setCanceled(true);
 
             // If enabled, show a death message
-            if (player.world.getGameRules().getBoolean("showDeathMessages")) {
+            if (player.world.getGameRules().getBoolean(GameRules.SHOW_DEATH_MESSAGES)) {
                 MinecraftServer server = player.world.getServer();
                 if (server != null) {
                     Team team = player.getTeam();

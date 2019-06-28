@@ -57,7 +57,7 @@ public class HardcoreRevivalClient {
     @SubscribeEvent
     public void onRenderGameOverlay(RenderGameOverlayEvent.Chat event) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player != null && isKnockedOut && mc.field_71462_r != null) {
+        if (mc.player != null && isKnockedOut && mc.currentScreen != null) {
             prevChatHeight = mc.gameSettings.chatHeightFocused;
             mc.gameSettings.chatHeightFocused = 0.1f;
         }
@@ -72,7 +72,7 @@ public class HardcoreRevivalClient {
                 GlStateManager.translatef(0, 0, -300);
                 GuiHelper.drawGradientRectW(0, 0, mc.mainWindow.getWidth(), mc.mainWindow.getHeight(), 0x60500000, 0x90FF0000);
                 GlStateManager.popMatrix();
-                if (mc.field_71462_r == null) {
+                if (mc.currentScreen == null) {
 
                     String openDeathScreenKey = mc.gameSettings.keyBindChat.getLocalizedName();
                     mc.fontRenderer.drawStringWithShadow(I18n.format("gui.hardcorerevival.open_death_screen", openDeathScreenKey), 5, 5, 0xFFFFFFFF);
