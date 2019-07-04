@@ -4,7 +4,7 @@
   "gui.hardcorerevival.open_death_screen": "按 %s 打开死亡界面。",
   "gui.hardcorerevival.rescue_time_left": "还剩 %d 秒可被援救",
   "gui.hardcorerevival.rescuing": "援救 %s",
-  "death.attack.not_rescued_in_time": "%1$s 未及时获救",
+  "death.attack.not_rescued_in_time.player": "%1$s 未及时获救",
   "gui.hardcorerevival.send_ping": "发送标记",
   "config.hardcorerevival.maxDeathTicks": "最大死亡 Ticks 时间",
   "config.hardcorerevival.maxDeathTicks.tooltip": "一名玩家死亡时可被援救的 tick 时间。20 ticks 等于一秒。",
