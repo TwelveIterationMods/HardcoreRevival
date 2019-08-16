@@ -22,16 +22,6 @@ version = major_version + "." + minor_version + "." + BUILD_NUMBER
 group = "net.blay09.mods"
 archivesBaseName = mod_name + "_" + minecraft_version
 
-sourceSets {
-    api {
-        compileClasspath += sourceSets.main.compileClasspath
-    }
-    main {
-        compileClasspath += sourceSets.api.output
-        runtimeClasspath += sourceSets.api.output
-    }
-}
-
 minecraft {
     mappings channel: mappings_channel, version: mappings_version
 
@@ -46,7 +36,6 @@ minecraft {
             mods {
                 hardcorerevival {
                     source sourceSets.main
-                    source sourceSets.api
                 }
             }
         }
@@ -58,7 +47,6 @@ minecraft {
             mods {
                 hardcorerevival {
                     source sourceSets.main
-                    source sourceSets.api
                 }
             }
         }
@@ -82,9 +70,7 @@ dependencies {
 // Example for how to get properties into the manifest for reading by the runtime..
 jar {
     from sourceSets.main.output.classesDirs
-    from sourceSets.api.output.classesDirs
     from sourceSets.main.output.resourcesDir
-    from sourceSets.api.output.resourcesDir
 
     manifest {
         attributes(["Specification-Title"     : mod_id,
