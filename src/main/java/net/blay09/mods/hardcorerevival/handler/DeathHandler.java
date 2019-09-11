@@ -32,13 +32,13 @@ public class DeathHandler {
 
             // If the player fell into the void, there's no rescuing
             if (event.getSource() == DamageSource.OUT_OF_WORLD) {
-                player.getEntityData().putBoolean(IGNORE_REVIVAL_DEATH, true);
+                player.getPersistantData().putBoolean(IGNORE_REVIVAL_DEATH, true);
                 NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), new MessageDie());
                 return;
             }
 
             // If IGNORE_REVIVAL_DEATH is set, this should be treated as a normal death
-            if (event.getSource() == HardcoreRevival.notRescuedInTime || player.getEntityData().getBoolean(IGNORE_REVIVAL_DEATH)) {
+            if (event.getSource() == HardcoreRevival.notRescuedInTime || player.getPersistantData().getBoolean(IGNORE_REVIVAL_DEATH)) {
                 return;
             }
 
@@ -75,7 +75,7 @@ public class DeathHandler {
     @SubscribeEvent
     public void onDeathUpdate(TickEvent.PlayerTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
-            if (event.player.getHealth() <= 0f && !event.player.getEntityData().getBoolean(IGNORE_REVIVAL_DEATH)) {
+            if (event.player.getHealth() <= 0f && !event.player.getPersistantData().getBoolean(IGNORE_REVIVAL_DEATH)) {
                 // Prevent deathTime from removing the entity from the world
                 if (event.player.deathTime == 19) {
                     event.player.deathTime = 18;
@@ -85,7 +85,7 @@ public class DeathHandler {
                 revival.ifPresent(it -> {
                     it.setDeathTime(it.getDeathTime() + 1);
                     if (it.getDeathTime() >= HardcoreRevivalConfig.COMMON.maxDeathTicks.get()) {
-                        event.player.getEntityData().putBoolean(IGNORE_REVIVAL_DEATH, true);
+                        event.player.getPersistantData().putBoolean(IGNORE_REVIVAL_DEATH, true);
                         NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) event.player), new MessageDie());
                         event.player.getCombatTracker().trackDamage(HardcoreRevival.notRescuedInTime, 0, 0);
                         event.player.onDeath(HardcoreRevival.notRescuedInTime);
@@ -98,7 +98,7 @@ public class DeathHandler {
 
     @SubscribeEvent
     public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        event.getPlayer().getEntityData().remove(IGNORE_REVIVAL_DEATH);
+        event.getPlayer().getPersistantData().remove(IGNORE_REVIVAL_DEATH);
 
         if (HardcoreRevivalConfig.COMMON.glowOnDeath.get()) {
             event.getPlayer().setGlowing(false);
