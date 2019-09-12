@@ -29,7 +29,7 @@ public class PlayerHandler {
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         PlayerEntity player = event.getPlayer();
         if (player instanceof ServerPlayerEntity) {
-            CompoundNBT data = player.getPersistantData().getCompound(PlayerEntity.PERSISTED_NBT_TAG);
+            CompoundNBT data = player.getPersistentData().getCompound(PlayerEntity.PERSISTED_NBT_TAG);
             LazyOptional<IHardcoreRevival> revival = player.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null);
             revival.ifPresent(it -> CapabilityHardcoreRevival.REVIVAL_CAPABILITY.readNBT(it, null, data.getCompound("HardcoreRevival")));
             NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), new MessageDeathTime(revival.map(IHardcoreRevival::getDeathTime).orElse(0)));
@@ -68,13 +68,13 @@ public class PlayerHandler {
     @SubscribeEvent
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         PlayerEntity player = event.getPlayer();
-        CompoundNBT data = player.getPersistantData().getCompound(PlayerEntity.PERSISTED_NBT_TAG);
+        CompoundNBT data = player.getPersistentData().getCompound(PlayerEntity.PERSISTED_NBT_TAG);
         LazyOptional<IHardcoreRevival> revival = player.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null);
         revival.ifPresent(it -> {
             INBT tag = CapabilityHardcoreRevival.REVIVAL_CAPABILITY.writeNBT(it, null);
             if (tag != null) {
                 data.put("HardcoreRevival", tag);
-                player.getPersistantData().put(PlayerEntity.PERSISTED_NBT_TAG, data);
+                player.getPersistentData().put(PlayerEntity.PERSISTED_NBT_TAG, data);
             }
         });
     }
