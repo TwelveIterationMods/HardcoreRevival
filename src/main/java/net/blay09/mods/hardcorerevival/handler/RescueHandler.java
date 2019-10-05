@@ -106,7 +106,7 @@ public class RescueHandler {
                         target.setGlowing(false);
                     }
 
-                    ServerPlayerEntity newPlayer = server.getPlayerList().recreatePlayerEntity((ServerPlayerEntity) target, target.dimension, false);
+                    ServerPlayerEntity newPlayer = server.getPlayerList().recreatePlayerEntity((ServerPlayerEntity) target, target.dimension, true);
                     ((ServerPlayerEntity) target).connection.player = newPlayer;
                     newPlayer.setHealth(1f);
                     newPlayer.getFoodStats().setFoodLevel(5);
