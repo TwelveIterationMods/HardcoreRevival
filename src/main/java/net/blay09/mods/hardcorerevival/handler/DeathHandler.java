@@ -81,19 +81,23 @@ public class DeathHandler {
                     event.player.deathTime = 18;
                 }
                 // Update our death timer instead
-                LazyOptional<IHardcoreRevival> revival = event.player.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null);
+                LazyOptional<IHardcoreRevival> revival = event.player.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY);
                 revival.ifPresent(it -> {
                     it.setDeathTime(it.getDeathTime() + 1);
-                    if (it.getDeathTime() >= HardcoreRevivalConfig.COMMON.maxDeathTicks.get()) {
-                        event.player.getPersistentData().putBoolean(IGNORE_REVIVAL_DEATH, true);
-                        NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) event.player), new MessageDie());
-                        event.player.getCombatTracker().trackDamage(HardcoreRevival.notRescuedInTime, 0, 0);
-                        event.player.onDeath(HardcoreRevival.notRescuedInTime);
-                        it.setDeathTime(0);
+                    if (!HardcoreRevivalConfig.COMMON.disableDeathTimer.get() && it.getDeathTime() >= HardcoreRevivalConfig.COMMON.maxDeathTicks.get()) {
+                        finalDeath(event.player, it);
                     }
                 });
             }
         }
+    }
+
+    public static void finalDeath(PlayerEntity player, IHardcoreRevival it) {
+        player.getPersistentData().putBoolean(IGNORE_REVIVAL_DEATH, true);
+        NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), new MessageDie());
+        player.getCombatTracker().trackDamage(HardcoreRevival.notRescuedInTime, 0, 0);
+        player.onDeath(HardcoreRevival.notRescuedInTime);
+        it.setDeathTime(0);
     }
 
     @SubscribeEvent

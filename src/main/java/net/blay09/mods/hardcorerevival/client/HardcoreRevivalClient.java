@@ -76,7 +76,12 @@ public class HardcoreRevivalClient {
 
                     String openDeathScreenKey = mc.gameSettings.keyBindChat.getLocalizedName();
                     mc.fontRenderer.drawStringWithShadow(I18n.format("gui.hardcorerevival.open_death_screen", openDeathScreenKey), 5, 5, 0xFFFFFFFF);
-                    mc.fontRenderer.drawString(I18n.format("gui.hardcorerevival.rescue_time_left", Math.max(0, (HardcoreRevivalConfig.COMMON.maxDeathTicks.get() - deathTime) / 20)), 5, 7 + mc.fontRenderer.FONT_HEIGHT, 16777215);
+                    if (!HardcoreRevivalConfig.COMMON.disableDeathTimer.get()) {
+                        int deathSecondsLeft = Math.max(0, (HardcoreRevivalConfig.COMMON.maxDeathTicks.get() - deathTime) / 20);
+                        mc.fontRenderer.drawString(I18n.format("gui.hardcorerevival.rescue_time_left", deathSecondsLeft), 5, 7 + mc.fontRenderer.FONT_HEIGHT, 16777215);
+                    } else {
+                        mc.fontRenderer.drawString(I18n.format("gui.hardcorerevival.wait_for_rescue"), 5, 7 + mc.fontRenderer.FONT_HEIGHT, 16777215);
+                    }
                     mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
                 }
             } else {
@@ -193,7 +198,12 @@ public class HardcoreRevivalClient {
             gui.drawCenteredString(mc.fontRenderer, I18n.format("gui.hardcorerevival.knocked_out"), gui.width / 2 / 2, 30, 16777215);
             GlStateManager.popMatrix();
 
-            gui.drawCenteredString(mc.fontRenderer, I18n.format("gui.hardcorerevival.rescue_time_left", Math.max(0, (HardcoreRevivalConfig.COMMON.maxDeathTicks.get() - deathTime) / 20)), gui.width / 2, gui.height / 2 + 10, 16777215);
+            if (!HardcoreRevivalConfig.COMMON.disableDeathTimer.get()) {
+                int deathSecondsLeft = Math.max(0, (HardcoreRevivalConfig.COMMON.maxDeathTicks.get() - deathTime) / 20);
+                gui.drawCenteredString(mc.fontRenderer, I18n.format("gui.hardcorerevival.rescue_time_left", deathSecondsLeft), gui.width / 2, gui.height / 2 + 10, 16777215);
+            } else {
+                gui.drawCenteredString(mc.fontRenderer, I18n.format("gui.hardcorerevival.wait_for_rescue"), gui.width / 2, gui.height / 2 + 10, 16777215);
+            }
         } else if (buttonDie != null) {
             buttonDie.visible = false;
         }

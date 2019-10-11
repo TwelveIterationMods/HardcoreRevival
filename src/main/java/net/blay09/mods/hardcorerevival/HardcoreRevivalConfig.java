@@ -10,12 +10,18 @@ public class HardcoreRevivalConfig {
         public final ForgeConfigSpec.ConfigValue<Integer> rescueTime;
         public final ForgeConfigSpec.ConfigValue<Double> maxRescueDist;
         public final ForgeConfigSpec.BooleanValue glowOnDeath;
+        public final ForgeConfigSpec.BooleanValue disableDeathTimer;
 
         Common(ForgeConfigSpec.Builder builder) {
             maxDeathTicks = builder
                     .comment("The time in ticks in which a player can still be rescued from death.")
                     .translation("hardcorerevival.config.maxDeathTicks")
                     .define("maxDeathTicks", 20 * 60 * 2);
+
+            disableDeathTimer = builder
+                    .comment("Set to true to completely disable the death timer, meaning you will have infinite time to save others.")
+                    .translation("hardcorerevival.config.disableDeathTimer")
+                    .define("disableDeathTimer", false);
 
             maxRescueDist = builder
                     .comment("The distance at which a player can rescue another.")

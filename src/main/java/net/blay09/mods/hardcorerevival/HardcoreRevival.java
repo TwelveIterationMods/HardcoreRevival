@@ -55,6 +55,6 @@ public class HardcoreRevival {
             client = Optional.of(new HardcoreRevivalClient());
             DeferredWorkQueue.runLater(() -> client.ifPresent(MinecraftForge.EVENT_BUS::register));
         });
-
     }
+
 }

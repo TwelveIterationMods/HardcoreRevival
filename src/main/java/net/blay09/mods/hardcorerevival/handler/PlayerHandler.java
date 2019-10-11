@@ -34,7 +34,7 @@ public class PlayerHandler {
             revival.ifPresent(it -> CapabilityHardcoreRevival.REVIVAL_CAPABILITY.readNBT(it, null, data.getCompound("HardcoreRevival")));
             NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), new MessageDeathTime(revival.map(IHardcoreRevival::getDeathTime).orElse(0)));
             revival.ifPresent(it -> {
-                if (it.getDeathTime() >= HardcoreRevivalConfig.COMMON.maxDeathTicks.get()) {
+                if (!HardcoreRevivalConfig.COMMON.disableDeathTimer.get() && it.getDeathTime() >= HardcoreRevivalConfig.COMMON.maxDeathTicks.get()) {
                     NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), new MessageDie());
                 }
             });
