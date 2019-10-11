@@ -108,8 +108,8 @@ public class RescueHandler {
 
                     ServerPlayerEntity newPlayer = server.getPlayerList().recreatePlayerEntity((ServerPlayerEntity) target, target.dimension, true);
                     ((ServerPlayerEntity) target).connection.player = newPlayer;
-                    newPlayer.setHealth(1f);
-                    newPlayer.getFoodStats().setFoodLevel(5);
+                    newPlayer.setHealth(HardcoreRevivalConfig.COMMON.rescueRespawnHealth.get());
+                    newPlayer.getFoodStats().setFoodLevel(HardcoreRevivalConfig.COMMON.rescueRespawnFoodLevel.get());
                     newPlayer.addPotionEffect(new EffectInstance(Effects.HUNGER, 20 * 30)); // Hunger
                     newPlayer.addPotionEffect(new EffectInstance(Effects.WEAKNESS, 20 * 60)); // Weakness
                     newPlayer.inventory.copyInventory(target.inventory);

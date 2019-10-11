@@ -8,6 +8,8 @@ public class HardcoreRevivalConfig {
     public static class Common {
         public final ForgeConfigSpec.ConfigValue<Integer> maxDeathTicks;
         public final ForgeConfigSpec.ConfigValue<Integer> rescueTime;
+        public final ForgeConfigSpec.ConfigValue<Integer> rescueRespawnHealth;
+        public final ForgeConfigSpec.ConfigValue<Integer> rescueRespawnFoodLevel;
         public final ForgeConfigSpec.ConfigValue<Double> maxRescueDist;
         public final ForgeConfigSpec.BooleanValue glowOnDeath;
         public final ForgeConfigSpec.BooleanValue disableDeathTimer;
@@ -33,6 +35,16 @@ public class HardcoreRevivalConfig {
                     .translation("hardcorerevival.config.rescueTime")
                     .define("rescueTime", 40);
 
+            rescueRespawnHealth = builder
+                    .comment("The amount of health to respawn with when a player was rescued, out of 20.")
+                    .translation("hardcorerevival.config.rescueRespawnHealth")
+                    .define("rescueRespawnHealth", 1);
+
+            rescueRespawnFoodLevel = builder
+                    .comment("The food level to respawn with when a player was rescued, out of 20.")
+                    .translation("hardcorerevival.config.rescueRespawnFoodLevel")
+                    .define("rescueRespawnFoodLevel", 5);
+
             glowOnDeath = builder
                     .comment("If true, knocked out players will glow, making them visible through blocks.")
                     .translation("hardcorerevival.config.glowOnDeath")
@@ -42,6 +54,7 @@ public class HardcoreRevivalConfig {
 
     static final ForgeConfigSpec commonSpec;
     public static final Common COMMON;
+
     static {
         final Pair<Common, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Common::new);
         commonSpec = specPair.getRight();
