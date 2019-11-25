@@ -52,5 +52,6 @@ public class MessageRevival {
                 RescueHandler.abortRescue(player);
             }
         });
+        context.setPacketHandled(true);
     }
 }

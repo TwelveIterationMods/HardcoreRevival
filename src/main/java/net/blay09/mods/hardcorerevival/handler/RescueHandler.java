@@ -134,9 +134,11 @@ public class RescueHandler {
     public static void abortRescue(PlayerEntity player) {
         LazyOptional<IHardcoreRevival> revival = player.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null);
         revival.ifPresent(it -> {
-            it.setRescueTime(0);
-            it.setRescueTarget(null);
-            NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), new MessageRevivalProgress(-1, -1));
+            if (it.getRescueTarget() != null) {
+                it.setRescueTime(0);
+                it.setRescueTarget(null);
+                NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), new MessageRevivalProgress(-1, -1));
+            }
         });
     }
 

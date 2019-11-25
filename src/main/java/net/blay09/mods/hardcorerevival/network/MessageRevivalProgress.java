@@ -31,5 +31,6 @@ public class MessageRevivalProgress {
         NetworkHandler.ensureClientSide(context);
 
         context.enqueueWork(() -> HardcoreRevival.client.ifPresent(it -> it.setRevivalProgress(message.entityId, message.progress)));
+        context.setPacketHandled(true);
     }
 }

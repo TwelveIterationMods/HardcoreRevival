@@ -47,5 +47,6 @@ public class MessageRevivalSuccess {
                 mc.world.addParticle(ParticleTypes.EXPLOSION, entity.posX, entity.posY, entity.posZ, 0, 0, 0);
             }
         });
+        context.setPacketHandled(true);
     }
 }

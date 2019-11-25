@@ -27,5 +27,6 @@ public class MessageDeathTime {
         NetworkHandler.ensureClientSide(context);
 
         context.enqueueWork(() -> HardcoreRevival.client.ifPresent(it -> it.setDeathTime(message.deathTime)));
+        context.setPacketHandled(true);
     }
 }

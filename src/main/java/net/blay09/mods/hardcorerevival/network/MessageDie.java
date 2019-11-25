@@ -29,6 +29,7 @@ public class MessageDie {
                 HardcoreRevival.client.ifPresent(HardcoreRevivalClient::onFinalDeath);
             }
         });
+        context.setPacketHandled(true);
     }
 
 }
