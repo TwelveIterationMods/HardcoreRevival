@@ -100,8 +100,8 @@ public class RescueHandler {
 
                     EntityPlayerMP newPlayer = server.getPlayerList().recreatePlayerEntity((EntityPlayerMP) target, target.dimension, false);
                     ((EntityPlayerMP) target).connection.player = newPlayer;
-                    newPlayer.setHealth(1f);
-                    newPlayer.getFoodStats().setFoodLevel(5);
+                    newPlayer.setHealth(ModConfig.rescueRespawnHealth);
+                    newPlayer.getFoodStats().setFoodLevel(ModConfig.rescueRespawnFoodLevel);
                     newPlayer.addPotionEffect(new PotionEffect(MobEffects.HUNGER, 20 * 30));
                     newPlayer.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 20 * 60));
                     newPlayer.inventory.copyInventory(target.inventory);

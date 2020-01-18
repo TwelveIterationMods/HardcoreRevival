@@ -20,3 +20,7 @@ config.hardcorerevival.maxRescueDist=Max Rescue Distance
 config.hardcorerevival.maxRescueDist.tooltip=The distance at which a player can rescue another.
 config.hardcorerevival.rescueTime=Rescue Time
 config.hardcorerevival.rescueTime.tooltip=The time in ticks it takes to rescue a player. 20 ticks are one second.
+config.hardcorerevival.rescueRespawnHealth=Rescue Respawn Health
+config.hardcorerevival.rescueRespawnHealth.tooltip=The amount of health to respawn with when a player was rescued, out of 20.
+config.hardcorerevival.rescueRespawnFoodLevel=Rescue Respawn Food Level
+config.hardcorerevival.rescueRespawnFoodLevel.tooltip=The food level to respawn with when a player was rescued, out of 20.

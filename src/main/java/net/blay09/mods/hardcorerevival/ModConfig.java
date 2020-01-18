@@ -11,6 +11,16 @@ public class ModConfig {
 	@Config.LangKey("config.hardcorerevival.maxDeathTicks")
 	public static int maxDeathTicks = 20 * 60 * 2;
 
+	@Config.Name("Rescue Respawn Health")
+	@Config.Comment("The amount of health to respawn with when a player was rescued, out of 20.")
+	@Config.LangKey("config.hardcorerevival.rescueRespawnHealth")
+	public static int rescueRespawnHealth = 1;
+
+	@Config.Name("Rescue Respawn Food Level")
+	@Config.Comment("The food level to respawn with when a player was rescued, out of 20.")
+	@Config.LangKey("config.hardcorerevival.rescueRespawnFoodLevel")
+	public static int rescueRespawnFoodLevel = 5;
+
 	@Config.Name("Team Up Compatibility")
 	@Config.Comment("This makes Team Up's chat features work on the death screen as well.")
 	@Config.LangKey("config.hardcorerevival.teamUpIntegration")
