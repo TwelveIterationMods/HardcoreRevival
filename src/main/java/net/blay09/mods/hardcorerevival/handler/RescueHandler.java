@@ -35,7 +35,7 @@ public class RescueHandler {
     @SubscribeEvent
     public void onAttack(AttackEntityEvent event) {
         // Stop rescuing if the player does something other than rescuing
-        abortRescue(event.getEntityPlayer());
+        abortRescue(event.getPlayer());
     }
 
     public static void startRescue(PlayerEntity player, PlayerEntity target) {
@@ -83,7 +83,7 @@ public class RescueHandler {
         LazyOptional<IHardcoreRevival> revival = original.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null);
         revival.ifPresent(it -> {
             if (it.getDeathTime() > 0) {
-                event.getEntityPlayer().setLocationAndAngles(original.posX, original.posY, original.posZ, 0f, 0f);
+                event.getPlayer().setLocationAndAngles(original.func_226277_ct_(), original.func_226278_cu_(), original.func_226281_cx_(), 0f, 0f);
             }
         });
     }
@@ -100,7 +100,7 @@ public class RescueHandler {
                     boolean prevSpawnForced = target.isSpawnForced(target.dimension);
                     DimensionType prevSpawnDimension = target.getSpawnDimension();
 
-                    target.setSpawnPoint(target.getPosition(), true, target.dimension);
+                    target.setSpawnPoint(target.getPosition(), true, false, target.dimension);
 
                     if (HardcoreRevivalConfig.COMMON.glowOnDeath.get()) {
                         target.setGlowing(false);
@@ -123,7 +123,7 @@ public class RescueHandler {
                     newPlayer.setScore(target.getScore());
 
                     // Restore the old spawnpoint
-                    newPlayer.setSpawnPoint(prevSpawnPos, prevSpawnForced, prevSpawnDimension);
+                    newPlayer.setSpawnPoint(prevSpawnPos, prevSpawnForced, false, prevSpawnDimension);
 
                     NetworkHandler.channel.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> target), new MessageRevivalSuccess(newPlayer.getEntityId()));
                 }

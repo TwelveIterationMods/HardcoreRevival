@@ -32,6 +32,10 @@ public class MessageRevivalSuccess {
 
         context.enqueueWork(() -> {
             Minecraft mc = Minecraft.getInstance();
+            if (mc.player == null || mc.world == null) {
+                return;
+            }
+
             if (message.entityId == mc.player.getEntityId()) {
                 mc.player.extinguish();
                 mc.player.setFlag(0, false); // burning flag
@@ -44,7 +48,7 @@ public class MessageRevivalSuccess {
 
             Entity entity = mc.world.getEntityByID(message.entityId);
             if (entity != null) {
-                mc.world.addParticle(ParticleTypes.EXPLOSION, entity.posX, entity.posY, entity.posZ, 0, 0, 0);
+                mc.world.addParticle(ParticleTypes.EXPLOSION, entity.func_226277_ct_(), entity.func_226278_cu_(), entity.func_226281_cx_(), 0, 0, 0);
             }
         });
         context.setPacketHandled(true);

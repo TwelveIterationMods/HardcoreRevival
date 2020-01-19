@@ -1,6 +1,7 @@
 package net.blay09.mods.hardcorerevival.client;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.network.MessageDie;
 import net.blay09.mods.hardcorerevival.network.MessageRevival;
@@ -68,10 +69,10 @@ public class HardcoreRevivalClient {
         if (event.getType() == RenderGameOverlayEvent.ElementType.PORTAL) {
             Minecraft mc = Minecraft.getInstance();
             if (isKnockedOut) {
-                GlStateManager.pushMatrix();
-                GlStateManager.translatef(0, 0, -300);
-                GuiHelper.drawGradientRectW(0, 0, mc.mainWindow.getWidth(), mc.mainWindow.getHeight(), 0x60500000, 0x90FF0000);
-                GlStateManager.popMatrix();
+                RenderSystem.pushMatrix();
+                RenderSystem.translatef(0, 0, -300);
+                GuiHelper.drawGradientRectW(0, 0, mc.func_228018_at_().getWidth(), mc.func_228018_at_().getHeight(), 0x60500000, 0x90FF0000);
+                RenderSystem.popMatrix();
                 if (mc.currentScreen == null) {
 
                     String openDeathScreenKey = mc.gameSettings.keyBindChat.getLocalizedName();
@@ -96,7 +97,7 @@ public class HardcoreRevivalClient {
                         } else if (targetProgress >= 0.25f) {
                             s += " .";
                         }
-                        mc.fontRenderer.drawString(s, mc.mainWindow.getScaledWidth() / 2f - mc.fontRenderer.getStringWidth(s) / 2f, mc.mainWindow.getScaledHeight() / 2f + 30, 0xFFFFFFFF);
+                        mc.fontRenderer.drawString(s, mc.func_228018_at_().getScaledWidth() / 2f - mc.fontRenderer.getStringWidth(s) / 2f, mc.func_228018_at_().getScaledHeight() / 2f + 30, 0xFFFFFFFF);
                         mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
                     }
                 }
@@ -193,10 +194,10 @@ public class HardcoreRevivalClient {
                 }
             }
 
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(2f, 2f, 2f);
+            RenderSystem.pushMatrix();
+            RenderSystem.scalef(2f, 2f, 2f);
             gui.drawCenteredString(mc.fontRenderer, I18n.format("gui.hardcorerevival.knocked_out"), gui.width / 2 / 2, 30, 16777215);
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
 
             if (!HardcoreRevivalConfig.COMMON.disableDeathTimer.get()) {
                 int deathSecondsLeft = Math.max(0, (HardcoreRevivalConfig.COMMON.maxDeathTicks.get() - deathTime) / 20);

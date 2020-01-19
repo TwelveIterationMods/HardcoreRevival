@@ -12,7 +12,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class RestrictionHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onBreakProgress(PlayerEvent.BreakSpeed event) {
-        PlayerEntity player = event.getEntityPlayer();
+        PlayerEntity player = event.getPlayer();
         if (player != null && player.getHealth() <= 0f) {
             event.setNewSpeed(0f);
         }
@@ -20,7 +20,7 @@ public class RestrictionHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event) {
-        PlayerEntity player = event.getEntityPlayer();
+        PlayerEntity player = event.getPlayer();
         if (player != null && player.getHealth() <= 0f) {
             if (!(event instanceof PlayerInteractEvent.RightClickEmpty || event instanceof PlayerInteractEvent.LeftClickEmpty)) {
                 event.setCanceled(true);
@@ -52,7 +52,7 @@ public class RestrictionHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onAttack(AttackEntityEvent event) {
-        PlayerEntity player = event.getEntityPlayer();
+        PlayerEntity player = event.getPlayer();
         if (player != null && player.getHealth() <= 0f) {
 //			if(HardcoreRevivalConfig.allowUnarmedMelee && player.getHeldItemMainhand().isEmpty()) {
 //				return;
