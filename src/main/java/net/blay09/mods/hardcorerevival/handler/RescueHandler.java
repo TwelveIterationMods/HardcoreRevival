@@ -11,7 +11,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
@@ -82,7 +81,7 @@ public class RescueHandler {
         LazyOptional<IHardcoreRevival> revival = original.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null);
         revival.ifPresent(it -> {
             if (it.getDeathTime() > 0) {
-                event.getPlayer().setLocationAndAngles(original.func_226277_ct_(), original.func_226278_cu_(), original.func_226281_cx_(), 0f, 0f);
+                event.getPlayer().setLocationAndAngles(original.getPosX(), original.getPosY(), original.getPosZ(), 0f, 0f);
             }
         });
     }

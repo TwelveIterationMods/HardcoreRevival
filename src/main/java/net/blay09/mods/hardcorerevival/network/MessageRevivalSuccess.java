@@ -50,7 +50,7 @@ public class MessageRevivalSuccess {
             Entity entity = mc.world.getEntityByID(message.entityId);
             if (entity instanceof LivingEntity) {
                 ((LivingEntity) entity).deathTime = -1;
-                mc.world.addParticle(ParticleTypes.EXPLOSION, entity.func_226277_ct_(), entity.func_226278_cu_(), entity.func_226281_cx_(), 0, 0, 0);
+                mc.world.addParticle(ParticleTypes.EXPLOSION, entity.getPosX(), entity.getPosY(), entity.getPosZ(), 0, 0, 0);
             }
         });
         context.setPacketHandled(true);

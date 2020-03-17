@@ -70,7 +70,7 @@ public class HardcoreRevivalClient {
             if (isKnockedOut) {
                 RenderSystem.pushMatrix();
                 RenderSystem.translatef(0, 0, -300);
-                GuiHelper.drawGradientRectW(0, 0, mc.func_228018_at_().getWidth(), mc.func_228018_at_().getHeight(), 0x60500000, 0x90FF0000);
+                GuiHelper.drawGradientRectW(0, 0, mc.getMainWindow().getWidth(), mc.getMainWindow().getHeight(), 0x60500000, 0x90FF0000);
                 RenderSystem.popMatrix();
                 if (mc.currentScreen == null) {
 
@@ -96,7 +96,7 @@ public class HardcoreRevivalClient {
                         } else if (targetProgress >= 0.25f) {
                             s += " .";
                         }
-                        mc.fontRenderer.drawString(s, mc.func_228018_at_().getScaledWidth() / 2f - mc.fontRenderer.getStringWidth(s) / 2f, mc.func_228018_at_().getScaledHeight() / 2f + 30, 0xFFFFFFFF);
+                        mc.fontRenderer.drawString(s, mc.getMainWindow().getScaledWidth() / 2f - mc.fontRenderer.getStringWidth(s) / 2f, mc.getMainWindow().getScaledHeight() / 2f + 30, 0xFFFFFFFF);
                         mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
                     }
                 }
