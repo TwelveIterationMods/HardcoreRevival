@@ -3,7 +3,6 @@ package net.blay09.mods.hardcorerevival.handler;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.capability.CapabilityHardcoreRevival;
 import net.blay09.mods.hardcorerevival.capability.IHardcoreRevival;
-import net.blay09.mods.hardcorerevival.network.MessageRevival;
 import net.blay09.mods.hardcorerevival.network.MessageRevivalProgress;
 import net.blay09.mods.hardcorerevival.network.MessageRevivalSuccess;
 import net.blay09.mods.hardcorerevival.network.NetworkHandler;
@@ -12,6 +11,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
@@ -58,16 +58,16 @@ public class RescueHandler {
                     } else {
                         // Stop rescuing if the player is out of range
                         float dist = event.player.getDistance(it.getRescueTarget());
-                        if (dist > HardcoreRevivalConfig.COMMON.maxRescueDist.get()) {
+                        if (dist > HardcoreRevivalConfig.SERVER.maxRescueDist.get()) {
                             abortRescue(event.player);
                         } else {
                             int rescueTime = it.getRescueTime() + 1;
                             it.setRescueTime(rescueTime);
-                            int step = HardcoreRevivalConfig.COMMON.rescueTime.get() / 4;
-                            if (rescueTime >= HardcoreRevivalConfig.COMMON.rescueTime.get()) {
+                            int step = HardcoreRevivalConfig.SERVER.rescueTime.get() / 4;
+                            if (rescueTime >= HardcoreRevivalConfig.SERVER.rescueTime.get()) {
                                 finishRescue(event.player);
                             } else if (rescueTime % step == 0) {
-                                NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) event.player), new MessageRevivalProgress(it.getRescueTarget().getEntityId(), (float) rescueTime / (float) HardcoreRevivalConfig.COMMON.rescueTime.get()));
+                                NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) event.player), new MessageRevivalProgress(it.getRescueTarget().getEntityId(), (float) rescueTime / (float) HardcoreRevivalConfig.SERVER.rescueTime.get()));
                             }
                         }
                     }
@@ -94,12 +94,12 @@ public class RescueHandler {
             if (target != null) {
                 MinecraftServer server = target.getServer();
                 if (server != null) {
-                    if (HardcoreRevivalConfig.COMMON.glowOnDeath.get()) {
+                    if (HardcoreRevivalConfig.SERVER.glowOnDeath.get()) {
                         target.setGlowing(false);
                     }
 
-                    target.setHealth(HardcoreRevivalConfig.COMMON.rescueRespawnHealth.get());
-                    target.getFoodStats().setFoodLevel(HardcoreRevivalConfig.COMMON.rescueRespawnFoodLevel.get());
+                    target.setHealth(HardcoreRevivalConfig.SERVER.rescueRespawnHealth.get());
+                    target.getFoodStats().setFoodLevel(HardcoreRevivalConfig.SERVER.rescueRespawnFoodLevel.get());
                     target.addPotionEffect(new EffectInstance(Effects.HUNGER, 20 * 30)); // Hunger
                     target.addPotionEffect(new EffectInstance(Effects.WEAKNESS, 20 * 60)); // Weakness
                     target.extinguish();

@@ -46,7 +46,7 @@ public class DeathHandler {
             MinecraftForge.EVENT_BUS.post(new PlayerKnockedOutEvent(player, event.getSource()));
 
             // Dead players glow
-            if (HardcoreRevivalConfig.COMMON.glowOnDeath.get()) {
+            if (HardcoreRevivalConfig.SERVER.glowOnDeath.get()) {
                 player.setGlowing(true);
             }
 
@@ -84,7 +84,7 @@ public class DeathHandler {
                 LazyOptional<IHardcoreRevival> revival = event.player.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY);
                 revival.ifPresent(it -> {
                     it.setDeathTime(it.getDeathTime() + 1);
-                    if (!HardcoreRevivalConfig.COMMON.disableDeathTimer.get() && it.getDeathTime() >= HardcoreRevivalConfig.COMMON.maxDeathTicks.get()) {
+                    if (!HardcoreRevivalConfig.SERVER.disableDeathTimer.get() && it.getDeathTime() >= HardcoreRevivalConfig.SERVER.maxDeathTicks.get()) {
                         finalDeath(event.player, it);
                     }
                 });
@@ -104,7 +104,7 @@ public class DeathHandler {
     public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
         event.getPlayer().getPersistentData().remove(IGNORE_REVIVAL_DEATH);
 
-        if (HardcoreRevivalConfig.COMMON.glowOnDeath.get()) {
+        if (HardcoreRevivalConfig.SERVER.glowOnDeath.get()) {
             event.getPlayer().setGlowing(false);
         }
 

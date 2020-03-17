@@ -40,7 +40,7 @@ public class HardcoreRevival {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient);
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, HardcoreRevivalConfig.commonSpec);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, HardcoreRevivalConfig.serverSpec);
     }
 
     private void setup(FMLCommonSetupEvent event) {

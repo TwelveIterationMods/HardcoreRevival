@@ -34,7 +34,7 @@ public class MessageRevival {
             }
 
             if (message.active) {
-                final double range = HardcoreRevivalConfig.COMMON.maxRescueDist.get();
+                final double range = HardcoreRevivalConfig.SERVER.maxRescueDist.get();
                 List<PlayerEntity> candidates = player.world.getEntitiesWithinAABB(PlayerEntity.class, player.getBoundingBox().grow(range), p -> p != null && p.getHealth() <= 0f);
                 float minDist = Float.MAX_VALUE;
                 PlayerEntity target = null;

@@ -40,7 +40,7 @@ public class MessageRevivalSuccess {
             if (message.entityId == mc.player.getEntityId()) {
                 mc.player.extinguish();
                 mc.player.setFlag(0, false); // burning flag
-                if (HardcoreRevivalConfig.COMMON.glowOnDeath.get()) {
+                if (HardcoreRevivalConfig.SERVER.glowOnDeath.get()) {
                     mc.player.setGlowing(false);
                     mc.player.setFlag(6, false); // glowing flag
                 }

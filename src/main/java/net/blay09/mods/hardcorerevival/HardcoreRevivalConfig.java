@@ -5,7 +5,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class HardcoreRevivalConfig {
 
-    public static class Common {
+    public static class Server {
         public final ForgeConfigSpec.ConfigValue<Integer> maxDeathTicks;
         public final ForgeConfigSpec.ConfigValue<Integer> rescueTime;
         public final ForgeConfigSpec.ConfigValue<Integer> rescueRespawnHealth;
@@ -14,7 +14,7 @@ public class HardcoreRevivalConfig {
         public final ForgeConfigSpec.BooleanValue glowOnDeath;
         public final ForgeConfigSpec.BooleanValue disableDeathTimer;
 
-        Common(ForgeConfigSpec.Builder builder) {
+        Server(ForgeConfigSpec.Builder builder) {
             maxDeathTicks = builder
                     .comment("The time in ticks in which a player can still be rescued from death.")
                     .translation("hardcorerevival.config.maxDeathTicks")
@@ -52,13 +52,13 @@ public class HardcoreRevivalConfig {
         }
     }
 
-    static final ForgeConfigSpec commonSpec;
-    public static final Common COMMON;
+    static final ForgeConfigSpec serverSpec;
+    public static final Server SERVER;
 
     static {
-        final Pair<Common, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Common::new);
-        commonSpec = specPair.getRight();
-        COMMON = specPair.getLeft();
+        final Pair<Server, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Server::new);
+        serverSpec = specPair.getRight();
+        SERVER = specPair.getLeft();
     }
 
 }
