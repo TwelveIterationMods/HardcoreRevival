@@ -1,6 +1,5 @@
 package net.blay09.mods.hardcorerevival.client;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.network.MessageDie;
@@ -215,8 +214,13 @@ public class HardcoreRevivalClient {
     }
 
     public void setRevivalProgress(int entityId, float progress) {
-        targetEntity = entityId;
-        targetProgress = progress;
+        if (progress < 0) {
+            targetEntity = -1;
+            targetProgress = 0f;
+        } else {
+            targetEntity = entityId;
+            targetProgress = progress;
+        }
     }
 
     public void onFinalDeath() {

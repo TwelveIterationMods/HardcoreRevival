@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -47,7 +48,8 @@ public class MessageRevivalSuccess {
             }
 
             Entity entity = mc.world.getEntityByID(message.entityId);
-            if (entity != null) {
+            if (entity instanceof LivingEntity) {
+                ((LivingEntity) entity).deathTime = -1;
                 mc.world.addParticle(ParticleTypes.EXPLOSION, entity.func_226277_ct_(), entity.func_226278_cu_(), entity.func_226281_cx_(), 0, 0, 0);
             }
         });

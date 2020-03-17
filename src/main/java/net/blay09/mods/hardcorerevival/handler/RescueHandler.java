@@ -3,6 +3,7 @@ package net.blay09.mods.hardcorerevival.handler;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.capability.CapabilityHardcoreRevival;
 import net.blay09.mods.hardcorerevival.capability.IHardcoreRevival;
+import net.blay09.mods.hardcorerevival.network.MessageRevival;
 import net.blay09.mods.hardcorerevival.network.MessageRevivalProgress;
 import net.blay09.mods.hardcorerevival.network.MessageRevivalSuccess;
 import net.blay09.mods.hardcorerevival.network.NetworkHandler;
@@ -11,8 +12,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
@@ -95,37 +94,21 @@ public class RescueHandler {
             if (target != null) {
                 MinecraftServer server = target.getServer();
                 if (server != null) {
-                    // Remember the old spawn point and then disable it so we can manually position the player
-                    BlockPos prevSpawnPos = target.getBedLocation(target.dimension);
-                    boolean prevSpawnForced = target.isSpawnForced(target.dimension);
-                    DimensionType prevSpawnDimension = target.getSpawnDimension();
-
-                    target.setSpawnPoint(target.getPosition(), true, false, target.dimension);
-
                     if (HardcoreRevivalConfig.COMMON.glowOnDeath.get()) {
                         target.setGlowing(false);
                     }
 
-                    ServerPlayerEntity newPlayer = server.getPlayerList().recreatePlayerEntity((ServerPlayerEntity) target, target.dimension, true);
-                    ((ServerPlayerEntity) target).connection.player = newPlayer;
-                    newPlayer.setHealth(HardcoreRevivalConfig.COMMON.rescueRespawnHealth.get());
-                    newPlayer.getFoodStats().setFoodLevel(HardcoreRevivalConfig.COMMON.rescueRespawnFoodLevel.get());
-                    newPlayer.addPotionEffect(new EffectInstance(Effects.HUNGER, 20 * 30)); // Hunger
-                    newPlayer.addPotionEffect(new EffectInstance(Effects.WEAKNESS, 20 * 60)); // Weakness
-                    newPlayer.inventory.copyInventory(target.inventory);
-                    newPlayer.experienceLevel = target.experienceLevel;
-                    newPlayer.experienceTotal = target.experienceTotal;
-                    newPlayer.experience = target.experience;
+                    target.setHealth(HardcoreRevivalConfig.COMMON.rescueRespawnHealth.get());
+                    target.getFoodStats().setFoodLevel(HardcoreRevivalConfig.COMMON.rescueRespawnFoodLevel.get());
+                    target.addPotionEffect(new EffectInstance(Effects.HUNGER, 20 * 30)); // Hunger
+                    target.addPotionEffect(new EffectInstance(Effects.WEAKNESS, 20 * 60)); // Weakness
+                    target.extinguish();
+                    target.deathTime = -1;
 
-                    newPlayer.extinguish();
-                    newPlayer.setFlag(0, false); // burning flag
+                    NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), new MessageRevivalProgress(it.getRescueTarget().getEntityId(), -1f));
+                    NetworkHandler.channel.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> target), new MessageRevivalSuccess(target.getEntityId()));
 
-                    newPlayer.setScore(target.getScore());
-
-                    // Restore the old spawnpoint
-                    newPlayer.setSpawnPoint(prevSpawnPos, prevSpawnForced, false, prevSpawnDimension);
-
-                    NetworkHandler.channel.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> target), new MessageRevivalSuccess(newPlayer.getEntityId()));
+                    it.setRescueTarget(null);
                 }
             }
         });
