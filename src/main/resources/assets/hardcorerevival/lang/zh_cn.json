@@ -5,7 +5,7 @@
   "gui.hardcorerevival.rescue_time_left": "还剩 %d 秒可被救起",
   "gui.hardcorerevival.wait_for_rescue": "等待救援或接受命运.",
   "gui.hardcorerevival.rescuing": "救援 %s",
-  "death.attack.not_rescued_in_time": "%1$s 未及时获救",
+  "death.attack.not_rescued_in_time.player": "%1$s 未及时获救",
   "gui.hardcorerevival.send_ping": "发送标记",
   "config.hardcorerevival.maxDeathTicks": "死亡计时",
   "config.hardcorerevival.maxDeathTicks.tooltip": "一名玩家死亡时可被救起的 tick 时间。20 ticks 等于一秒。",
