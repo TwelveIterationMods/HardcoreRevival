@@ -29,7 +29,7 @@ public class MessageRevival {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
             PlayerEntity player = context.getSender();
-            if (player == null || player.getHealth() <= 0) {
+            if (player == null || player.getHealth() <= 0 || player.isSpectator()) {
                 return;
             }
 

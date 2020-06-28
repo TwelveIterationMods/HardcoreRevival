@@ -141,8 +141,8 @@ public class HardcoreRevivalClient {
                     acceptedDeath = false;
                     deathTime = 0;
 
-                    // If right mouse is held down, send revival packet
-                    if (mc.mouseHelper.isRightDown()) {
+                    // If right mouse is held down, and player is not in spectator mode, send revival packet
+                    if (mc.mouseHelper.isRightDown() && !mc.player.isSpectator()) {
                         if (!isRescuing) {
                             NetworkHandler.channel.sendToServer(new MessageRevival(true));
                             isRescuing = true;
