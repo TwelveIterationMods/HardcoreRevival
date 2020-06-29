@@ -41,7 +41,7 @@ public class RescueHandler {
         revival.ifPresent(it -> {
             it.setRescueTarget(target);
             it.setRescueTime(0);
-            NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), new MessageRevivalProgress(target.getEntityId(), 0f));
+            NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), new MessageRevivalProgress(target.getEntityId(), 0.1f));
         });
     }
 
@@ -53,7 +53,7 @@ public class RescueHandler {
                 if (it.getRescueTarget() != null) {
                     // Stop rescuing if the target logged out
                     final int deathTime = it.getRescueTarget().getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null).map(IHardcoreRevival::getDeathTime).orElse(0);
-                    if (it.getRescueTarget().removed || deathTime < HardcoreRevivalConfig.SERVER.maxDeathTicks.get()) { // we can't use isAlive like deprecation notes suggest because it also checks health
+                    if (it.getRescueTarget().removed || deathTime >= HardcoreRevivalConfig.SERVER.maxDeathTicks.get()) { // we can't use isAlive like deprecation notes suggest because it also checks health
                         abortRescue(event.player);
                     } else {
                         // Stop rescuing if the player is out of range
