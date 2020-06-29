@@ -211,6 +211,10 @@ public class HardcoreRevivalClient {
 
     public void setDeathTime(int deathTime) {
         this.deathTime = deathTime;
+        if (deathTime > 0) {
+            isKnockedOut = true;
+            Minecraft.getInstance().displayGuiScreen(new ChatScreen(""));
+        }
     }
 
     public void setRevivalProgress(int entityId, float progress) {
