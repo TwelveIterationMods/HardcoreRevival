@@ -5,6 +5,7 @@
   "gui.hardcorerevival.rescue_time_left": "%d seconds left to be rescued",
   "gui.hardcorerevival.wait_for_rescue": "Wait to be rescued or accept your fate.",
   "gui.hardcorerevival.rescuing": "Rescuing %s",
+  "death.attack.not_rescued_in_time": "%1$s was not rescued in time",
   "death.attack.not_rescued_in_time.player": "%1$s was not rescued in time",
   "gui.hardcorerevival.send_ping": "Send Ping",
   "config.hardcorerevival.maxDeathTicks": "Death Timer",
