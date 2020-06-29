@@ -90,6 +90,7 @@ public class DeathHandler {
                 if (event.player.deathTime == 19) {
                     event.player.deathTime = 18;
                 }
+
                 // Update our death timer instead
                 LazyOptional<IHardcoreRevival> revival = event.player.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY);
                 revival.ifPresent(it -> {

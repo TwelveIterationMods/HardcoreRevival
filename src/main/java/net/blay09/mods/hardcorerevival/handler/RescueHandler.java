@@ -103,6 +103,9 @@ public class RescueHandler {
                     target.addPotionEffect(new EffectInstance(Effects.WEAKNESS, 20 * 60)); // Weakness
                     target.extinguish();
                     target.deathTime = -1;
+                    target.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null).ifPresent(ot -> {
+                        ot.setDeathTime(0);
+                    });
 
                     NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), new MessageRevivalProgress(it.getRescueTarget().getEntityId(), -1f));
                     NetworkHandler.channel.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> target), new MessageRevivalSuccess(target.getEntityId()));
