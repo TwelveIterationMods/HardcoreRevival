@@ -36,6 +36,8 @@ public class PlayerHandler {
             revival.ifPresent(it -> {
                 if (!HardcoreRevivalConfig.SERVER.disableDeathTimer.get() && it.getDeathTime() >= HardcoreRevivalConfig.SERVER.maxDeathTicks.get()) {
                     NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), new MessageDie());
+                } else if (player.getPersistentData().getBoolean(DeathHandler.IGNORE_REVIVAL_DEATH)) {
+                    NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), new MessageDie());
                 }
             });
         }
