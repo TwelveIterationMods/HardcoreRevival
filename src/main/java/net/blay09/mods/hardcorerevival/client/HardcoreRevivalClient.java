@@ -85,7 +85,7 @@ public class HardcoreRevivalClient {
                     mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
                 }
             } else {
-                if (targetEntity != -1) {
+                if (targetEntity != -1 && targetProgress > 0) {
                     Entity entity = mc.world.getEntityByID(targetEntity);
                     if (entity instanceof PlayerEntity) {
                         String s = I18n.format("gui.hardcorerevival.rescuing", entity.getDisplayName().getFormattedText());
@@ -240,5 +240,6 @@ public class HardcoreRevivalClient {
             }
             mc.player.remove(true);
         }
+        mc.displayGuiScreen(null);
     }
 }

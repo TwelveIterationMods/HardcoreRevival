@@ -47,6 +47,7 @@ public class MessageRevival {
                 }
                 if (target != null) {
                     RescueHandler.startRescue(player, target);
+
                 }
             } else {
                 RescueHandler.abortRescue(player);

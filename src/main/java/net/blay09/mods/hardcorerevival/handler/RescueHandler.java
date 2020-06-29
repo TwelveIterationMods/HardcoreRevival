@@ -52,7 +52,8 @@ public class RescueHandler {
             revival.ifPresent(it -> {
                 if (it.getRescueTarget() != null) {
                     // Stop rescuing if the target logged out
-                    if (it.getRescueTarget().removed) { // we can't use isAlive like deprecation notes suggest because it also checks health
+                    final int deathTime = it.getRescueTarget().getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY, null).map(IHardcoreRevival::getDeathTime).orElse(0);
+                    if (it.getRescueTarget().removed || deathTime < HardcoreRevivalConfig.SERVER.maxDeathTicks.get()) { // we can't use isAlive like deprecation notes suggest because it also checks health
                         abortRescue(event.player);
                     } else {
                         // Stop rescuing if the player is out of range
