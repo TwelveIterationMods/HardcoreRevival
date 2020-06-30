@@ -1,6 +1,6 @@
 {
   "gui.hardcorerevival.knocked_out": "你倒地了.",
-  "gui.hardcorerevival.die": "接受你的命运",
+  "gui.hardcorerevival.die": "%1$s 接受你的命运 %1$s",
   "gui.hardcorerevival.open_death_screen": "按 %s 打开死亡界面。",
   "gui.hardcorerevival.rescue_time_left": "还剩 %d 秒可被救起",
   "gui.hardcorerevival.wait_for_rescue": "等待救援或接受命运.",

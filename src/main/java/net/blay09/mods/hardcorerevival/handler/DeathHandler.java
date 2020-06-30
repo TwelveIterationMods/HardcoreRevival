@@ -13,6 +13,8 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Util;
+import net.minecraft.util.text.ChatType;
 import net.minecraft.world.GameRules;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
@@ -69,7 +71,7 @@ public class DeathHandler {
                             server.getPlayerList().sendMessageToTeamOrAllPlayers(player, player.getCombatTracker().getDeathMessage());
                         }
                     } else {
-                        server.getPlayerList().sendMessage(player.getCombatTracker().getDeathMessage());
+                        server.getPlayerList().func_232641_a_(player.getCombatTracker().getDeathMessage(), ChatType.SYSTEM, Util.field_240973_b_); // sendMessage, EMPTY_UUID
                     }
                 }
             }

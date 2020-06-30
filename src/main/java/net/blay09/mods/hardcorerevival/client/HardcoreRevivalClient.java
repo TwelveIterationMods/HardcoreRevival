@@ -15,6 +15,10 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -65,39 +69,40 @@ public class HardcoreRevivalClient {
 
     @SubscribeEvent
     public void onRenderGameOverlay(RenderGameOverlayEvent.Post event) {
+        final ResourceLocation GUI_ICONS_LOCATION = AbstractGui.field_230665_h_;
+
         if (event.getType() == RenderGameOverlayEvent.ElementType.PORTAL) {
             Minecraft mc = Minecraft.getInstance();
             if (isKnockedOut) {
                 RenderSystem.pushMatrix();
                 RenderSystem.translatef(0, 0, -300);
-                GuiHelper.drawGradientRectW(0, 0, mc.getMainWindow().getWidth(), mc.getMainWindow().getHeight(), 0x60500000, 0x90FF0000);
+                GuiHelper.drawGradientRectW(event.getMatrixStack(), 0, 0, mc.getMainWindow().getWidth(), mc.getMainWindow().getHeight(), 0x60500000, 0x90FF0000);
                 RenderSystem.popMatrix();
                 if (mc.currentScreen == null) {
-
-                    String openDeathScreenKey = mc.gameSettings.keyBindChat.getLocalizedName();
-                    mc.fontRenderer.drawStringWithShadow(I18n.format("gui.hardcorerevival.open_death_screen", openDeathScreenKey), 5, 5, 0xFFFFFFFF);
+                    ITextComponent openDeathScreenKey = mc.gameSettings.keyBindChat.func_238171_j_(); // getDisplayName()
+                    mc.fontRenderer.func_238407_a_(event.getMatrixStack(), new TranslationTextComponent("gui.hardcorerevival.open_death_screen", openDeathScreenKey), 5, 5, 0xFFFFFFFF); // drawStringWithShadow
                     if (!HardcoreRevivalConfig.SERVER.disableDeathTimer.get()) {
                         int deathSecondsLeft = Math.max(0, (HardcoreRevivalConfig.SERVER.maxDeathTicks.get() - deathTime) / 20);
-                        mc.fontRenderer.drawString(I18n.format("gui.hardcorerevival.rescue_time_left", deathSecondsLeft), 5, 7 + mc.fontRenderer.FONT_HEIGHT, 16777215);
+                        mc.fontRenderer.func_238421_b_(event.getMatrixStack(), I18n.format("gui.hardcorerevival.rescue_time_left", deathSecondsLeft), 5, 7 + mc.fontRenderer.FONT_HEIGHT, 16777215); // drawString
                     } else {
-                        mc.fontRenderer.drawString(I18n.format("gui.hardcorerevival.wait_for_rescue"), 5, 7 + mc.fontRenderer.FONT_HEIGHT, 16777215);
+                        mc.fontRenderer.func_238421_b_(event.getMatrixStack(), I18n.format("gui.hardcorerevival.wait_for_rescue"), 5, 7 + mc.fontRenderer.FONT_HEIGHT, 16777215); // drawString
                     }
-                    mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
+                    mc.getTextureManager().bindTexture(GUI_ICONS_LOCATION);
                 }
             } else {
                 if (targetEntity != -1 && targetProgress > 0) {
                     Entity entity = mc.world.getEntityByID(targetEntity);
                     if (entity instanceof PlayerEntity) {
-                        String s = I18n.format("gui.hardcorerevival.rescuing", entity.getDisplayName().getFormattedText());
+                        TextComponent s = new TranslationTextComponent("gui.hardcorerevival.rescuing", entity.getDisplayName());
                         if (targetProgress >= 0.75f) {
-                            s += " ...";
+                            s.func_240702_b_(" ...");
                         } else if (targetProgress >= 0.5f) {
-                            s += " ..";
+                            s.func_240702_b_(" ..");
                         } else if (targetProgress >= 0.25f) {
-                            s += " .";
+                            s.func_240702_b_(" .");
                         }
-                        mc.fontRenderer.drawString(s, mc.getMainWindow().getScaledWidth() / 2f - mc.fontRenderer.getStringWidth(s) / 2f, mc.getMainWindow().getScaledHeight() / 2f + 30, 0xFFFFFFFF);
-                        mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
+                        mc.fontRenderer.func_238422_b_(event.getMatrixStack(), s, mc.getMainWindow().getScaledWidth() / 2f - mc.fontRenderer.func_238414_a_(s) / 2f, mc.getMainWindow().getScaledHeight() / 2f + 30, 0xFFFFFFFF); // drawString, getStringWidth
+                        mc.getTextureManager().bindTexture(GUI_ICONS_LOCATION);
                     }
                 }
             }
@@ -163,13 +168,16 @@ public class HardcoreRevivalClient {
         Minecraft mc = event.getGui().getMinecraft();
         if (mc.player != null && isKnockedOut && event.getGui() instanceof ChatScreen) {
             Screen gui = event.getGui();
+            final int guiWidth = gui.field_230708_k_;
+            final int guiHeight = gui.field_230709_l_;
+
             enableButtonTimer = 0;
-            buttonDie = new Button(gui.width / 2 - 100, gui.height / 2 - 30, 200, 20, I18n.format("gui.hardcorerevival.die"), it -> {
-                buttonDie.playDownSound(Minecraft.getInstance().getSoundHandler());
+            buttonDie = new Button(guiWidth / 2 - 100, guiHeight / 2 - 30, 200, 20, new TranslationTextComponent("gui.hardcorerevival.die", ""), it -> {
+                buttonDie.func_230988_a_(Minecraft.getInstance().getSoundHandler()); // playDownSound
                 NetworkHandler.channel.sendToServer(new MessageDie());
                 acceptedDeath = true;
             });
-            buttonDie.active = false;
+            buttonDie.field_230693_o_ = false; // active
             event.addWidget(buttonDie);
         }
     }
@@ -182,30 +190,33 @@ public class HardcoreRevivalClient {
             enableButtonTimer += event.getRenderPartialTicks();
             if (buttonDie != null) {
                 if (enableButtonTimer >= 40) {
-                    buttonDie.active = true;
-                    buttonDie.setMessage(I18n.format("gui.hardcorerevival.die"));
+                    buttonDie.field_230693_o_ = true; // active
+                    buttonDie.func_238482_a_(new TranslationTextComponent("gui.hardcorerevival.die", "")); // setMessage
                 } else if (enableButtonTimer >= 30) {
-                    buttonDie.setMessage("... " + I18n.format("gui.hardcorerevival.die") + " ...");
+                    buttonDie.func_238482_a_(new TranslationTextComponent("gui.hardcorerevival.die", "...")); // setMessage
                 } else if (enableButtonTimer >= 20) {
-                    buttonDie.setMessage(".. " + I18n.format("gui.hardcorerevival.die") + " ..");
+                    buttonDie.func_238482_a_(new TranslationTextComponent("gui.hardcorerevival.die", "..")); // setMessage
                 } else if (enableButtonTimer >= 10) {
-                    buttonDie.setMessage(". " + I18n.format("gui.hardcorerevival.die") + " .");
+                    buttonDie.func_238482_a_(new TranslationTextComponent("gui.hardcorerevival.die", ".")); // setMessage
                 }
             }
 
+            final int guiWidth = gui.field_230708_k_;
+            final int guiHeight = gui.field_230709_l_;
+
             RenderSystem.pushMatrix();
             RenderSystem.scalef(2f, 2f, 2f);
-            gui.drawCenteredString(mc.fontRenderer, I18n.format("gui.hardcorerevival.knocked_out"), gui.width / 2 / 2, 30, 16777215);
+            gui.func_238471_a_(event.getMatrixStack(), mc.fontRenderer, I18n.format("gui.hardcorerevival.knocked_out"), guiWidth / 2 / 2, 30, 16777215); // drawCenteredString
             RenderSystem.popMatrix();
 
             if (!HardcoreRevivalConfig.SERVER.disableDeathTimer.get()) {
                 int deathSecondsLeft = Math.max(0, (HardcoreRevivalConfig.SERVER.maxDeathTicks.get() - deathTime) / 20);
-                gui.drawCenteredString(mc.fontRenderer, I18n.format("gui.hardcorerevival.rescue_time_left", deathSecondsLeft), gui.width / 2, gui.height / 2 + 10, 16777215);
+                gui.func_238471_a_(event.getMatrixStack(), mc.fontRenderer, I18n.format("gui.hardcorerevival.rescue_time_left", deathSecondsLeft), guiWidth / 2, guiHeight / 2 + 10, 16777215); // drawCenteredString
             } else {
-                gui.drawCenteredString(mc.fontRenderer, I18n.format("gui.hardcorerevival.wait_for_rescue"), gui.width / 2, gui.height / 2 + 10, 16777215);
+                gui.func_238471_a_(event.getMatrixStack(), mc.fontRenderer, I18n.format("gui.hardcorerevival.wait_for_rescue"), guiWidth / 2, guiHeight / 2 + 10, 16777215); // drawCenteredString
             }
         } else if (buttonDie != null) {
-            buttonDie.visible = false;
+            buttonDie.field_230694_p_ = false; // visible
         }
     }
 

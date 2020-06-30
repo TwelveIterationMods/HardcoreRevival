@@ -1,6 +1,6 @@
 {
   "gui.hardcorerevival.knocked_out": "You are K.O.",
-  "gui.hardcorerevival.die": "Accept your Fate",
+  "gui.hardcorerevival.die": "%1$s Accept your Fate %1$s",
   "gui.hardcorerevival.open_death_screen": "Press %s to open death screen.",
   "gui.hardcorerevival.rescue_time_left": "%d seconds left to be rescued",
   "gui.hardcorerevival.wait_for_rescue": "Wait to be rescued or accept your fate.",

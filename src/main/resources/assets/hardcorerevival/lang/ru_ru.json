@@ -1,6 +1,6 @@
 {
   "gui.hardcorerevival.knocked_out": "Вы без сознания.",
-  "gui.hardcorerevival.die": "Смириться с судьбой",
+  "gui.hardcorerevival.die": "%1$s Смириться с судьбой %1$s",
   "gui.hardcorerevival.open_death_screen": "Нажмите %s, чтобы открыть экран смерти.",
   "gui.hardcorerevival.rescue_time_left": "%d секунд осталось, чтобы быть спасённым",
   "gui.hardcorerevival.rescuing": "Спасение %s",
