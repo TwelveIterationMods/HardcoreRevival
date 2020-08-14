@@ -69,8 +69,6 @@ public class HardcoreRevivalClient {
 
     @SubscribeEvent
     public void onRenderGameOverlay(RenderGameOverlayEvent.Post event) {
-        final ResourceLocation GUI_ICONS_LOCATION = AbstractGui.field_230665_h_;
-
         if (event.getType() == RenderGameOverlayEvent.ElementType.PORTAL) {
             Minecraft mc = Minecraft.getInstance();
             if (isKnockedOut) {
@@ -80,14 +78,15 @@ public class HardcoreRevivalClient {
                 RenderSystem.popMatrix();
                 if (mc.currentScreen == null) {
                     ITextComponent openDeathScreenKey = mc.gameSettings.keyBindChat.func_238171_j_(); // getDisplayName()
-                    mc.fontRenderer.func_238407_a_(event.getMatrixStack(), new TranslationTextComponent("gui.hardcorerevival.open_death_screen", openDeathScreenKey), 5, 5, 0xFFFFFFFF); // drawStringWithShadow
+                    final TranslationTextComponent openDeathScreenText = new TranslationTextComponent("gui.hardcorerevival.open_death_screen", openDeathScreenKey);
+                    mc.fontRenderer.func_238407_a_(event.getMatrixStack(), openDeathScreenText.func_241878_f(), 5, 5, 0xFFFFFFFF); // drawStringWithShadow
                     if (!HardcoreRevivalConfig.SERVER.disableDeathTimer.get()) {
                         int deathSecondsLeft = Math.max(0, (HardcoreRevivalConfig.SERVER.maxDeathTicks.get() - deathTime) / 20);
-                        mc.fontRenderer.func_238421_b_(event.getMatrixStack(), I18n.format("gui.hardcorerevival.rescue_time_left", deathSecondsLeft), 5, 7 + mc.fontRenderer.FONT_HEIGHT, 16777215); // drawString
+                        mc.fontRenderer.drawString(event.getMatrixStack(), I18n.format("gui.hardcorerevival.rescue_time_left", deathSecondsLeft), 5, 7 + mc.fontRenderer.FONT_HEIGHT, 16777215);
                     } else {
-                        mc.fontRenderer.func_238421_b_(event.getMatrixStack(), I18n.format("gui.hardcorerevival.wait_for_rescue"), 5, 7 + mc.fontRenderer.FONT_HEIGHT, 16777215); // drawString
+                        mc.fontRenderer.drawString(event.getMatrixStack(), I18n.format("gui.hardcorerevival.wait_for_rescue"), 5, 7 + mc.fontRenderer.FONT_HEIGHT, 16777215);
                     }
-                    mc.getTextureManager().bindTexture(GUI_ICONS_LOCATION);
+                    mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
                 }
             } else {
                 if (targetEntity != -1 && targetProgress > 0) {
@@ -95,14 +94,14 @@ public class HardcoreRevivalClient {
                     if (entity instanceof PlayerEntity) {
                         TextComponent s = new TranslationTextComponent("gui.hardcorerevival.rescuing", entity.getDisplayName());
                         if (targetProgress >= 0.75f) {
-                            s.func_240702_b_(" ...");
+                            s.appendString(" ...");
                         } else if (targetProgress >= 0.5f) {
-                            s.func_240702_b_(" ..");
+                            s.appendString(" ..");
                         } else if (targetProgress >= 0.25f) {
-                            s.func_240702_b_(" .");
+                            s.appendString(" .");
                         }
-                        mc.fontRenderer.func_238422_b_(event.getMatrixStack(), s, mc.getMainWindow().getScaledWidth() / 2f - mc.fontRenderer.func_238414_a_(s) / 2f, mc.getMainWindow().getScaledHeight() / 2f + 30, 0xFFFFFFFF); // drawString, getStringWidth
-                        mc.getTextureManager().bindTexture(GUI_ICONS_LOCATION);
+                        mc.fontRenderer.func_238422_b_(event.getMatrixStack(), s.func_241878_f(), mc.getMainWindow().getScaledWidth() / 2f - mc.fontRenderer.func_238414_a_(s) / 2f, mc.getMainWindow().getScaledHeight() / 2f + 30, 0xFFFFFFFF); // drawString, getStringWidth
+                        mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
                     }
                 }
             }
@@ -168,16 +167,14 @@ public class HardcoreRevivalClient {
         Minecraft mc = event.getGui().getMinecraft();
         if (mc.player != null && isKnockedOut && event.getGui() instanceof ChatScreen) {
             Screen gui = event.getGui();
-            final int guiWidth = gui.field_230708_k_;
-            final int guiHeight = gui.field_230709_l_;
 
             enableButtonTimer = 0;
-            buttonDie = new Button(guiWidth / 2 - 100, guiHeight / 2 - 30, 200, 20, new TranslationTextComponent("gui.hardcorerevival.die", ""), it -> {
-                buttonDie.func_230988_a_(Minecraft.getInstance().getSoundHandler()); // playDownSound
+            buttonDie = new Button(gui.width / 2 - 100, gui.height / 2 - 30, 200, 20, new TranslationTextComponent("gui.hardcorerevival.die", ""), it -> {
+                buttonDie.playDownSound(Minecraft.getInstance().getSoundHandler());
                 NetworkHandler.channel.sendToServer(new MessageDie());
                 acceptedDeath = true;
             });
-            buttonDie.field_230693_o_ = false; // active
+            buttonDie.active = false;
             event.addWidget(buttonDie);
         }
     }
@@ -190,33 +187,30 @@ public class HardcoreRevivalClient {
             enableButtonTimer += event.getRenderPartialTicks();
             if (buttonDie != null) {
                 if (enableButtonTimer >= 40) {
-                    buttonDie.field_230693_o_ = true; // active
-                    buttonDie.func_238482_a_(new TranslationTextComponent("gui.hardcorerevival.die", "")); // setMessage
+                    buttonDie.active = true;
+                    buttonDie.setMessage(new TranslationTextComponent("gui.hardcorerevival.die", ""));
                 } else if (enableButtonTimer >= 30) {
-                    buttonDie.func_238482_a_(new TranslationTextComponent("gui.hardcorerevival.die", "...")); // setMessage
+                    buttonDie.setMessage(new TranslationTextComponent("gui.hardcorerevival.die", "..."));
                 } else if (enableButtonTimer >= 20) {
-                    buttonDie.func_238482_a_(new TranslationTextComponent("gui.hardcorerevival.die", "..")); // setMessage
+                    buttonDie.setMessage(new TranslationTextComponent("gui.hardcorerevival.die", ".."));
                 } else if (enableButtonTimer >= 10) {
-                    buttonDie.func_238482_a_(new TranslationTextComponent("gui.hardcorerevival.die", ".")); // setMessage
+                    buttonDie.setMessage(new TranslationTextComponent("gui.hardcorerevival.die", "."));
                 }
             }
 
-            final int guiWidth = gui.field_230708_k_;
-            final int guiHeight = gui.field_230709_l_;
-
             RenderSystem.pushMatrix();
             RenderSystem.scalef(2f, 2f, 2f);
-            gui.func_238471_a_(event.getMatrixStack(), mc.fontRenderer, I18n.format("gui.hardcorerevival.knocked_out"), guiWidth / 2 / 2, 30, 16777215); // drawCenteredString
+            AbstractGui.drawCenteredString(event.getMatrixStack(), mc.fontRenderer, I18n.format("gui.hardcorerevival.knocked_out"), gui.width / 2 / 2, 30, 16777215);
             RenderSystem.popMatrix();
 
             if (!HardcoreRevivalConfig.SERVER.disableDeathTimer.get()) {
                 int deathSecondsLeft = Math.max(0, (HardcoreRevivalConfig.SERVER.maxDeathTicks.get() - deathTime) / 20);
-                gui.func_238471_a_(event.getMatrixStack(), mc.fontRenderer, I18n.format("gui.hardcorerevival.rescue_time_left", deathSecondsLeft), guiWidth / 2, guiHeight / 2 + 10, 16777215); // drawCenteredString
+                AbstractGui.drawCenteredString(event.getMatrixStack(), mc.fontRenderer, I18n.format("gui.hardcorerevival.rescue_time_left", deathSecondsLeft), gui.width / 2, gui.height / 2 + 10, 16777215);
             } else {
-                gui.func_238471_a_(event.getMatrixStack(), mc.fontRenderer, I18n.format("gui.hardcorerevival.wait_for_rescue"), guiWidth / 2, guiHeight / 2 + 10, 16777215); // drawCenteredString
+                AbstractGui.drawCenteredString(event.getMatrixStack(), mc.fontRenderer, I18n.format("gui.hardcorerevival.wait_for_rescue"), gui.width / 2, gui.height / 2 + 10, 16777215);
             }
         } else if (buttonDie != null) {
-            buttonDie.field_230694_p_ = false; // visible
+            buttonDie.visible = false;
         }
     }
 

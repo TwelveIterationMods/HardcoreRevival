@@ -3,6 +3,7 @@ loaderVersion="[24,)"
 issueTrackerURL="https://github.com/blay09/HardcoreRevival/issues"
 displayURL="https://minecraft.curseforge.com/projects/hardcore-revival"
 authors="BlayTheNinth"
+license="MIT"
 
 [[mods]]
 modId="hardcorerevival"

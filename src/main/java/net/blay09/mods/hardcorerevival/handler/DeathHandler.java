@@ -71,7 +71,7 @@ public class DeathHandler {
                             server.getPlayerList().sendMessageToTeamOrAllPlayers(player, player.getCombatTracker().getDeathMessage());
                         }
                     } else {
-                        server.getPlayerList().func_232641_a_(player.getCombatTracker().getDeathMessage(), ChatType.SYSTEM, Util.field_240973_b_); // sendMessage, EMPTY_UUID
+                        server.getPlayerList().func_232641_a_(player.getCombatTracker().getDeathMessage(), ChatType.SYSTEM, Util.DUMMY_UUID); // sendMessage
                     }
                 }
             }
