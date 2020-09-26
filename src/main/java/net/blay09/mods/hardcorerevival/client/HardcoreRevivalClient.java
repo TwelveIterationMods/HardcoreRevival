@@ -100,7 +100,7 @@ public class HardcoreRevivalClient {
                         } else if (targetProgress >= 0.25f) {
                             s.appendString(" .");
                         }
-                        mc.fontRenderer.func_238422_b_(event.getMatrixStack(), s.func_241878_f(), mc.getMainWindow().getScaledWidth() / 2f - mc.fontRenderer.func_238414_a_(s) / 2f, mc.getMainWindow().getScaledHeight() / 2f + 30, 0xFFFFFFFF); // drawString, getStringWidth
+                        mc.fontRenderer.func_238422_b_(event.getMatrixStack(), s.func_241878_f(), mc.getMainWindow().getScaledWidth() / 2f - mc.fontRenderer.getStringPropertyWidth(s) / 2f, mc.getMainWindow().getScaledHeight() / 2f + 30, 0xFFFFFFFF); // drawString, getStringWidth
                         mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
                     }
                 }
