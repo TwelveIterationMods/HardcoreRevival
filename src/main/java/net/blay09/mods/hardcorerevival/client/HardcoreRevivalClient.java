@@ -128,16 +128,18 @@ public class HardcoreRevivalClient {
             Minecraft mc = Minecraft.getInstance();
             if (mc.player != null) {
                 if (mc.player.getHealth() <= 0f) {
-                    if (!isKnockedOut && !acceptedDeath) {
+                    if (!isKnockedOut && !acceptedDeath && mc.player.isShowDeathScreen()) {
                         // The player is now knocked out
                         deathTime = 0;
                         isKnockedOut = true;
                         mc.displayGuiScreen(new ChatScreen(""));
                     }
+
                     // Prevent deathTime from removing the entity from the world
                     if (mc.player.deathTime == 19) {
                         mc.player.deathTime = 18;
                     }
+
                     // Instead, increase our own counter
                     deathTime++;
                 } else {

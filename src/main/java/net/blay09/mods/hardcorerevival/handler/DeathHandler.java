@@ -36,6 +36,14 @@ public class DeathHandler {
         if (event.getEntityLiving() instanceof ServerPlayerEntity) {
             PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
+            // If doImmediateRespawn is enabled, there's no rescuing
+            if (player.world.getGameRules().getBoolean(GameRules.DO_IMMEDIATE_RESPAWN)) {
+                // Unlike void death, we do not need to account for client-side death screen race conditions,
+                // as this rule is synced to the client and revival screen is skipped
+                player.getPersistentData().putBoolean(IGNORE_REVIVAL_DEATH, true);
+                return;
+            }
+
             // If the player fell into the void, there's no rescuing
             if (event.getSource() == DamageSource.OUT_OF_WORLD) {
                 player.getPersistentData().putBoolean(IGNORE_REVIVAL_DEATH, true);
