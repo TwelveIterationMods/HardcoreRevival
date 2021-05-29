@@ -164,7 +164,7 @@ public class HardcoreRevivalClient {
 
     @SubscribeEvent
     public void onInitGui(GuiScreenEvent.InitGuiEvent.Post event) {
-        Minecraft mc = event.getGui().getMinecraft();
+        Minecraft mc = Minecraft.getInstance();
         if (mc.player != null && isKnockedOut && event.getGui() instanceof ChatScreen) {
             Screen gui = event.getGui();
 
@@ -182,7 +182,7 @@ public class HardcoreRevivalClient {
     @SubscribeEvent
     public void onDrawScreen(GuiScreenEvent.DrawScreenEvent.Post event) {
         Screen gui = event.getGui();
-        Minecraft mc = gui.getMinecraft();
+        Minecraft mc = Minecraft.getInstance();
         if (mc.player != null && isKnockedOut && gui instanceof ChatScreen) {
             enableButtonTimer += event.getRenderPartialTicks();
             if (buttonDie != null) {
