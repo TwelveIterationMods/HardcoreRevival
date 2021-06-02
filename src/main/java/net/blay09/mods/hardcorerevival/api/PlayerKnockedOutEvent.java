@@ -1,4 +1,4 @@
-package net.blay09.mods.hardcorerevival;
+package net.blay09.mods.hardcorerevival.api;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;

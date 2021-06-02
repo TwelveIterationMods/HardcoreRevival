@@ -5,7 +5,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class HardcoreRevivalConfig {
 
-    public static class Server {
+    public static class Common {
         public final ForgeConfigSpec.ConfigValue<Integer> maxDeathTicks;
         public final ForgeConfigSpec.ConfigValue<Integer> rescueTime;
         public final ForgeConfigSpec.ConfigValue<Integer> rescueRespawnHealth;
@@ -13,8 +13,10 @@ public class HardcoreRevivalConfig {
         public final ForgeConfigSpec.ConfigValue<Double> maxRescueDist;
         public final ForgeConfigSpec.BooleanValue glowOnDeath;
         public final ForgeConfigSpec.BooleanValue disableDeathTimer;
+        public final ForgeConfigSpec.BooleanValue allowUnarmedMelee;
+        public final ForgeConfigSpec.BooleanValue allowBows;
 
-        Server(ForgeConfigSpec.Builder builder) {
+        Common(ForgeConfigSpec.Builder builder) {
             maxDeathTicks = builder
                     .comment("The time in ticks in which a player can still be rescued from death.")
                     .translation("hardcorerevival.config.maxDeathTicks")
@@ -49,16 +51,26 @@ public class HardcoreRevivalConfig {
                     .comment("If true, knocked out players will glow, making them visible through blocks.")
                     .translation("hardcorerevival.config.glowOnDeath")
                     .define("glowOnDeath", true);
+
+            allowUnarmedMelee = builder
+                    .comment("If true, knocked out players are still able to punch nearby enemies.")
+                    .translation("hardcorerevival.config.allowUnarmedMelee")
+                    .define("allowUnarmedMelee", false);
+
+            allowBows = builder
+                    .comment("If true, knocked out players are still able to fire bows.")
+                    .translation("hardcorerevival.config.allowBows")
+                    .define("allowBows", false);
         }
     }
 
-    static final ForgeConfigSpec serverSpec;
-    public static final Server SERVER;
+    static final ForgeConfigSpec commonSpec;
+    public static final Common COMMON;
 
     static {
-        final Pair<Server, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Server::new);
-        serverSpec = specPair.getRight();
-        SERVER = specPair.getLeft();
+        final Pair<Common, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Common::new);
+        commonSpec = specPair.getRight();
+        COMMON = specPair.getLeft();
     }
 
 }

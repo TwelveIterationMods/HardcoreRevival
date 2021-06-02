@@ -11,23 +11,23 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class MessageRevivalSuccess {
+public class RevivalSuccessMessage {
     private final int entityId;
 
-    public MessageRevivalSuccess(int entityId) {
+    public RevivalSuccessMessage(int entityId) {
         this.entityId = entityId;
     }
 
-    public static MessageRevivalSuccess decode(PacketBuffer buf) {
+    public static RevivalSuccessMessage decode(PacketBuffer buf) {
         int entityId = buf.readInt();
-        return new MessageRevivalSuccess(entityId);
+        return new RevivalSuccessMessage(entityId);
     }
 
-    public static void encode(MessageRevivalSuccess message, ByteBuf buf) {
+    public static void encode(RevivalSuccessMessage message, ByteBuf buf) {
         buf.writeInt(message.entityId);
     }
 
-    public static void handle(MessageRevivalSuccess message, Supplier<NetworkEvent.Context> contextSupplier) {
+    public static void handle(RevivalSuccessMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
         NetworkHandler.ensureClientSide(context);
 
@@ -38,18 +38,11 @@ public class MessageRevivalSuccess {
             }
 
             if (message.entityId == mc.player.getEntityId()) {
-                mc.player.extinguish();
-                mc.player.setFlag(0, false); // burning flag
-                if (HardcoreRevivalConfig.SERVER.glowOnDeath.get()) {
-                    mc.player.setGlowing(false);
-                    mc.player.setFlag(6, false); // glowing flag
-                }
                 mc.displayGuiScreen(null);
             }
 
             Entity entity = mc.world.getEntityByID(message.entityId);
             if (entity instanceof LivingEntity) {
-                ((LivingEntity) entity).deathTime = -1;
                 mc.world.addParticle(ParticleTypes.EXPLOSION, entity.getPosX(), entity.getPosY(), entity.getPosZ(), 0, 0, 0);
             }
         });

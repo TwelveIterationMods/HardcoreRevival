@@ -1,7 +1,7 @@
 package net.blay09.mods.hardcorerevival.network;
 
 import net.blay09.mods.hardcorerevival.HardcoreRevivalConfig;
-import net.blay09.mods.hardcorerevival.handler.RescueHandler;
+import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -9,23 +9,23 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class MessageRevival {
+public class RescueMessage {
     private final boolean active;
 
-    public MessageRevival(boolean active) {
+    public RescueMessage(boolean active) {
         this.active = active;
     }
 
-    public static void encode(MessageRevival message, PacketBuffer buf) {
+    public static void encode(RescueMessage message, PacketBuffer buf) {
         buf.writeBoolean(message.active);
     }
 
-    public static MessageRevival decode(PacketBuffer buf) {
+    public static RescueMessage decode(PacketBuffer buf) {
         boolean active = buf.readBoolean();
-        return new MessageRevival(active);
+        return new RescueMessage(active);
     }
 
-    public static void handle(MessageRevival message, Supplier<NetworkEvent.Context> contextSupplier) {
+    public static void handle(RescueMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
             PlayerEntity player = context.getSender();
@@ -34,7 +34,7 @@ public class MessageRevival {
             }
 
             if (message.active) {
-                final double range = HardcoreRevivalConfig.SERVER.maxRescueDist.get();
+                final double range = HardcoreRevivalConfig.COMMON.maxRescueDist.get();
                 List<PlayerEntity> candidates = player.world.getEntitiesWithinAABB(PlayerEntity.class, player.getBoundingBox().grow(range), p -> p != null && p.getHealth() <= 0f);
                 float minDist = Float.MAX_VALUE;
                 PlayerEntity target = null;
@@ -46,11 +46,11 @@ public class MessageRevival {
                     }
                 }
                 if (target != null) {
-                    RescueHandler.startRescue(player, target);
+                    HardcoreRevivalManager.startRescue(player, target);
 
                 }
             } else {
-                RescueHandler.abortRescue(player);
+                HardcoreRevivalManager.abortRescue(player);
             }
         });
         context.setPacketHandled(true);
