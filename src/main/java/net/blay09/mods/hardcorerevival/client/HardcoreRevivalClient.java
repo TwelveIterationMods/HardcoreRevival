@@ -2,9 +2,9 @@ package net.blay09.mods.hardcorerevival.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
-import net.blay09.mods.hardcorerevival.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.api.PlayerKnockedOutEvent;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
+import net.blay09.mods.hardcorerevival.mixin.IngameGuiAccessor;
 import net.blay09.mods.hardcorerevival.network.RescueMessage;
 import net.blay09.mods.hardcorerevival.network.NetworkHandler;
 import net.minecraft.client.Minecraft;
@@ -12,7 +12,6 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
@@ -60,11 +59,21 @@ public class HardcoreRevivalClient {
     }
 
     @SubscribeEvent
-    public static void onRenderGameOverlay(RenderGameOverlayEvent.Post event) {
+    public static void onRenderGameOverlayPre(RenderGameOverlayEvent.Pre event) {
+        if (event.getType() == RenderGameOverlayEvent.ElementType.HEALTH) {
+            int knockoutTicksPassed = HardcoreRevival.getClientRevivalData().getKnockoutTicksPassed();
+            float redness = (float) Math.sin(knockoutTicksPassed / 2f);
+            RenderSystem.color4f(1f, 1f - redness, 1 - redness, 1f);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRenderGameOverlayPost(RenderGameOverlayEvent.Post event) {
+        RenderSystem.color4f(1f, 1f, 1f, 1f);
+
         if (event.getType() == RenderGameOverlayEvent.ElementType.PORTAL) {
             Minecraft mc = Minecraft.getInstance();
             if (isKnockedOut()) {
-
                 RenderSystem.pushMatrix();
                 RenderSystem.translatef(0, 0, -300);
                 GuiHelper.drawGradientRectW(event.getMatrixStack(), 0, 0, mc.getMainWindow().getWidth(), mc.getMainWindow().getHeight(), 0x60500000, 0x90FF0000);
