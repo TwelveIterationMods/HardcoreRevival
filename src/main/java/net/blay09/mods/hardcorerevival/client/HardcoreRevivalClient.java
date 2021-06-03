@@ -10,6 +10,7 @@ import net.blay09.mods.hardcorerevival.network.NetworkHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
@@ -63,21 +64,22 @@ public class HardcoreRevivalClient {
         if (event.getType() == RenderGameOverlayEvent.ElementType.PORTAL) {
             Minecraft mc = Minecraft.getInstance();
             if (isKnockedOut()) {
+
                 RenderSystem.pushMatrix();
                 RenderSystem.translatef(0, 0, -300);
                 GuiHelper.drawGradientRectW(event.getMatrixStack(), 0, 0, mc.getMainWindow().getWidth(), mc.getMainWindow().getHeight(), 0x60500000, 0x90FF0000);
                 RenderSystem.popMatrix();
-                if (mc.currentScreen == null && mc.player != null) {
-                    ITextComponent openDeathScreenKey = mc.gameSettings.keyBindChat.func_238171_j_(); // getDisplayName()
+
+                if (mc.currentScreen == null || mc.currentScreen instanceof ChatScreen) {
+                    int width = event.getWindow().getScaledWidth();
+                    int height = event.getWindow().getScaledHeight();
+                    GuiHelper.renderKnockedOutTitle(event.getMatrixStack(), width);
+                    GuiHelper.renderDeathTimer(event.getMatrixStack(), width, height);
+
+                    ITextComponent openDeathScreenKey = mc.gameSettings.keyBindInventory.func_238171_j_(); // getDisplayName()
                     final TranslationTextComponent openDeathScreenText = new TranslationTextComponent("gui.hardcorerevival.open_death_screen", openDeathScreenKey);
-                    mc.fontRenderer.func_238407_a_(event.getMatrixStack(), openDeathScreenText.func_241878_f(), 5, 5, 0xFFFFFFFF); // drawStringWithShadow
-                    if (!HardcoreRevivalConfig.COMMON.disableDeathTimer.get()) {
-                        int knockoutTicksPassed = HardcoreRevival.getRevivalData(mc.player).getKnockoutTicksPassed();
-                        int deathSecondsLeft = Math.max(0, (HardcoreRevivalConfig.COMMON.maxDeathTicks.get() - knockoutTicksPassed) / 20);
-                        mc.fontRenderer.drawString(event.getMatrixStack(), I18n.format("gui.hardcorerevival.rescue_time_left", deathSecondsLeft), 5, 7 + mc.fontRenderer.FONT_HEIGHT, 16777215);
-                    } else {
-                        mc.fontRenderer.drawString(event.getMatrixStack(), I18n.format("gui.hardcorerevival.wait_for_rescue"), 5, 7 + mc.fontRenderer.FONT_HEIGHT, 16777215);
-                    }
+                    AbstractGui.drawCenteredString(event.getMatrixStack(), mc.fontRenderer, openDeathScreenText, width / 2, height / 2 + 25, 0xFFFFFFFF); // drawStringWithShadow
+
                     mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
                 }
             } else {
