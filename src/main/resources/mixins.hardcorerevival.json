@@ -5,8 +5,7 @@
   "package": "net.blay09.mods.hardcorerevival.mixin",
   "mixins": [
     "EntityMixin",
-    "EntityPredicateMixin",
-    "IngameGuiAccessor"
+    "EntityPredicateMixin"
   ],
   "refmap": "refmap.hardcorerevival.json"
 }

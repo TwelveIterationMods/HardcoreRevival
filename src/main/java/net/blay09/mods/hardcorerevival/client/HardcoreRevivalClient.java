@@ -4,11 +4,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.api.PlayerKnockedOutEvent;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
-import net.blay09.mods.hardcorerevival.mixin.IngameGuiAccessor;
 import net.blay09.mods.hardcorerevival.network.RescueMessage;
 import net.blay09.mods.hardcorerevival.network.NetworkHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
@@ -27,14 +25,12 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = HardcoreRevival.MOD_ID)
 public class HardcoreRevivalClient {
 
-    // Rescuing
     private static boolean isRescuing;
     private static int targetEntity = -1;
     private static float targetProgress;
 
     private static boolean isKnockedOut() {
-        ClientPlayerEntity player = Minecraft.getInstance().player;
-        return player != null && HardcoreRevival.getClientRevivalData().isKnockedOut();
+        return HardcoreRevival.getClientRevivalData().isKnockedOut();
     }
 
     @SubscribeEvent
@@ -60,7 +56,8 @@ public class HardcoreRevivalClient {
 
     @SubscribeEvent
     public static void onRenderGameOverlayPre(RenderGameOverlayEvent.Pre event) {
-        if (event.getType() == RenderGameOverlayEvent.ElementType.HEALTH) {
+        // Flash the health bar red if the player is knocked out
+        if (event.getType() == RenderGameOverlayEvent.ElementType.HEALTH && isKnockedOut()) {
             int knockoutTicksPassed = HardcoreRevival.getClientRevivalData().getKnockoutTicksPassed();
             float redness = (float) Math.sin(knockoutTicksPassed / 2f);
             RenderSystem.color4f(1f, 1f - redness, 1 - redness, 1f);
@@ -130,7 +127,7 @@ public class HardcoreRevivalClient {
                     HardcoreRevivalData revivalData = HardcoreRevival.getRevivalData(mc.player);
                     revivalData.setKnockoutTicksPassed(revivalData.getKnockoutTicksPassed() + 1);
                 } else {
-                    // If right mouse is held down, and player is not in spectator mode, send revival packet
+                    // If right mouse is held down, and player is not in spectator mode, send rescue packet
                     if (mc.mouseHelper.isRightDown() && !mc.player.isSpectator()) {
                         if (!isRescuing) {
                             NetworkHandler.channel.sendToServer(new RescueMessage(true));
