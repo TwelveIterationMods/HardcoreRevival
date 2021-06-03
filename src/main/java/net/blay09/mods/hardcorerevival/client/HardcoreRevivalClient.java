@@ -46,13 +46,6 @@ public class HardcoreRevivalClient {
     }
 
     @SubscribeEvent
-    public static void onKnockout(PlayerKnockedOutEvent event) {
-        if (event.getPlayer() == Minecraft.getInstance().player) {
-            Minecraft.getInstance().displayGuiScreen(new KnockoutScreen());
-        }
-    }
-
-    @SubscribeEvent
     public static void onFov(FOVUpdateEvent event) {
         if (isKnockedOut()) {
             event.setNewfov(MathHelper.lerp(Minecraft.getInstance().gameSettings.fovScaleEffect, 1f, 0.5f));
@@ -130,6 +123,7 @@ public class HardcoreRevivalClient {
             if (mc.player != null) {
                 if (isKnockedOut()) {
                     if (!wasKnockedOut) {
+                        mc.player.setForcedPose(Pose.FALL_FLYING);
                         mc.displayGuiScreen(new KnockoutScreen());
                         wasKnockedOut = true;
                     }
@@ -137,6 +131,8 @@ public class HardcoreRevivalClient {
                     HardcoreRevivalData revivalData = HardcoreRevival.getRevivalData(mc.player);
                     revivalData.setKnockoutTicksPassed(revivalData.getKnockoutTicksPassed() + 1);
                 } else {
+                    wasKnockedOut = false;
+
                     // If knockout screen is still shown, close it
                     if (mc.currentScreen instanceof KnockoutScreen) {
                         mc.displayGuiScreen(null);
