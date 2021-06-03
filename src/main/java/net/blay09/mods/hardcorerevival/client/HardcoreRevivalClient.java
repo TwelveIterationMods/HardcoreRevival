@@ -3,9 +3,12 @@ package net.blay09.mods.hardcorerevival.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalConfig;
+import net.blay09.mods.hardcorerevival.api.PlayerKnockedOutEvent;
+import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.network.RescueMessage;
 import net.blay09.mods.hardcorerevival.network.NetworkHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.resources.I18n;
@@ -24,37 +27,34 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = HardcoreRevival.MOD_ID)
 public class HardcoreRevivalClient {
 
-    private static boolean isKnockedOut;
-    private static int knockoutTicksPassed;
-
-    // GUI things
-    private static double prevChatHeight = -1;
-
     // Rescuing
     private static boolean isRescuing;
     private static int targetEntity = -1;
     private static float targetProgress;
 
+    private static boolean isKnockedOut() {
+        ClientPlayerEntity player = Minecraft.getInstance().player;
+        return player != null && HardcoreRevival.getClientRevivalData().isKnockedOut();
+    }
+
     @SubscribeEvent
     public static void onOpenGui(GuiOpenEvent event) {
-        if (isKnockedOut && event.getGui() instanceof InventoryScreen) {
-            event.setGui(null);
+        if (isKnockedOut() && event.getGui() instanceof InventoryScreen) {
+            event.setGui(new KnockoutScreen());
+        }
+    }
+
+    @SubscribeEvent
+    public static void onKnockout(PlayerKnockedOutEvent event) {
+        if (event.getPlayer() == Minecraft.getInstance().player) {
+            Minecraft.getInstance().displayGuiScreen(new KnockoutScreen());
         }
     }
 
     @SubscribeEvent
     public static void onFov(FOVUpdateEvent event) {
-        if (isKnockedOut) {
+        if (isKnockedOut()) {
             event.setNewfov(MathHelper.lerp(Minecraft.getInstance().gameSettings.fovScaleEffect, 1f, 0.5f));
-        }
-    }
-
-    @SubscribeEvent
-    public static void onRenderGameOverlay(RenderGameOverlayEvent.Chat event) {
-        Minecraft mc = Minecraft.getInstance(); // TODO needed?
-        if (mc.player != null && isKnockedOut && mc.currentScreen != null) {
-            prevChatHeight = mc.gameSettings.chatHeightFocused;
-            mc.gameSettings.chatHeightFocused = 0.1f;
         }
     }
 
@@ -62,16 +62,17 @@ public class HardcoreRevivalClient {
     public static void onRenderGameOverlay(RenderGameOverlayEvent.Post event) {
         if (event.getType() == RenderGameOverlayEvent.ElementType.PORTAL) {
             Minecraft mc = Minecraft.getInstance();
-            if (isKnockedOut) {
+            if (isKnockedOut()) {
                 RenderSystem.pushMatrix();
                 RenderSystem.translatef(0, 0, -300);
                 GuiHelper.drawGradientRectW(event.getMatrixStack(), 0, 0, mc.getMainWindow().getWidth(), mc.getMainWindow().getHeight(), 0x60500000, 0x90FF0000);
                 RenderSystem.popMatrix();
-                if (mc.currentScreen == null) {
+                if (mc.currentScreen == null && mc.player != null) {
                     ITextComponent openDeathScreenKey = mc.gameSettings.keyBindChat.func_238171_j_(); // getDisplayName()
                     final TranslationTextComponent openDeathScreenText = new TranslationTextComponent("gui.hardcorerevival.open_death_screen", openDeathScreenKey);
                     mc.fontRenderer.func_238407_a_(event.getMatrixStack(), openDeathScreenText.func_241878_f(), 5, 5, 0xFFFFFFFF); // drawStringWithShadow
                     if (!HardcoreRevivalConfig.COMMON.disableDeathTimer.get()) {
+                        int knockoutTicksPassed = HardcoreRevival.getRevivalData(mc.player).getKnockoutTicksPassed();
                         int deathSecondsLeft = Math.max(0, (HardcoreRevivalConfig.COMMON.maxDeathTicks.get() - knockoutTicksPassed) / 20);
                         mc.fontRenderer.drawString(event.getMatrixStack(), I18n.format("gui.hardcorerevival.rescue_time_left", deathSecondsLeft), 5, 7 + mc.fontRenderer.FONT_HEIGHT, 16777215);
                     } else {
@@ -96,10 +97,6 @@ public class HardcoreRevivalClient {
                     }
                 }
             }
-        } else if (event.getType() == RenderGameOverlayEvent.ElementType.CHAT) {
-            if (prevChatHeight != -1f) { // TODO what is this for?
-                Minecraft.getInstance().gameSettings.chatHeightFocused = prevChatHeight;
-            }
         }
     }
 
@@ -107,13 +104,9 @@ public class HardcoreRevivalClient {
     public static void onKeyInput(InputEvent.KeyInputEvent event) {
         Minecraft mc = Minecraft.getInstance();
         // Suppress item drops and movement when knocked out
-        if (isKnockedOut) {
+        if (isKnockedOut()) {
             //noinspection StatementWithEmptyBody
-            while (mc.gameSettings.keyBindDrop.isPressed()
-                    || mc.gameSettings.keyBindForward.isPressed()
-                    || mc.gameSettings.keyBindBack.isPressed()
-                    || mc.gameSettings.keyBindLeft.isPressed()
-                    || mc.gameSettings.keyBindRight.isPressed()) ;
+            while (mc.gameSettings.keyBindDrop.isPressed()) ;
         }
     }
 
@@ -122,8 +115,9 @@ public class HardcoreRevivalClient {
         if (event.phase == TickEvent.Phase.START) {
             Minecraft mc = Minecraft.getInstance();
             if (mc.player != null) {
-                if (isKnockedOut) {
-                    knockoutTicksPassed++;
+                if (isKnockedOut()) {
+                    HardcoreRevivalData revivalData = HardcoreRevival.getRevivalData(mc.player);
+                    revivalData.setKnockoutTicksPassed(revivalData.getKnockoutTicksPassed() + 1);
                 } else {
                     // If right mouse is held down, and player is not in spectator mode, send revival packet
                     if (mc.mouseHelper.isRightDown() && !mc.player.isSpectator()) {
@@ -140,22 +134,6 @@ public class HardcoreRevivalClient {
                 }
             }
         }
-    }
-
-    public static void setKnockedOut(boolean knockedOut) {
-        boolean wasKnockedOut = isKnockedOut;
-        isKnockedOut = knockedOut;
-        if (isKnockedOut && !wasKnockedOut) {
-            Minecraft.getInstance().displayGuiScreen(new KnockoutScreen());
-        }
-    }
-
-    public static void setKnockoutTicksPassed(int ticksPassed) {
-        knockoutTicksPassed = ticksPassed;
-    }
-
-    public static int getKnockoutTicksPassed() {
-        return knockoutTicksPassed;
     }
 
     public static void setRevivalProgress(int entityId, float progress) {

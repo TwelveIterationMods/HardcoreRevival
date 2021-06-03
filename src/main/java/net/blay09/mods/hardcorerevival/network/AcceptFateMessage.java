@@ -1,6 +1,6 @@
 package net.blay09.mods.hardcorerevival.network;
 
-import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
+import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -15,7 +15,7 @@ public class AcceptFateMessage {
         context.enqueueWork(() -> {
             PlayerEntity player = context.getSender();
             if (player != null) {
-                HardcoreRevivalManager.notRescuedInTime(player);
+                HardcoreRevival.getManager().notRescuedInTime(player);
             }
         });
 

@@ -1,14 +1,13 @@
 package net.blay09.mods.hardcorerevival;
 
 import net.blay09.mods.hardcorerevival.api.PlayerKnockedOutEvent;
-import net.blay09.mods.hardcorerevival.capability.CapabilityHardcoreRevival;
-import net.blay09.mods.hardcorerevival.capability.IHardcoreRevivalData;
+import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalDataCapability;
+import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.network.HardcoreRevivalDataMessage;
 import net.blay09.mods.hardcorerevival.network.RevivalProgressMessage;
 import net.blay09.mods.hardcorerevival.network.NetworkHandler;
 import net.blay09.mods.hardcorerevival.network.RevivalSuccessMessage;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.scoreboard.Team;
@@ -23,22 +22,22 @@ import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.Objects;
 
-public class HardcoreRevivalManager {
+public class HardcoreRevivalManager implements IHardcoreRevivalManager {
     public static final DamageSource notRescuedInTime = new DamageSource("not_rescued_in_time");
 
-    public static IHardcoreRevivalData getRevivalData(PlayerEntity player) {
-        LazyOptional<IHardcoreRevivalData> revivalData = player.getCapability(CapabilityHardcoreRevival.REVIVAL_CAPABILITY);
-        return revivalData.orElseGet(() -> Objects.requireNonNull(CapabilityHardcoreRevival.REVIVAL_CAPABILITY.getDefaultInstance()));
+    @Override
+    public HardcoreRevivalData getRevivalData(PlayerEntity player) {
+        LazyOptional<HardcoreRevivalData> revivalData = player.getCapability(HardcoreRevivalDataCapability.REVIVAL_CAPABILITY);
+        return revivalData.orElseGet(() -> Objects.requireNonNull(HardcoreRevivalDataCapability.REVIVAL_CAPABILITY.getDefaultInstance()));
     }
 
-    public static void knockout(PlayerEntity player, DamageSource source) {
-        IHardcoreRevivalData revivalData = getRevivalData(player);
+    public void knockout(PlayerEntity player, DamageSource source) {
+        HardcoreRevivalData revivalData = getRevivalData(player);
         if (revivalData.isKnockedOut()) {
             return;
         }
 
         revivalData.setKnockedOut(true);
-        revivalData.setKnockoutPos(player.getPosition());
 
         // Fire event for compatibility addons
         MinecraftForge.EVENT_BUS.post(new PlayerKnockedOutEvent(player, source));
@@ -70,8 +69,8 @@ public class HardcoreRevivalManager {
         player.addPotionEffect(new EffectInstance(Effects.WEAKNESS, 20 * 60)); // Weakness
     }
 
-    public static void finishRescue(PlayerEntity player) {
-        IHardcoreRevivalData revivalData = getRevivalData(player);
+    public void finishRescue(PlayerEntity player) {
+        HardcoreRevivalData revivalData = getRevivalData(player);
         PlayerEntity rescueTarget = revivalData.getRescueTarget();
         if (rescueTarget != null) {
             MinecraftServer server = rescueTarget.getServer();
@@ -86,8 +85,8 @@ public class HardcoreRevivalManager {
         }
     }
 
-    public static void abortRescue(PlayerEntity player) {
-        IHardcoreRevivalData revivalData = getRevivalData(player);
+    public void abortRescue(PlayerEntity player) {
+        HardcoreRevivalData revivalData = getRevivalData(player);
         if (revivalData.getRescueTarget() != null) {
             revivalData.setRescueTime(0);
             revivalData.setRescueTarget(null);
@@ -95,35 +94,31 @@ public class HardcoreRevivalManager {
         }
     }
 
-    public static void notRescuedInTime(PlayerEntity player) {
+    public void notRescuedInTime(PlayerEntity player) {
         player.getCombatTracker().trackDamage(notRescuedInTime, 0, 0);
         player.onDeath(notRescuedInTime);
 
         reset(player);
     }
 
-    public static void reset(PlayerEntity player) {
+    public void reset(PlayerEntity player) {
         updateKnockoutEffects(player, false);
 
-        IHardcoreRevivalData revivalData = getRevivalData(player);
+        HardcoreRevivalData revivalData = getRevivalData(player);
         revivalData.setKnockoutTicksPassed(0);
     }
 
-    public static void updateKnockoutEffects(PlayerEntity player, boolean knockedOut) {
+    public void updateKnockoutEffects(PlayerEntity player, boolean knockedOut) {
         if (HardcoreRevivalConfig.COMMON.glowOnDeath.get()) {
             player.setGlowing(knockedOut);
         }
 
-        IHardcoreRevivalData revivalData = getRevivalData(player);
+        HardcoreRevivalData revivalData = getRevivalData(player);
         NetworkHandler.sendToPlayer(player, new HardcoreRevivalDataMessage(knockedOut, revivalData.getKnockoutTicksPassed()));
     }
 
-    public static boolean isKnockedOut(PlayerEntity player) {
-        return getRevivalData(player).isKnockedOut();
-    }
-
-    public static void startRescue(PlayerEntity player, PlayerEntity target) {
-        IHardcoreRevivalData revivalData = getRevivalData(player);
+    public void startRescue(PlayerEntity player, PlayerEntity target) {
+        HardcoreRevivalData revivalData = getRevivalData(player);
         revivalData.setRescueTarget(target);
         revivalData.setRescueTime(0);
         NetworkHandler.sendToPlayer(player, new RevivalProgressMessage(target.getEntityId(), 0.1f));

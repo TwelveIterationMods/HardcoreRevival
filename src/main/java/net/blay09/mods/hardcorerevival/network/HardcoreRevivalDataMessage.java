@@ -1,6 +1,7 @@
 package net.blay09.mods.hardcorerevival.network;
 
-import net.blay09.mods.hardcorerevival.client.HardcoreRevivalClient;
+import net.blay09.mods.hardcorerevival.HardcoreRevival;
+import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
@@ -34,8 +35,9 @@ public class HardcoreRevivalDataMessage {
 
         context.enqueueWork(() -> {
             DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-                HardcoreRevivalClient.setKnockedOut(message.knockedOut);
-                HardcoreRevivalClient.setKnockoutTicksPassed(message.knockoutTicksPassed);
+                HardcoreRevivalData revivalData = HardcoreRevival.getClientRevivalData();
+                revivalData.setKnockedOut(message.knockedOut);
+                revivalData.setKnockoutTicksPassed(message.knockoutTicksPassed);
             });
         });
 

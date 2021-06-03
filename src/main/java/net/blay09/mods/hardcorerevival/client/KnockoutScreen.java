@@ -2,6 +2,7 @@ package net.blay09.mods.hardcorerevival.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.network.AcceptFateMessage;
 import net.blay09.mods.hardcorerevival.network.NetworkHandler;
@@ -55,7 +56,8 @@ public class KnockoutScreen extends Screen {
             RenderSystem.popMatrix();
 
             if (!HardcoreRevivalConfig.COMMON.disableDeathTimer.get()) {
-                int deathSecondsLeft = Math.max(0, (HardcoreRevivalConfig.COMMON.maxDeathTicks.get() - HardcoreRevivalClient.getKnockoutTicksPassed()) / 20);
+
+                int deathSecondsLeft = Math.max(0, (HardcoreRevivalConfig.COMMON.maxDeathTicks.get() - HardcoreRevival.getClientRevivalData().getKnockoutTicksPassed()) / 20);
                 AbstractGui.drawCenteredString(matrixStack, mc.fontRenderer, I18n.format("gui.hardcorerevival.rescue_time_left", deathSecondsLeft), width / 2, height / 2 + 10, 16777215);
             } else {
                 AbstractGui.drawCenteredString(matrixStack, mc.fontRenderer, I18n.format("gui.hardcorerevival.wait_for_rescue"), width / 2, height / 2 + 10, 16777215);

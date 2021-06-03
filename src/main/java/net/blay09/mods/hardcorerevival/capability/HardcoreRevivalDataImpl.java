@@ -1,11 +1,9 @@
 package net.blay09.mods.hardcorerevival.capability;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
 
-public class HardcoreRevivalDataImpl implements IHardcoreRevivalData {
+public class HardcoreRevivalDataImpl implements HardcoreRevivalData {
 	private boolean knockedOut;
-	private BlockPos knockoutPos;
 	private int knockoutTicksPassed;
 	private int rescueTime;
 	private PlayerEntity rescueTarget;
@@ -21,23 +19,13 @@ public class HardcoreRevivalDataImpl implements IHardcoreRevivalData {
 	}
 
 	@Override
-	public void setKnockoutTicksPassed(int knockoutTime) {
-		this.knockoutTicksPassed = knockoutTime;
+	public void setKnockoutTicksPassed(int knockoutTicksPassed) {
+		this.knockoutTicksPassed = knockoutTicksPassed;
 	}
 
 	@Override
 	public int getKnockoutTicksPassed() {
 		return knockoutTicksPassed;
-	}
-
-	@Override
-	public void setKnockoutPos(BlockPos pos) {
-		knockoutPos = pos;
-	}
-
-	@Override
-	public BlockPos getKnockoutPos() {
-		return knockoutPos;
 	}
 
 	@Override

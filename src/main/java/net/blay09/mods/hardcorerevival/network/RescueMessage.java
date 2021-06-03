@@ -1,7 +1,7 @@
 package net.blay09.mods.hardcorerevival.network;
 
+import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalConfig;
-import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -46,11 +46,11 @@ public class RescueMessage {
                     }
                 }
                 if (target != null) {
-                    HardcoreRevivalManager.startRescue(player, target);
+                    HardcoreRevival.getManager().startRescue(player, target);
 
                 }
             } else {
-                HardcoreRevivalManager.abortRescue(player);
+                HardcoreRevival.getManager().abortRescue(player);
             }
         });
         context.setPacketHandled(true);
