@@ -52,4 +52,8 @@ public class KnockoutScreen extends Screen {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
+    @Override
+    public boolean isPauseScreen() {
+        return false;
+    }
 }

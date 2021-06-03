@@ -7,12 +7,15 @@ import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.network.RescueMessage;
 import net.blay09.mods.hardcorerevival.network.NetworkHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -25,12 +28,14 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = HardcoreRevival.MOD_ID)
 public class HardcoreRevivalClient {
 
+    private static boolean wasKnockedOut;
     private static boolean isRescuing;
     private static int targetEntity = -1;
     private static float targetProgress;
 
     private static boolean isKnockedOut() {
-        return HardcoreRevival.getClientRevivalData().isKnockedOut();
+        ClientPlayerEntity player = Minecraft.getInstance().player;
+        return HardcoreRevival.getClientRevivalData().isKnockedOut() && player != null && player.isAlive();
     }
 
     @SubscribeEvent
@@ -124,9 +129,19 @@ public class HardcoreRevivalClient {
             Minecraft mc = Minecraft.getInstance();
             if (mc.player != null) {
                 if (isKnockedOut()) {
+                    if (!wasKnockedOut) {
+                        mc.displayGuiScreen(new KnockoutScreen());
+                        wasKnockedOut = true;
+                    }
+
                     HardcoreRevivalData revivalData = HardcoreRevival.getRevivalData(mc.player);
                     revivalData.setKnockoutTicksPassed(revivalData.getKnockoutTicksPassed() + 1);
                 } else {
+                    // If knockout screen is still shown, close it
+                    if (mc.currentScreen instanceof KnockoutScreen) {
+                        mc.displayGuiScreen(null);
+                    }
+
                     // If right mouse is held down, and player is not in spectator mode, send rescue packet
                     if (mc.mouseHelper.isRightDown() && !mc.player.isSpectator()) {
                         if (!isRescuing) {

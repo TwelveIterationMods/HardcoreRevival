@@ -4,11 +4,16 @@ package net.blay09.mods.hardcorerevival.handler;
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
+import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -19,13 +24,24 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = HardcoreRevival.MOD_ID)
 public class KnockoutHandler {
 
+    @SubscribeEvent
+    public static void onAttack(LivingAttackEvent event) {
+        if (event.getEntityLiving() instanceof PlayerEntity && HardcoreRevival.getRevivalData(event.getEntityLiving()).isKnockedOut()) {
+            Entity attacker = event.getSource().getTrueSource();
+            if (attacker instanceof MobEntity) {
+                ((MobEntity) attacker).setAttackTarget(null);
+            }
+            event.setCanceled(true);
+        }
+    }
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onPlayerDamage(LivingDamageEvent event) {
         if (event.getEntityLiving() instanceof ServerPlayerEntity) {
             PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
-            boolean canKnockout = event.getSource() != DamageSource.OUT_OF_WORLD;
-            if (canKnockout && player.getHealth() - event.getAmount() <= 0f) {
+            boolean canDamageSourceKnockout = event.getSource() != DamageSource.OUT_OF_WORLD;
+            if (canDamageSourceKnockout && player.getHealth() - event.getAmount() <= 0f) {
                 // Reduce damage to prevent the player from dying
                 event.setAmount(Math.min(event.getAmount(), Math.max(0f, player.getHealth() - 1f)));
 
@@ -39,7 +55,7 @@ public class KnockoutHandler {
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.phase == TickEvent.Phase.START && event.side == LogicalSide.SERVER) {
             HardcoreRevivalData revivalData = HardcoreRevival.getRevivalData(event.player);
-            if (revivalData.isKnockedOut()) {
+            if (revivalData.isKnockedOut() && event.player.isAlive()) {
                 // Make sure health stays locked at half a heart
                 event.player.setHealth(1f);
 
@@ -49,6 +65,13 @@ public class KnockoutHandler {
                     HardcoreRevival.getManager().notRescuedInTime(event.player);
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerDeath(LivingDeathEvent event) {
+        if (event.getEntityLiving() instanceof PlayerEntity) {
+            HardcoreRevival.getManager().reset(((PlayerEntity) event.getEntityLiving()));
         }
     }
 

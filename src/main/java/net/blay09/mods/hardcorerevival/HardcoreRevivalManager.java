@@ -7,6 +7,7 @@ import net.blay09.mods.hardcorerevival.network.HardcoreRevivalDataMessage;
 import net.blay09.mods.hardcorerevival.network.RevivalProgressMessage;
 import net.blay09.mods.hardcorerevival.network.NetworkHandler;
 import net.blay09.mods.hardcorerevival.network.RevivalSuccessMessage;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
@@ -96,9 +97,8 @@ public class HardcoreRevivalManager implements IHardcoreRevivalManager {
 
     public void notRescuedInTime(PlayerEntity player) {
         player.getCombatTracker().trackDamage(notRescuedInTime, 0, 0);
-        player.onDeath(notRescuedInTime);
-
-        reset(player);
+        player.setHealth(0f);
+        NetworkHandler.sendToPlayer(player, new HardcoreRevivalDataMessage(false, 0));
     }
 
     public void reset(PlayerEntity player) {
@@ -111,6 +111,12 @@ public class HardcoreRevivalManager implements IHardcoreRevivalManager {
     public void updateKnockoutEffects(PlayerEntity player, boolean knockedOut) {
         if (HardcoreRevivalConfig.COMMON.glowOnDeath.get()) {
             player.setGlowing(knockedOut);
+        }
+
+        if (knockedOut) {
+            player.setForcedPose(Pose.FALL_FLYING);
+        } else {
+            player.setForcedPose(null);
         }
 
         HardcoreRevivalData revivalData = getRevivalData(player);

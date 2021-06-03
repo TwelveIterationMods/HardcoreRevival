@@ -34,6 +34,7 @@ public class PersistenceHandler {
             HardcoreRevivalData revivalData = HardcoreRevival.getRevivalData(player);
             HardcoreRevivalDataCapability.REVIVAL_CAPABILITY.readNBT(revivalData, null, data.getCompound("HardcoreRevival"));
             NetworkHandler.sendToPlayer(player, new HardcoreRevivalDataMessage(revivalData.isKnockedOut(), revivalData.getKnockoutTicksPassed()));
+            HardcoreRevival.getManager().updateKnockoutEffects(player, revivalData.isKnockedOut());
         }
     }
 

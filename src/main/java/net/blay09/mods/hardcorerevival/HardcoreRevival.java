@@ -14,7 +14,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(HardcoreRevival.MOD_ID)
-@Mod.EventBusSubscriber
 public class HardcoreRevival {
     public static final String MOD_ID = "hardcorerevival";
 
