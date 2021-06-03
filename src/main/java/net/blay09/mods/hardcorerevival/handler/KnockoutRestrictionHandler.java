@@ -41,7 +41,9 @@ public class KnockoutRestrictionHandler {
         PlayerEntity player = event.getPlayer();
         if (player != null && HardcoreRevival.getRevivalData(player).isKnockedOut()) {
             if (!(event instanceof PlayerInteractEvent.RightClickEmpty || event instanceof PlayerInteractEvent.LeftClickEmpty)) {
-                event.setCanceled(true);
+                if (!HardcoreRevivalConfig.COMMON.allowBows.get() || !(event.getItemStack().getItem() instanceof BowItem)) {
+                    event.setCanceled(true);
+                }
             }
         }
     }
@@ -49,12 +51,8 @@ public class KnockoutRestrictionHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onPlayerUse(LivingEntityUseItemEvent event) {
         LivingEntity entity = event.getEntityLiving();
-        if (event.isCancelable() && entity instanceof PlayerEntity) {
-            if (HardcoreRevivalConfig.COMMON.allowBows.get() && event.getItem().getItem() instanceof BowItem) {
-                return;
-            }
-
-            if (HardcoreRevival.getRevivalData(entity).isKnockedOut()) {
+        if (event.isCancelable() && entity instanceof PlayerEntity && HardcoreRevival.getRevivalData(entity).isKnockedOut()) {
+            if (!HardcoreRevivalConfig.COMMON.allowBows.get() || !(event.getItem().getItem() instanceof BowItem)) {
                 event.setCanceled(true);
             }
         }
