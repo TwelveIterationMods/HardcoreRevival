@@ -98,7 +98,7 @@ public class HardcoreRevivalClient {
                         } else if (targetProgress >= 0.25f) {
                             s.appendString(" .");
                         }
-                        mc.fontRenderer.func_238422_b_(event.getMatrixStack(), s.func_241878_f(), mc.getMainWindow().getScaledWidth() / 2f - mc.fontRenderer.getStringPropertyWidth(s) / 2f, mc.getMainWindow().getScaledHeight() / 2f + 30, 0xFFFFFFFF); // drawString, getStringWidth
+                        mc.fontRenderer.func_243246_a(event.getMatrixStack(), s, mc.getMainWindow().getScaledWidth() / 2f - mc.fontRenderer.getStringPropertyWidth(s) / 2f, mc.getMainWindow().getScaledHeight() / 2f + 30, 0xFFFFFFFF); // drawString, getStringWidth
                         mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
                     }
                 }
@@ -142,7 +142,7 @@ public class HardcoreRevivalClient {
                     }
 
                     // If right mouse is held down, and player is not in spectator mode, send rescue packet
-                    if (mc.mouseHelper.isRightDown() && !mc.player.isSpectator()) {
+                    if (mc.mouseHelper.isRightDown() && !mc.player.isSpectator() && mc.player.isAlive() && !HardcoreRevival.getClientRevivalData().isKnockedOut()) {
                         if (!isRescuing) {
                             NetworkHandler.channel.sendToServer(new RescueMessage(true));
                             isRescuing = true;

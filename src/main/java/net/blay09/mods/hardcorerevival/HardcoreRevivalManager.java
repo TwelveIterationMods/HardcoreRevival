@@ -65,7 +65,10 @@ public class HardcoreRevivalManager implements IHardcoreRevivalManager {
         updateKnockoutEffects(player, true);
     }
 
-    public static void wakeup(PlayerEntity player) {
+    public void wakeup(PlayerEntity player) {
+        reset(player);
+        NetworkHandler.sendToPlayer(player, new HardcoreRevivalDataMessage(false, 0));
+
         player.setHealth(HardcoreRevivalConfig.COMMON.rescueRespawnHealth.get());
         player.getFoodStats().setFoodLevel(HardcoreRevivalConfig.COMMON.rescueRespawnFoodLevel.get());
         player.addPotionEffect(new EffectInstance(Effects.HUNGER, 20 * 30)); // Hunger

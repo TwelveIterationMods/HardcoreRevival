@@ -3,7 +3,7 @@ package net.blay09.mods.hardcorerevival;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class HardcoreRevivalConfig {
+public class HardcoreRevivalConfig { // TODO sync to client
 
     public static class Common {
         public final ForgeConfigSpec.ConfigValue<Integer> maxDeathTicks;
