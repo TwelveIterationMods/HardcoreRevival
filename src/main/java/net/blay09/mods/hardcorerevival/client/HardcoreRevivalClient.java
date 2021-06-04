@@ -131,7 +131,10 @@ public class HardcoreRevivalClient {
                     HardcoreRevivalData revivalData = HardcoreRevival.getRevivalData(mc.player);
                     revivalData.setKnockoutTicksPassed(revivalData.getKnockoutTicksPassed() + 1);
                 } else {
-                    wasKnockedOut = false;
+                    if (wasKnockedOut) {
+                        mc.player.setForcedPose(null);
+                        wasKnockedOut = false;
+                    }
 
                     // If knockout screen is still shown, close it
                     if (mc.currentScreen instanceof KnockoutScreen) {

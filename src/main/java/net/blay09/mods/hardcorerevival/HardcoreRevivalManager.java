@@ -24,7 +24,9 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import java.util.Objects;
 
 public class HardcoreRevivalManager implements IHardcoreRevivalManager {
-    public static final DamageSource notRescuedInTime = new DamageSource("not_rescued_in_time");
+    public static final DamageSource notRescuedInTime = new DamageSource("not_rescued_in_time")
+            .setDamageIsAbsolute()
+            .setDamageBypassesArmor();
 
     @Override
     public HardcoreRevivalData getRevivalData(PlayerEntity player) {
@@ -96,8 +98,8 @@ public class HardcoreRevivalManager implements IHardcoreRevivalManager {
     }
 
     public void notRescuedInTime(PlayerEntity player) {
-        player.getCombatTracker().trackDamage(notRescuedInTime, 0, 0);
-        player.setHealth(0f);
+        player.attackEntityFrom(notRescuedInTime, player.getHealth());
+        reset(player);
         NetworkHandler.sendToPlayer(player, new HardcoreRevivalDataMessage(false, 0));
     }
 
@@ -105,6 +107,7 @@ public class HardcoreRevivalManager implements IHardcoreRevivalManager {
         updateKnockoutEffects(player, false);
 
         HardcoreRevivalData revivalData = getRevivalData(player);
+        revivalData.setKnockedOut(false);
         revivalData.setKnockoutTicksPassed(0);
     }
 

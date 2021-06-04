@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 
 public class MixinHooks {
 
-    public static boolean shouldCancelMovement(Entity entity, MoverType type, Vector3d pos) {
+    public static boolean shouldCancelMovement(Entity entity, MoverType type, Vector3d pos) { // TODO not yet called on server
         return entity instanceof PlayerEntity && HardcoreRevival.getRevivalData(entity).isKnockedOut();
     }
 

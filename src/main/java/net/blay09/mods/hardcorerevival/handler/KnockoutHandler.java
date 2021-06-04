@@ -3,6 +3,7 @@ package net.blay09.mods.hardcorerevival.handler;
 
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalConfig;
+import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
@@ -31,7 +32,9 @@ public class KnockoutHandler {
             if (attacker instanceof MobEntity) {
                 ((MobEntity) attacker).setAttackTarget(null);
             }
-            event.setCanceled(true);
+            if (event.getSource().canHarmInCreative() && event.getSource() != HardcoreRevivalManager.notRescuedInTime) {
+                event.setCanceled(true);
+            }
         }
     }
 
@@ -40,7 +43,7 @@ public class KnockoutHandler {
         if (event.getEntityLiving() instanceof ServerPlayerEntity) {
             PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
-            boolean canDamageSourceKnockout = event.getSource() != DamageSource.OUT_OF_WORLD;
+            boolean canDamageSourceKnockout = event.getSource() != DamageSource.OUT_OF_WORLD && event.getSource() != HardcoreRevivalManager.notRescuedInTime;
             if (canDamageSourceKnockout && player.getHealth() - event.getAmount() <= 0f) {
                 // Reduce damage to prevent the player from dying
                 event.setAmount(Math.min(event.getAmount(), Math.max(0f, player.getHealth() - 1f)));
