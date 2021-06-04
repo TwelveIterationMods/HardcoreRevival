@@ -38,10 +38,6 @@ public class HardcoreRevival {
     }
 
     public static HardcoreRevivalData getRevivalData(Entity entity) {
-        if (entity.world.isRemote) {
-            return clientRevivalData;
-        }
-
         return entity instanceof PlayerEntity ? manager.getRevivalData(((PlayerEntity) entity)) : InvalidHardcoreRevivalData.INSTANCE;
     }
 

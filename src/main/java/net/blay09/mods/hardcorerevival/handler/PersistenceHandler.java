@@ -33,14 +33,13 @@ public class PersistenceHandler {
             CompoundNBT data = player.getPersistentData().getCompound(PlayerEntity.PERSISTED_NBT_TAG);
             HardcoreRevivalData revivalData = HardcoreRevival.getRevivalData(player);
             HardcoreRevivalDataCapability.REVIVAL_CAPABILITY.readNBT(revivalData, null, data.getCompound("HardcoreRevival"));
-            NetworkHandler.sendToPlayer(player, new HardcoreRevivalDataMessage(revivalData.isKnockedOut(), revivalData.getKnockoutTicksPassed()));
-            HardcoreRevival.getManager().updateKnockoutEffects(player, revivalData.isKnockedOut());
+            HardcoreRevival.getManager().updateKnockoutEffects(player);
         }
     }
 
     @SubscribeEvent
     public static void onCapabilityInject(AttachCapabilitiesEvent<Entity> event) {
-        if (event.getObject() instanceof ServerPlayerEntity) {
+        if (event.getObject() instanceof PlayerEntity) {
             event.addCapability(HardcoreRevivalDataCapability.REGISTRY_NAME, new ICapabilityProvider() {
                 private LazyOptional<HardcoreRevivalData> revival;
 

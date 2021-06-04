@@ -90,15 +90,25 @@ public class HardcoreRevivalClient {
                 if (targetEntity != -1 && targetProgress > 0) {
                     Entity entity = mc.world.getEntityByID(targetEntity);
                     if (entity instanceof PlayerEntity) {
-                        TextComponent s = new TranslationTextComponent("gui.hardcorerevival.rescuing", entity.getDisplayName());
+                        TextComponent textComponent = new TranslationTextComponent("gui.hardcorerevival.rescuing", entity.getDisplayName());
                         if (targetProgress >= 0.75f) {
-                            s.appendString(" ...");
+                            textComponent.appendString(" ...");
                         } else if (targetProgress >= 0.5f) {
-                            s.appendString(" ..");
+                            textComponent.appendString(" ..");
                         } else if (targetProgress >= 0.25f) {
-                            s.appendString(" .");
+                            textComponent.appendString(" .");
                         }
-                        mc.fontRenderer.func_243246_a(event.getMatrixStack(), s, mc.getMainWindow().getScaledWidth() / 2f - mc.fontRenderer.getStringPropertyWidth(s) / 2f, mc.getMainWindow().getScaledHeight() / 2f + 30, 0xFFFFFFFF); // drawString, getStringWidth
+                        mc.fontRenderer.func_243246_a(event.getMatrixStack(), textComponent, mc.getMainWindow().getScaledWidth() / 2f - mc.fontRenderer.getStringPropertyWidth(textComponent) / 2f, mc.getMainWindow().getScaledHeight() / 2f + 30, 0xFFFFFFFF); // drawString, getStringWidth
+                        mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
+                    }
+                }
+
+                if (!HardcoreRevival.getClientRevivalData().isKnockedOut() && mc.player != null && !mc.player.isSpectator() && mc.player.isAlive() && !isRescuing) {
+                    Entity pointedEntity = Minecraft.getInstance().pointedEntity;
+                    if (pointedEntity != null && HardcoreRevival.getRevivalData(pointedEntity).isKnockedOut()) {
+                        ITextComponent rescueKeyText = mc.gameSettings.keyBindUseItem.func_238171_j_(); // getDisplayName()
+                        ITextComponent textComponent = new TranslationTextComponent("gui.hardcorerevival.hold_to_rescue", rescueKeyText);
+                        mc.fontRenderer.func_243246_a(event.getMatrixStack(), textComponent, mc.getMainWindow().getScaledWidth() / 2f - mc.fontRenderer.getStringPropertyWidth(textComponent) / 2f, mc.getMainWindow().getScaledHeight() / 2f + 30, 0xFFFFFFFF); // drawString, getStringWidth
                         mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
                     }
                 }
@@ -142,7 +152,7 @@ public class HardcoreRevivalClient {
                     }
 
                     // If right mouse is held down, and player is not in spectator mode, send rescue packet
-                    if (mc.mouseHelper.isRightDown() && !mc.player.isSpectator() && mc.player.isAlive() && !HardcoreRevival.getClientRevivalData().isKnockedOut()) {
+                    if (mc.gameSettings.keyBindUseItem.isKeyDown() && !mc.player.isSpectator() && mc.player.isAlive() && !HardcoreRevival.getClientRevivalData().isKnockedOut()) {
                         if (!isRescuing) {
                             NetworkHandler.channel.sendToServer(new RescueMessage(true));
                             isRescuing = true;
