@@ -93,7 +93,7 @@ public class HardcoreRevivalManager implements IHardcoreRevivalManager {
             IHardcoreRevivalConfig config = HardcoreRevivalConfig.getActive();
             player.setHealth(config.getRescueRespawnHealth());
             player.getFoodStats().setFoodLevel(config.getRescueRespawnFoodLevel());
-            // TODO client only, won't bother: player.getFoodStats().setFoodSaturationLevel((float) config.getRescueRespawnFoodSaturation());
+            // client only, won't bother: player.getFoodStats().setFoodSaturationLevel((float) config.getRescueRespawnFoodSaturation());
 
             for (String effectString : config.getRescueRespawnEffects()) {
                 String[] parts = effectString.split("\\|");

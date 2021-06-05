@@ -5,6 +5,9 @@ import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
+import net.blay09.mods.hardcorerevival.mixin.LivingEntityAccessor;
+import net.blay09.mods.hardcorerevival.mixin.ServerPlayerEntityAccessor;
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -47,9 +50,10 @@ public class KnockoutHandler {
                 // Reduce damage to prevent the player from dying
                 event.setAmount(Math.min(event.getAmount(), Math.max(0f, player.getHealth() - 1f)));
 
-                // Trigger knockout for this player
-                // TODO handle totem?
-                HardcoreRevival.getManager().knockout(player, event.getSource());
+                // Trigger knockout for this player, if totem does not protect player
+                if (!((LivingEntityAccessor) player).callCheckTotemDeathProtection(event.getSource())) {
+                    HardcoreRevival.getManager().knockout(player, event.getSource());
+                }
             }
         }
     }
