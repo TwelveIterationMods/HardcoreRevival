@@ -9,7 +9,6 @@
   "gui.hardcorerevival.rescuing": "Rescuing %s",
   "death.attack.not_rescued_in_time": "%1$s was not rescued in time",
   "death.attack.not_rescued_in_time.player": "%1$s was not rescued in time",
-  "gui.hardcorerevival.send_ping": "Send Ping",
   "config.hardcorerevival.maxDeathTicks": "Death Timer",
   "config.hardcorerevival.maxDeathTicks.tooltip": "The time in ticks in which a player can still be rescued from death. 20 ticks are one second.",
   "config.hardcorerevival.maxRescueDist": "Max Rescue Distance",
@@ -21,5 +20,7 @@
   "config.hardcorerevival.rescueRespawnHealth": "Rescue Respawn Health",
   "config.hardcorerevival.rescueRespawnHealth.tooltip": "The amount of health to respawn with when a player was rescued, out of 20.",
   "config.hardcorerevival.rescueRespawnFoodLevel": "Rescue Respawn Food Level",
-  "config.hardcorerevival.rescueRespawnFoodLevel.tooltip": "The food level to respawn with when a player was rescued, out of 20."
+  "config.hardcorerevival.rescueRespawnFoodLevel.tooltip": "The food level to respawn with when a player was rescued, out of 20.",
+  "commands.revive.success.single": "Revived %s",
+  "commands.revive.success.multiple": "Revived %s players"
 }

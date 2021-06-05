@@ -4,11 +4,15 @@ import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalDataCapability;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalDataImpl;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.capability.InvalidHardcoreRevivalData;
+import net.blay09.mods.hardcorerevival.command.ReviveCommand;
 import net.blay09.mods.hardcorerevival.compat.Compat;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.network.NetworkHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -29,6 +33,7 @@ public class HardcoreRevival {
 
     public HardcoreRevival() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+        MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, HardcoreRevivalConfig.commonSpec);
     }
@@ -46,6 +51,10 @@ public class HardcoreRevival {
                 }
             }
         });
+    }
+
+    private void registerCommands(RegisterCommandsEvent event) {
+        ReviveCommand.register(event.getDispatcher());
     }
 
     public static HardcoreRevivalManager getManager() {

@@ -82,27 +82,33 @@ public class HardcoreRevivalManager implements IHardcoreRevivalManager {
     }
 
     public void wakeup(PlayerEntity player) {
+        wakeup(player, true);
+    }
+
+    public void wakeup(PlayerEntity player, boolean applyEffects) {
         reset(player);
 
-        IHardcoreRevivalConfig config = HardcoreRevivalConfig.getActive();
-        player.setHealth(config.getRescueRespawnHealth());
-        player.getFoodStats().setFoodLevel(config.getRescueRespawnFoodLevel());
-        player.getFoodStats().setFoodSaturationLevel((float) config.getRescueRespawnFoodSaturation());
+        if (applyEffects) {
+            IHardcoreRevivalConfig config = HardcoreRevivalConfig.getActive();
+            player.setHealth(config.getRescueRespawnHealth());
+            player.getFoodStats().setFoodLevel(config.getRescueRespawnFoodLevel());
+            player.getFoodStats().setFoodSaturationLevel((float) config.getRescueRespawnFoodSaturation());
 
-        for (String effectString : config.getRescueRespawnEffects()) {
-            String[] parts = effectString.split("\\|");
-            ResourceLocation registryName = ResourceLocation.tryCreate(parts[0]);
-            if (registryName != null) {
-                Effect effect = ForgeRegistries.POTIONS.getValue(registryName);
-                if (effect != null) {
-                    int duration = tryParseInt(parts.length >= 2 ? parts[1] : null, 600);
-                    int amplifier = tryParseInt(parts.length >= 3 ? parts[2] : null, 0);
-                    player.addPotionEffect(new EffectInstance(effect, duration, amplifier));
+            for (String effectString : config.getRescueRespawnEffects()) {
+                String[] parts = effectString.split("\\|");
+                ResourceLocation registryName = ResourceLocation.tryCreate(parts[0]);
+                if (registryName != null) {
+                    Effect effect = ForgeRegistries.POTIONS.getValue(registryName);
+                    if (effect != null) {
+                        int duration = tryParseInt(parts.length >= 2 ? parts[1] : null, 600);
+                        int amplifier = tryParseInt(parts.length >= 3 ? parts[2] : null, 0);
+                        player.addPotionEffect(new EffectInstance(effect, duration, amplifier));
+                    } else {
+                        HardcoreRevival.logger.info("Invalid rescue potion effect '{}'" + parts[0]);
+                    }
                 } else {
                     HardcoreRevival.logger.info("Invalid rescue potion effect '{}'" + parts[0]);
                 }
-            } else {
-                HardcoreRevival.logger.info("Invalid rescue potion effect '{}'" + parts[0]);
             }
         }
     }
