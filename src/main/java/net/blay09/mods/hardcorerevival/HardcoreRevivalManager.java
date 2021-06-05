@@ -3,8 +3,9 @@ package net.blay09.mods.hardcorerevival;
 import net.blay09.mods.hardcorerevival.api.PlayerKnockedOutEvent;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalDataCapability;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
+import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
+import net.blay09.mods.hardcorerevival.config.IHardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.handler.KnockoutSyncHandler;
-import net.blay09.mods.hardcorerevival.network.HardcoreRevivalDataMessage;
 import net.blay09.mods.hardcorerevival.network.RevivalProgressMessage;
 import net.blay09.mods.hardcorerevival.network.NetworkHandler;
 import net.blay09.mods.hardcorerevival.network.RevivalSuccessMessage;
@@ -13,7 +14,6 @@ import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
@@ -26,7 +26,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -85,10 +84,12 @@ public class HardcoreRevivalManager implements IHardcoreRevivalManager {
     public void wakeup(PlayerEntity player) {
         reset(player);
 
-        player.setHealth(HardcoreRevivalConfig.COMMON.rescueRespawnHealth.get());
-        player.getFoodStats().setFoodLevel(HardcoreRevivalConfig.COMMON.rescueRespawnFoodLevel.get());
+        IHardcoreRevivalConfig config = HardcoreRevivalConfig.getActive();
+        player.setHealth(config.getRescueRespawnHealth());
+        player.getFoodStats().setFoodLevel(config.getRescueRespawnFoodLevel());
+        player.getFoodStats().setFoodSaturationLevel((float) config.getRescueRespawnFoodSaturation());
 
-        for (String effectString : HardcoreRevivalConfig.COMMON.rescueRespawnEffects.get()) {
+        for (String effectString : config.getRescueRespawnEffects()) {
             String[] parts = effectString.split("\\|");
             ResourceLocation registryName = ResourceLocation.tryCreate(parts[0]);
             if (registryName != null) {
@@ -131,15 +132,21 @@ public class HardcoreRevivalManager implements IHardcoreRevivalManager {
                 revivalData.setRescueTarget(null);
             }
         }
+
+        player.setForcedPose(null);
     }
 
     public void abortRescue(PlayerEntity player) {
         HardcoreRevivalData revivalData = getRevivalData(player);
-        if (revivalData.getRescueTarget() != null) {
+        PlayerEntity rescueTarget = revivalData.getRescueTarget();
+        if (rescueTarget != null) {
             revivalData.setRescueTime(0);
             revivalData.setRescueTarget(null);
             NetworkHandler.sendToPlayer(player, new RevivalProgressMessage(-1, -1));
+            KnockoutSyncHandler.sendHardcoreRevivalData(rescueTarget, rescueTarget, getRevivalData(rescueTarget));
         }
+
+        player.setForcedPose(null);
     }
 
     public void notRescuedInTime(PlayerEntity player) {
@@ -159,7 +166,7 @@ public class HardcoreRevivalManager implements IHardcoreRevivalManager {
 
     public void updateKnockoutEffects(PlayerEntity player) {
         HardcoreRevivalData revivalData = getRevivalData(player);
-        if (HardcoreRevivalConfig.COMMON.glowOnDeath.get()) {
+        if (HardcoreRevivalConfig.getActive().isGlowOnKnockoutEnabled()) {
             player.setGlowing(revivalData.isKnockedOut());
         }
 
@@ -173,5 +180,8 @@ public class HardcoreRevivalManager implements IHardcoreRevivalManager {
         revivalData.setRescueTarget(target);
         revivalData.setRescueTime(0);
         NetworkHandler.sendToPlayer(player, new RevivalProgressMessage(target.getEntityId(), 0.1f));
+        KnockoutSyncHandler.sendHardcoreRevivalData(target, target, getRevivalData(target), true);
+
+        player.setForcedPose(Pose.CROUCHING);
     }
 }

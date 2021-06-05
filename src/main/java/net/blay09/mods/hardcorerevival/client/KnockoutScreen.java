@@ -44,7 +44,7 @@ public class KnockoutScreen extends Screen {
             }
 
             GuiHelper.renderKnockedOutTitle(matrixStack, width);
-            GuiHelper.renderDeathTimer(matrixStack, width, height);
+            GuiHelper.renderDeathTimer(matrixStack, width, height, HardcoreRevivalClient.isBeingRescued());
         } else if (buttonDie != null) {
             buttonDie.visible = false;
         }

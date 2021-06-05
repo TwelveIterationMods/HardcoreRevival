@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.api.PlayerKnockedOutEvent;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
+import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.network.RescueMessage;
 import net.blay09.mods.hardcorerevival.network.NetworkHandler;
 import net.minecraft.client.Minecraft;
@@ -15,7 +16,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -32,6 +32,7 @@ public class HardcoreRevivalClient {
     private static boolean isRescuing;
     private static int targetEntity = -1;
     private static float targetProgress;
+    private static boolean beingRescued;
 
     private static boolean isKnockedOut() {
         ClientPlayerEntity player = Minecraft.getInstance().player;
@@ -78,7 +79,7 @@ public class HardcoreRevivalClient {
                     int width = event.getWindow().getScaledWidth();
                     int height = event.getWindow().getScaledHeight();
                     GuiHelper.renderKnockedOutTitle(event.getMatrixStack(), width);
-                    GuiHelper.renderDeathTimer(event.getMatrixStack(), width, height);
+                    GuiHelper.renderDeathTimer(event.getMatrixStack(), width, height, beingRescued);
 
                     ITextComponent openDeathScreenKey = mc.gameSettings.keyBindInventory.func_238171_j_(); // getDisplayName()
                     final TranslationTextComponent openDeathScreenText = new TranslationTextComponent("gui.hardcorerevival.open_death_screen", openDeathScreenKey);
@@ -105,7 +106,7 @@ public class HardcoreRevivalClient {
 
                 if (!HardcoreRevival.getClientRevivalData().isKnockedOut() && mc.player != null && !mc.player.isSpectator() && mc.player.isAlive() && !isRescuing) {
                     Entity pointedEntity = Minecraft.getInstance().pointedEntity;
-                    if (pointedEntity != null && HardcoreRevival.getRevivalData(pointedEntity).isKnockedOut()) {
+                    if (pointedEntity != null && HardcoreRevival.getRevivalData(pointedEntity).isKnockedOut() && mc.player.getDistance(pointedEntity) <= HardcoreRevivalConfig.getActive().getRescueDistance()) {
                         ITextComponent rescueKeyText = mc.gameSettings.keyBindUseItem.func_238171_j_(); // getDisplayName()
                         ITextComponent textComponent = new TranslationTextComponent("gui.hardcorerevival.hold_to_rescue", rescueKeyText);
                         mc.fontRenderer.func_243246_a(event.getMatrixStack(), textComponent, mc.getMainWindow().getScaledWidth() / 2f - mc.fontRenderer.getStringPropertyWidth(textComponent) / 2f, mc.getMainWindow().getScaledHeight() / 2f + 30, 0xFFFFFFFF); // drawString, getStringWidth
@@ -175,10 +176,21 @@ public class HardcoreRevivalClient {
         if (progress < 0) {
             targetEntity = -1;
             targetProgress = 0f;
+
+            Minecraft.getInstance().player.setForcedPose(null);
         } else {
             targetEntity = entityId;
             targetProgress = progress;
+
+            Minecraft.getInstance().player.setForcedPose(Pose.CROUCHING);
         }
     }
 
+    public static void setBeingRescued(boolean beingRescued) {
+        HardcoreRevivalClient.beingRescued = beingRescued;
+    }
+
+    public static boolean isBeingRescued() {
+        return beingRescued;
+    }
 }

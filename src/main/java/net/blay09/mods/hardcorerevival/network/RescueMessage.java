@@ -1,7 +1,7 @@
 package net.blay09.mods.hardcorerevival.network;
 
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
-import net.blay09.mods.hardcorerevival.HardcoreRevivalConfig;
+import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -34,7 +34,7 @@ public class RescueMessage {
             }
 
             if (message.active) {
-                final double range = HardcoreRevivalConfig.COMMON.rescueDistance.get();
+                final double range = HardcoreRevivalConfig.getActive().getRescueDistance();
                 List<PlayerEntity> candidates = player.world.getEntitiesWithinAABB(PlayerEntity.class, player.getBoundingBox().grow(range), p -> p != null && HardcoreRevival.getRevivalData(p).isKnockedOut());
                 float minDist = Float.MAX_VALUE;
                 PlayerEntity target = null;

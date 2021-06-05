@@ -1,7 +1,7 @@
 package net.blay09.mods.hardcorerevival.handler;
 
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
-import net.blay09.mods.hardcorerevival.HardcoreRevivalConfig;
+import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.network.RevivalProgressMessage;
 import net.blay09.mods.hardcorerevival.network.NetworkHandler;
@@ -37,22 +37,29 @@ public class RescueHandler {
             PlayerEntity rescueTarget = revivalData.getRescueTarget();
             if (rescueTarget != null) {
                 // Stop rescuing if the target logged out
-                final int knockoutTicksPassed = HardcoreRevival.getRevivalData(rescueTarget).getKnockoutTicksPassed();
-                if (!rescueTarget.isAlive() || knockoutTicksPassed >= HardcoreRevivalConfig.COMMON.ticksUntilDeath.get()) {
+                HardcoreRevivalData rescueTargetData = HardcoreRevival.getRevivalData(rescueTarget);
+                final int knockoutTicksPassed = rescueTargetData.getKnockoutTicksPassed();
+                if (!rescueTarget.isAlive() || knockoutTicksPassed >= HardcoreRevivalConfig.getActive().getTicksUntilDeath()) {
                     HardcoreRevival.getManager().abortRescue(event.player);
                 } else {
                     // Stop rescuing if the player is out of range
                     float dist = event.player.getDistance(rescueTarget);
-                    if (dist > HardcoreRevivalConfig.COMMON.rescueDistance.get()) {
+                    if (dist > HardcoreRevivalConfig.getActive().getRescueDistance()) {
                         HardcoreRevival.getManager().abortRescue(event.player);
                     } else {
                         int rescueTime = revivalData.getRescueTime() + 1;
                         revivalData.setRescueTime(rescueTime);
-                        int step = HardcoreRevivalConfig.COMMON.rescueActionTicks.get() / 4;
-                        if (rescueTime >= HardcoreRevivalConfig.COMMON.rescueActionTicks.get()) {
+
+                        // Delay death while rescuing
+                        rescueTargetData.setKnockoutTicksPassed(knockoutTicksPassed - 1);
+
+                        int maxRescueActionTicks = HardcoreRevivalConfig.getActive().getRescueActionTicks();
+                        int step = maxRescueActionTicks / 4;
+                        if (rescueTime >= maxRescueActionTicks) {
                             HardcoreRevival.getManager().finishRescue(event.player);
                         } else if (rescueTime % step == 0) {
-                            NetworkHandler.sendToPlayer(event.player, new RevivalProgressMessage(rescueTarget.getEntityId(), (float) rescueTime / (float) HardcoreRevivalConfig.COMMON.rescueActionTicks.get()));
+                            NetworkHandler.sendToPlayer(event.player, new RevivalProgressMessage(rescueTarget.getEntityId(), (float) rescueTime / (float) maxRescueActionTicks));
+                            KnockoutSyncHandler.sendHardcoreRevivalData(rescueTarget, rescueTarget, rescueTargetData, true);
                         }
                     }
                 }

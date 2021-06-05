@@ -3,6 +3,7 @@ package net.blay09.mods.hardcorerevival.handler;
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalDataCapability;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
+import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.network.HardcoreRevivalDataMessage;
 import net.blay09.mods.hardcorerevival.network.NetworkHandler;
 import net.minecraft.entity.Entity;
@@ -24,7 +25,7 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 
 @Mod.EventBusSubscriber(modid = HardcoreRevival.MOD_ID)
-public class PersistenceHandler {
+public class LoginLogoutHandler {
 
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
@@ -34,6 +35,8 @@ public class PersistenceHandler {
             HardcoreRevivalData revivalData = HardcoreRevival.getRevivalData(player);
             HardcoreRevivalDataCapability.REVIVAL_CAPABILITY.readNBT(revivalData, null, data.getCompound("HardcoreRevival"));
             HardcoreRevival.getManager().updateKnockoutEffects(player);
+
+            NetworkHandler.sendToPlayer(player, HardcoreRevivalConfig.getConfigSyncMessage());
         }
     }
 

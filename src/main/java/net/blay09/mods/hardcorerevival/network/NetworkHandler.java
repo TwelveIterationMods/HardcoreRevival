@@ -19,6 +19,7 @@ public class NetworkHandler {
         channel.registerMessage(2, RescueMessage.class, RescueMessage::encode, RescueMessage::decode, RescueMessage::handle);
         channel.registerMessage(3, RevivalProgressMessage.class, RevivalProgressMessage::encode, RevivalProgressMessage::decode, RevivalProgressMessage::handle);
         channel.registerMessage(4, AcceptFateMessage.class, (message, buf) -> {}, it -> new AcceptFateMessage(), AcceptFateMessage::handle);
+        channel.registerMessage(5, HardcoreRevivalConfigMessage.class, HardcoreRevivalConfigMessage::encode, HardcoreRevivalConfigMessage::decode, HardcoreRevivalConfigMessage::handle);
     }
 
     public static void sendToPlayer(PlayerEntity player, Object message) {

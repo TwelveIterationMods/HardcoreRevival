@@ -1,7 +1,7 @@
 package net.blay09.mods.hardcorerevival.handler;
 
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
-import net.blay09.mods.hardcorerevival.HardcoreRevivalConfig;
+import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BowItem;
@@ -41,7 +41,7 @@ public class KnockoutRestrictionHandler {
         PlayerEntity player = event.getPlayer();
         if (player != null && HardcoreRevival.getRevivalData(player).isKnockedOut()) {
             if (!(event instanceof PlayerInteractEvent.RightClickEmpty || event instanceof PlayerInteractEvent.LeftClickEmpty)) {
-                if (!HardcoreRevivalConfig.COMMON.allowBows.get() || !(event.getItemStack().getItem() instanceof BowItem)) {
+                if (!HardcoreRevivalConfig.getActive().areBowsAllowedWhileKnockedOut() || !(event.getItemStack().getItem() instanceof BowItem)) {
                     event.setCanceled(true);
                 }
             }
@@ -52,7 +52,7 @@ public class KnockoutRestrictionHandler {
     public static void onPlayerUse(LivingEntityUseItemEvent event) {
         LivingEntity entity = event.getEntityLiving();
         if (event.isCancelable() && entity instanceof PlayerEntity && HardcoreRevival.getRevivalData(entity).isKnockedOut()) {
-            if (!HardcoreRevivalConfig.COMMON.allowBows.get() || !(event.getItem().getItem() instanceof BowItem)) {
+            if (!HardcoreRevivalConfig.getActive().areBowsAllowedWhileKnockedOut() || !(event.getItem().getItem() instanceof BowItem)) {
                 event.setCanceled(true);
             }
         }
@@ -73,7 +73,7 @@ public class KnockoutRestrictionHandler {
     public static void onAttack(AttackEntityEvent event) {
         PlayerEntity player = event.getPlayer();
         if (player != null && HardcoreRevival.getRevivalData(player).isKnockedOut()) {
-            if (HardcoreRevivalConfig.COMMON.allowUnarmedMelee.get() && player.getHeldItemMainhand().isEmpty()) {
+            if (HardcoreRevivalConfig.getActive().isUnarmedMeleeAllowedWhileKnockedOut() && player.getHeldItemMainhand().isEmpty()) {
                 return;
             }
             event.setCanceled(true);

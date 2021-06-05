@@ -2,7 +2,7 @@ package net.blay09.mods.hardcorerevival.handler;
 
 
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
-import net.blay09.mods.hardcorerevival.HardcoreRevivalConfig;
+import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.minecraft.entity.Entity;
@@ -48,6 +48,7 @@ public class KnockoutHandler {
                 event.setAmount(Math.min(event.getAmount(), Math.max(0f, player.getHealth() - 1f)));
 
                 // Trigger knockout for this player
+                // TODO handle totem?
                 HardcoreRevival.getManager().knockout(player, event.getSource());
             }
         }
@@ -63,7 +64,8 @@ public class KnockoutHandler {
 
                 revivalData.setKnockoutTicksPassed(revivalData.getKnockoutTicksPassed() + 1);
 
-                if (HardcoreRevivalConfig.COMMON.ticksUntilDeath.get() > 0 && revivalData.getKnockoutTicksPassed() >= HardcoreRevivalConfig.COMMON.ticksUntilDeath.get()) {
+                int maxTicksUntilDeath = HardcoreRevivalConfig.getActive().getTicksUntilDeath();
+                if (maxTicksUntilDeath > 0 && revivalData.getKnockoutTicksPassed() >= maxTicksUntilDeath) {
                     HardcoreRevival.getManager().notRescuedInTime(event.player);
                 }
             }

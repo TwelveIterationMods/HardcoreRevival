@@ -27,13 +27,17 @@ public class KnockoutSyncHandler {
     }
 
     public static void sendHardcoreRevivalDataToWatching(PlayerEntity player, HardcoreRevivalData revivalData) {
-        HardcoreRevivalDataMessage message = new HardcoreRevivalDataMessage(player.getEntityId(), revivalData.isKnockedOut(), revivalData.getKnockoutTicksPassed());
+        HardcoreRevivalDataMessage message = new HardcoreRevivalDataMessage(player.getEntityId(), revivalData.isKnockedOut(), revivalData.getKnockoutTicksPassed(), false);
         NetworkHandler.channel.send(PacketDistributor.TRACKING_ENTITY.with(() -> player), message);
         sendHardcoreRevivalData(player, player, revivalData);
     }
 
     public static void sendHardcoreRevivalData(PlayerEntity player, Entity entity, HardcoreRevivalData revivalData) {
-        HardcoreRevivalDataMessage message = new HardcoreRevivalDataMessage(entity.getEntityId(), revivalData.isKnockedOut(), revivalData.getKnockoutTicksPassed());
+        sendHardcoreRevivalData(player, entity, revivalData, false);
+    }
+
+    public static void sendHardcoreRevivalData(PlayerEntity player, Entity entity, HardcoreRevivalData revivalData, boolean beingRescued) {
+        HardcoreRevivalDataMessage message = new HardcoreRevivalDataMessage(entity.getEntityId(), revivalData.isKnockedOut(), revivalData.getKnockoutTicksPassed(), beingRescued);
         NetworkHandler.sendToPlayer(player, message);
     }
 }

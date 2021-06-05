@@ -5,6 +5,7 @@
   "gui.hardcorerevival.hold_to_rescue": "Hold %s to rescue.",
   "gui.hardcorerevival.rescue_time_left": "%d seconds left to be rescued",
   "gui.hardcorerevival.wait_for_rescue": "Wait to be rescued or accept your fate.",
+  "gui.hardcorerevival.being_rescued": "You are being rescued...",
   "gui.hardcorerevival.rescuing": "Rescuing %s",
   "death.attack.not_rescued_in_time": "%1$s was not rescued in time",
   "death.attack.not_rescued_in_time.player": "%1$s was not rescued in time",
