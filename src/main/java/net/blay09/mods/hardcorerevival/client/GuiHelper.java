@@ -26,8 +26,8 @@ public class GuiHelper extends AbstractGui {
 
     public static void renderDeathTimer(MatrixStack matrixStack, int width, int height) {
         FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
-        if (!HardcoreRevivalConfig.COMMON.disableDeathTimer.get()) {
-            int deathSecondsLeft = Math.max(0, (HardcoreRevivalConfig.COMMON.maxDeathTicks.get() - HardcoreRevival.getClientRevivalData().getKnockoutTicksPassed()) / 20);
+        if (HardcoreRevivalConfig.COMMON.ticksUntilDeath.get() > 0) {
+            int deathSecondsLeft = Math.max(0, (HardcoreRevivalConfig.COMMON.ticksUntilDeath.get() - HardcoreRevival.getClientRevivalData().getKnockoutTicksPassed()) / 20);
             AbstractGui.drawCenteredString(matrixStack, fontRenderer, I18n.format("gui.hardcorerevival.rescue_time_left", deathSecondsLeft), width / 2, height / 2 + 10, 16777215);
         } else {
             AbstractGui.drawCenteredString(matrixStack, fontRenderer, I18n.format("gui.hardcorerevival.wait_for_rescue"), width / 2, height / 2 + 10, 16777215);

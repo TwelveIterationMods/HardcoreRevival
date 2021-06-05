@@ -14,7 +14,7 @@ public class MixinHooks {
         return entity instanceof PlayerEntity && HardcoreRevival.getRevivalData(entity).isKnockedOut();
     }
 
-    public static boolean shouldCancelTarget(@Nullable LivingEntity attacker, LivingEntity target) {
+    public static boolean shouldCancelAttackTarget(@Nullable LivingEntity attacker, LivingEntity target) {
         return target instanceof PlayerEntity && HardcoreRevival.getRevivalData(target).isKnockedOut();
     }
 

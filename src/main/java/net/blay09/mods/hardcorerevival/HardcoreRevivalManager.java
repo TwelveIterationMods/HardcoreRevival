@@ -11,11 +11,13 @@ import net.blay09.mods.hardcorerevival.network.RevivalSuccessMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.world.GameRules;
@@ -23,7 +25,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.registries.ForgeRegistries;
+import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
 
 public class HardcoreRevivalManager implements IHardcoreRevivalManager {
@@ -82,8 +87,34 @@ public class HardcoreRevivalManager implements IHardcoreRevivalManager {
 
         player.setHealth(HardcoreRevivalConfig.COMMON.rescueRespawnHealth.get());
         player.getFoodStats().setFoodLevel(HardcoreRevivalConfig.COMMON.rescueRespawnFoodLevel.get());
-        player.addPotionEffect(new EffectInstance(Effects.HUNGER, 20 * 30)); // Hunger
-        player.addPotionEffect(new EffectInstance(Effects.WEAKNESS, 20 * 60)); // Weakness
+
+        for (String effectString : HardcoreRevivalConfig.COMMON.rescueRespawnEffects.get()) {
+            String[] parts = effectString.split("\\|");
+            ResourceLocation registryName = ResourceLocation.tryCreate(parts[0]);
+            if (registryName != null) {
+                Effect effect = ForgeRegistries.POTIONS.getValue(registryName);
+                if (effect != null) {
+                    int duration = tryParseInt(parts.length >= 2 ? parts[1] : null, 600);
+                    int amplifier = tryParseInt(parts.length >= 3 ? parts[2] : null, 0);
+                    player.addPotionEffect(new EffectInstance(effect, duration, amplifier));
+                } else {
+                    HardcoreRevival.logger.info("Invalid rescue potion effect '{}'" + parts[0]);
+                }
+            } else {
+                HardcoreRevival.logger.info("Invalid rescue potion effect '{}'" + parts[0]);
+            }
+        }
+    }
+
+    private int tryParseInt(@Nullable String text, int defaultVal) {
+        if (text != null) {
+            try {
+                return Integer.parseInt(text);
+            } catch (NumberFormatException e) {
+                return defaultVal;
+            }
+        }
+        return defaultVal;
     }
 
     public void finishRescue(PlayerEntity player) {

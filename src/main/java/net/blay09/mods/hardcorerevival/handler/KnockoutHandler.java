@@ -5,26 +5,20 @@ import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
-import net.blay09.mods.hardcorerevival.network.NetworkHandler;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.world.ChunkWatchEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 
 @Mod.EventBusSubscriber(modid = HardcoreRevival.MOD_ID)
@@ -69,7 +63,7 @@ public class KnockoutHandler {
 
                 revivalData.setKnockoutTicksPassed(revivalData.getKnockoutTicksPassed() + 1);
 
-                if (!HardcoreRevivalConfig.COMMON.disableDeathTimer.get() && revivalData.getKnockoutTicksPassed() >= HardcoreRevivalConfig.COMMON.maxDeathTicks.get()) {
+                if (HardcoreRevivalConfig.COMMON.ticksUntilDeath.get() > 0 && revivalData.getKnockoutTicksPassed() >= HardcoreRevivalConfig.COMMON.ticksUntilDeath.get()) {
                     HardcoreRevival.getManager().notRescuedInTime(event.player);
                 }
             }

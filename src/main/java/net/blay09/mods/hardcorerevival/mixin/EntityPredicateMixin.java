@@ -15,7 +15,7 @@ public class EntityPredicateMixin {
 
     @Inject(method = "canTarget(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/entity/LivingEntity;)Z", at = @At("HEAD"), cancellable = true)
     public void canTarget(@Nullable LivingEntity attacker, LivingEntity target, CallbackInfoReturnable<Boolean> ci) {
-        if (MixinHooks.shouldCancelTarget(attacker, target)) {
+        if (MixinHooks.shouldCancelAttackTarget(attacker, target)) {
             ci.setReturnValue(false);
         }
     }

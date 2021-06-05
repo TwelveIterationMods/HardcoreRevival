@@ -1,41 +1,40 @@
 package net.blay09.mods.hardcorerevival;
 
+import com.google.common.collect.Lists;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HardcoreRevivalConfig { // TODO sync to client
 
     public static class Common {
-        public final ForgeConfigSpec.ConfigValue<Integer> maxDeathTicks;
-        public final ForgeConfigSpec.ConfigValue<Integer> rescueTime;
+        public final ForgeConfigSpec.ConfigValue<Integer> ticksUntilDeath;
+        public final ForgeConfigSpec.ConfigValue<Integer> rescueActionTicks;
         public final ForgeConfigSpec.ConfigValue<Integer> rescueRespawnHealth;
         public final ForgeConfigSpec.ConfigValue<Integer> rescueRespawnFoodLevel;
-        public final ForgeConfigSpec.ConfigValue<Double> maxRescueDist;
+        public final ForgeConfigSpec.ConfigValue<List<? extends String>> rescueRespawnEffects;
+        public final ForgeConfigSpec.ConfigValue<Double> rescueDistance;
         public final ForgeConfigSpec.BooleanValue glowOnDeath;
-        public final ForgeConfigSpec.BooleanValue disableDeathTimer;
         public final ForgeConfigSpec.BooleanValue allowUnarmedMelee;
         public final ForgeConfigSpec.BooleanValue allowBows;
 
         Common(ForgeConfigSpec.Builder builder) {
-            maxDeathTicks = builder
-                    .comment("The time in ticks in which a player can still be rescued from death.")
-                    .translation("hardcorerevival.config.maxDeathTicks")
-                    .define("maxDeathTicks", 20 * 60 * 2);
+            ticksUntilDeath = builder
+                    .comment("The time in ticks in which a player can still be rescued from death. Set to 0 to disable the timer.")
+                    .translation("hardcorerevival.config.ticksUntilDeath")
+                    .defineInRange("ticksUntilDeath", 20 * 60 * 2, 0, Integer.MAX_VALUE);
 
-            disableDeathTimer = builder
-                    .comment("Set to true to completely disable the death timer, meaning you will have infinite time to save others.")
-                    .translation("hardcorerevival.config.disableDeathTimer")
-                    .define("disableDeathTimer", false);
-
-            maxRescueDist = builder
+            rescueDistance = builder
                     .comment("The distance at which a player can rescue another.")
-                    .translation("hardcorerevival.config.maxRescueDist")
-                    .define("maxRescueDist", 5.0);
+                    .translation("hardcorerevival.config.rescueDistance")
+                    .define("rescueDistance", 5.0);
 
-            rescueTime = builder
+            rescueActionTicks = builder
                     .comment("The time in ticks it takes to rescue a player.")
-                    .translation("hardcorerevival.config.rescueTime")
-                    .define("rescueTime", 40);
+                    .translation("hardcorerevival.config.rescueActionTicks")
+                    .define("rescueActionTicks", 40);
 
             rescueRespawnHealth = builder
                     .comment("The amount of health to respawn with when a player was rescued, out of 20.")
@@ -46,6 +45,11 @@ public class HardcoreRevivalConfig { // TODO sync to client
                     .comment("The food level to respawn with when a player was rescued, out of 20.")
                     .translation("hardcorerevival.config.rescueRespawnFoodLevel")
                     .define("rescueRespawnFoodLevel", 5);
+
+            rescueRespawnEffects = builder
+                    .comment("Effects applied to a player when rescued, in the format \"effect|duration|amplifier\"")
+                    .translation("config.waystones.rescueRespawnEffects")
+                    .defineList("rescueRespawnEffects", Lists.newArrayList("minecraft:hunger|600|0", "minecraft:weakness|1200|0"), it -> it instanceof String);
 
             glowOnDeath = builder
                     .comment("If true, knocked out players will glow, making them visible through blocks.")

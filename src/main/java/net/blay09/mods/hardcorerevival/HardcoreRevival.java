@@ -12,6 +12,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Mod(HardcoreRevival.MOD_ID)
 public class HardcoreRevival {
@@ -19,6 +21,8 @@ public class HardcoreRevival {
 
     private static final HardcoreRevivalManager manager = new HardcoreRevivalManager();
     private static final HardcoreRevivalData clientRevivalData = new HardcoreRevivalDataImpl();
+
+    public static final Logger logger = LogManager.getLogger();
 
     public HardcoreRevival() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);

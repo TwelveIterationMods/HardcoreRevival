@@ -38,21 +38,21 @@ public class RescueHandler {
             if (rescueTarget != null) {
                 // Stop rescuing if the target logged out
                 final int knockoutTicksPassed = HardcoreRevival.getRevivalData(rescueTarget).getKnockoutTicksPassed();
-                if (!rescueTarget.isAlive() || knockoutTicksPassed >= HardcoreRevivalConfig.COMMON.maxDeathTicks.get()) {
+                if (!rescueTarget.isAlive() || knockoutTicksPassed >= HardcoreRevivalConfig.COMMON.ticksUntilDeath.get()) {
                     HardcoreRevival.getManager().abortRescue(event.player);
                 } else {
                     // Stop rescuing if the player is out of range
                     float dist = event.player.getDistance(rescueTarget);
-                    if (dist > HardcoreRevivalConfig.COMMON.maxRescueDist.get()) {
+                    if (dist > HardcoreRevivalConfig.COMMON.rescueDistance.get()) {
                         HardcoreRevival.getManager().abortRescue(event.player);
                     } else {
                         int rescueTime = revivalData.getRescueTime() + 1;
                         revivalData.setRescueTime(rescueTime);
-                        int step = HardcoreRevivalConfig.COMMON.rescueTime.get() / 4;
-                        if (rescueTime >= HardcoreRevivalConfig.COMMON.rescueTime.get()) {
+                        int step = HardcoreRevivalConfig.COMMON.rescueActionTicks.get() / 4;
+                        if (rescueTime >= HardcoreRevivalConfig.COMMON.rescueActionTicks.get()) {
                             HardcoreRevival.getManager().finishRescue(event.player);
                         } else if (rescueTime % step == 0) {
-                            NetworkHandler.sendToPlayer(event.player, new RevivalProgressMessage(rescueTarget.getEntityId(), (float) rescueTime / (float) HardcoreRevivalConfig.COMMON.rescueTime.get()));
+                            NetworkHandler.sendToPlayer(event.player, new RevivalProgressMessage(rescueTarget.getEntityId(), (float) rescueTime / (float) HardcoreRevivalConfig.COMMON.rescueActionTicks.get()));
                         }
                     }
                 }
