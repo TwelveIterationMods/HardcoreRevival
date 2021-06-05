@@ -4,9 +4,11 @@ import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalDataCapability;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalDataImpl;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.capability.InvalidHardcoreRevivalData;
+import net.blay09.mods.hardcorerevival.compat.Compat;
 import net.blay09.mods.hardcorerevival.network.NetworkHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -34,6 +36,14 @@ public class HardcoreRevival {
         event.enqueueWork(() -> {
             NetworkHandler.init();
             HardcoreRevivalDataCapability.register();
+
+            if (ModList.get().isLoaded(Compat.MR_CRAYFISHS_GUN_MOD)) {
+                try {
+                    Class.forName("net.blay09.mods.hardcorerevival.compat.MrCrayfishsGunModAddon").newInstance();
+                } catch (Throwable e) {
+                    logger.warn("Could not load MrCrayfish's Gun Mod compatibility for Hardcore Revival");
+                }
+            }
         });
     }
 
