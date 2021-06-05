@@ -15,6 +15,7 @@ import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
@@ -56,6 +57,8 @@ public class HardcoreRevivalManager implements IHardcoreRevivalManager {
         if (revivalData.isKnockedOut()) {
             return;
         }
+
+        player.removePotionEffect(Effects.REGENERATION);
 
         revivalData.setKnockedOut(true);
 
