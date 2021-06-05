@@ -86,6 +86,9 @@ public class HardcoreRevivalClient {
 
                     mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
                 }
+
+                // DamageTint mod starts rendering weirdly if blend is not enabled
+                RenderSystem.enableBlend();
             } else {
                 if (targetEntity != -1 && targetProgress > 0) {
                     Entity entity = mc.world.getEntityByID(targetEntity);
