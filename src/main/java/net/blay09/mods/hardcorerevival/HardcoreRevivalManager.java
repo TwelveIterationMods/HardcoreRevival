@@ -8,6 +8,7 @@ import net.blay09.mods.hardcorerevival.network.HardcoreRevivalDataMessage;
 import net.blay09.mods.hardcorerevival.network.RevivalProgressMessage;
 import net.blay09.mods.hardcorerevival.network.NetworkHandler;
 import net.blay09.mods.hardcorerevival.network.RevivalSuccessMessage;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.EffectInstance;
@@ -20,6 +21,7 @@ import net.minecraft.util.text.ChatType;
 import net.minecraft.world.GameRules;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.Objects;
@@ -31,10 +33,16 @@ public class HardcoreRevivalManager implements IHardcoreRevivalManager {
 
     @Override
     public HardcoreRevivalData getRevivalData(PlayerEntity player) {
-        LazyOptional<HardcoreRevivalData> revivalData = player.getCapability(HardcoreRevivalDataCapability.REVIVAL_CAPABILITY);
-        return revivalData.orElseGet(() -> {
-            System.out.println("fuck");
-            return Objects.requireNonNull(HardcoreRevivalDataCapability.REVIVAL_CAPABILITY.getDefaultInstance());
+        return DistExecutor.runForDist(() -> () -> {
+            if (Minecraft.getInstance().player == player) {
+                return HardcoreRevival.getClientRevivalData();
+            }
+
+            LazyOptional<HardcoreRevivalData> revivalData = player.getCapability(HardcoreRevivalDataCapability.REVIVAL_CAPABILITY);
+            return revivalData.orElseGet(() -> Objects.requireNonNull(HardcoreRevivalDataCapability.REVIVAL_CAPABILITY.getDefaultInstance()));
+        }, () -> () -> {
+            LazyOptional<HardcoreRevivalData> revivalData = player.getCapability(HardcoreRevivalDataCapability.REVIVAL_CAPABILITY);
+            return revivalData.orElseGet(() -> Objects.requireNonNull(HardcoreRevivalDataCapability.REVIVAL_CAPABILITY.getDefaultInstance()));
         });
     }
 

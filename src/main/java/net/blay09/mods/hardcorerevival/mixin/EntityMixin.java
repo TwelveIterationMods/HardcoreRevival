@@ -15,7 +15,7 @@ public class EntityMixin {
     @Inject(method = "move(Lnet/minecraft/entity/MoverType;Lnet/minecraft/util/math/vector/Vector3d;)V", at = @At("HEAD"), cancellable = true)
     private void move(MoverType type, Vector3d pos, CallbackInfo ci) {
         Entity entity = (Entity) (Object) this;
-        if (MixinHooks.shouldCancelMovement(entity, type, pos)) {
+        if (MixinHooks.shouldCancelMovement(entity)) {
             ci.cancel();
         }
     }
