@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.Mod;
 public class KnockoutRestrictionHandler {
 
     @SubscribeEvent
-    public static void onPlayerHeal(LivingHealEvent event) { // TODO player is still getting damage effect from regen
+    public static void onPlayerHeal(LivingHealEvent event) {
         if (event.getEntityLiving() instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) event.getEntityLiving();
             if (HardcoreRevival.getRevivalData(player).isKnockedOut()) {

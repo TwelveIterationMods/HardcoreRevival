@@ -18,6 +18,10 @@ public class MixinHooks {
         return target instanceof PlayerEntity && HardcoreRevival.getRevivalData(target).isKnockedOut();
     }
 
+    public static boolean shouldCancelHealing(PlayerEntity entity) {
+        return HardcoreRevival.getRevivalData(entity).isKnockedOut();
+    }
+
     public static void handleProcessPlayerRotation(ServerPlayerEntity player, CPlayerPacket packet) {
         float yaw = packet.getYaw(player.rotationYaw);
         float pitch = packet.getPitch(player.rotationPitch);
