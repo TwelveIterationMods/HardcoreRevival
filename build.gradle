@@ -122,7 +122,7 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:mrcrayfishs-gun-mod-289479:3224957")
     runtimeOnly fg.deobf("curse.maven:damage-tint-434182:3203478")
     runtimeOnly fg.deobf("curse.maven:obfuscate-289380:3336021")
-    //runtimeOnly fg.deobf("curse.maven:epic-fight-mod-405076:3281689")
+    runtimeOnly fg.deobf("curse.maven:epic-fight-mod-405076:3281689")
 }
 
 jar {
