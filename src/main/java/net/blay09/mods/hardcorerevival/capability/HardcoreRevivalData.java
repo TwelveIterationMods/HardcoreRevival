@@ -10,6 +10,8 @@ public interface HardcoreRevivalData {
 	boolean isKnockedOut();
 	void setKnockoutTicksPassed(int knockoutTicksPassed);
 	int getKnockoutTicksPassed();
+	void setLogoutWorldTime(long logoutWorldTime);
+	long getLogoutWorldTime();
 	void setRescueTime(int rescueTime);
 	int getRescueTime();
 	void setRescueTarget(@Nullable PlayerEntity rescueTarget);

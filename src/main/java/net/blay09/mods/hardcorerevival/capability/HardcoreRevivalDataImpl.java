@@ -5,6 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 public class HardcoreRevivalDataImpl implements HardcoreRevivalData {
 	private boolean knockedOut;
 	private int knockoutTicksPassed;
+	private long logoutWorldTime;
 	private int rescueTime;
 	private PlayerEntity rescueTarget;
 
@@ -26,6 +27,16 @@ public class HardcoreRevivalDataImpl implements HardcoreRevivalData {
 	@Override
 	public int getKnockoutTicksPassed() {
 		return knockoutTicksPassed;
+	}
+
+	@Override
+	public void setLogoutWorldTime(long logoutWorldTime) {
+		this.logoutWorldTime = logoutWorldTime;
+	}
+
+	@Override
+	public long getLogoutWorldTime() {
+		return logoutWorldTime;
 	}
 
 	@Override

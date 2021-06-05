@@ -6,6 +6,7 @@ import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.config.IHardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.handler.KnockoutSyncHandler;
+import net.blay09.mods.hardcorerevival.mixin.ServerPlayerEntityAccessor;
 import net.blay09.mods.hardcorerevival.network.RevivalProgressMessage;
 import net.blay09.mods.hardcorerevival.network.NetworkHandler;
 import net.blay09.mods.hardcorerevival.network.RevivalSuccessMessage;
@@ -92,7 +93,7 @@ public class HardcoreRevivalManager implements IHardcoreRevivalManager {
             IHardcoreRevivalConfig config = HardcoreRevivalConfig.getActive();
             player.setHealth(config.getRescueRespawnHealth());
             player.getFoodStats().setFoodLevel(config.getRescueRespawnFoodLevel());
-            player.getFoodStats().setFoodSaturationLevel((float) config.getRescueRespawnFoodSaturation());
+            // TODO client only, won't bother: player.getFoodStats().setFoodSaturationLevel((float) config.getRescueRespawnFoodSaturation());
 
             for (String effectString : config.getRescueRespawnEffects()) {
                 String[] parts = effectString.split("\\|");
@@ -156,6 +157,11 @@ public class HardcoreRevivalManager implements IHardcoreRevivalManager {
     }
 
     public void notRescuedInTime(PlayerEntity player) {
+        // Disable respawn invulnerability to prevent players from surviving knockout after login with offline timer enabled
+        if (player instanceof ServerPlayerEntityAccessor) {
+            ((ServerPlayerEntityAccessor) player).setRespawnInvulnerabilityTicks(0);
+        }
+
         player.attackEntityFrom(notRescuedInTime, player.getHealth());
         reset(player);
     }
@@ -166,8 +172,6 @@ public class HardcoreRevivalManager implements IHardcoreRevivalManager {
         revivalData.setKnockoutTicksPassed(0);
 
         updateKnockoutEffects(player);
-
-        KnockoutSyncHandler.sendHardcoreRevivalDataToWatching(player, revivalData);
     }
 
     public void updateKnockoutEffects(PlayerEntity player) {

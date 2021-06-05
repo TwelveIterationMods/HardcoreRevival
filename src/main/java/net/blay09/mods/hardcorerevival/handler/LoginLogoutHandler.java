@@ -34,8 +34,15 @@ public class LoginLogoutHandler {
             CompoundNBT data = player.getPersistentData().getCompound(PlayerEntity.PERSISTED_NBT_TAG);
             HardcoreRevivalData revivalData = HardcoreRevival.getRevivalData(player);
             HardcoreRevivalDataCapability.REVIVAL_CAPABILITY.readNBT(revivalData, null, data.getCompound("HardcoreRevival"));
-            HardcoreRevival.getManager().updateKnockoutEffects(player);
 
+            if (HardcoreRevivalConfig.getActive().shouldContinueTimerWhileOffline()) {
+                long worldTimeNow = player.world.getGameTime();
+                long worldTimeThen = revivalData.getLogoutWorldTime();
+                int worldTimePassed = (int) Math.max(0, worldTimeNow - worldTimeThen);
+                revivalData.setKnockoutTicksPassed(revivalData.getKnockoutTicksPassed() + worldTimePassed);
+            }
+
+            HardcoreRevival.getManager().updateKnockoutEffects(player);
             NetworkHandler.sendToPlayer(player, HardcoreRevivalConfig.getConfigSyncMessage());
         }
     }
@@ -69,6 +76,7 @@ public class LoginLogoutHandler {
         PlayerEntity player = event.getPlayer();
         CompoundNBT data = player.getPersistentData().getCompound(PlayerEntity.PERSISTED_NBT_TAG);
         HardcoreRevivalData revivalData = HardcoreRevival.getRevivalData(player);
+        revivalData.setLogoutWorldTime(player.world.getGameTime());
         INBT tag = HardcoreRevivalDataCapability.REVIVAL_CAPABILITY.writeNBT(revivalData, null);
         if (tag != null) {
             data.put("HardcoreRevival", tag);

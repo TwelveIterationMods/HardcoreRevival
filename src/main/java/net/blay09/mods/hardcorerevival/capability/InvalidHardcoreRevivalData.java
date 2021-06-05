@@ -27,6 +27,15 @@ public class InvalidHardcoreRevivalData implements HardcoreRevivalData {
     }
 
     @Override
+    public void setLogoutWorldTime(long logoutWorldTime) {
+    }
+
+    @Override
+    public long getLogoutWorldTime() {
+        return 0;
+    }
+
+    @Override
     public void setRescueTime(int rescueTime) {
     }
 

@@ -14,4 +14,5 @@ public interface IHardcoreRevivalConfig {
     boolean isUnarmedMeleeAllowedWhileKnockedOut();
     boolean areBowsAllowedWhileKnockedOut();
     boolean arePistolsAllowedWhileKnockout();
+    boolean shouldContinueTimerWhileOffline();
 }

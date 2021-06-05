@@ -6,7 +6,8 @@
   "mixins": [
     "EntityMixin",
     "EntityPredicateMixin",
-    "ServerPlayNetHandlerMixin"
+    "ServerPlayNetHandlerMixin",
+    "ServerPlayerEntityAccessor"
   ],
   "refmap": "refmap.hardcorerevival.json"
 }

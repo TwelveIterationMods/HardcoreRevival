@@ -109,4 +109,9 @@ public class HardcoreRevivalConfigMessage implements IHardcoreRevivalConfig {
     public boolean arePistolsAllowedWhileKnockout() {
         return allowPistols;
     }
+
+    @Override
+    public boolean shouldContinueTimerWhileOffline() {
+        return HardcoreRevivalConfig.getFallback().shouldContinueTimerWhileOffline();
+    }
 }

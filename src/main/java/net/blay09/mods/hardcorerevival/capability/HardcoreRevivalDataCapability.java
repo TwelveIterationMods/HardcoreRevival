@@ -16,8 +16,8 @@ public class HardcoreRevivalDataCapability {
     public static Capability<HardcoreRevivalData> REVIVAL_CAPABILITY = null;
 
     private static final String KNOCKED_OUT = "KnockedOut";
-    private static final String KNOCKOUT_POS = "KnockoutPos";
     private static final String KNOCKOUT_TICKS_PASSED = "KnockoutTicksPassed";
+    private static final String LOGOUT_WORLD_TIME = "LogoutWorldTime";
 
     public static void register() {
         CapabilityManager.INSTANCE.register(HardcoreRevivalData.class, new Capability.IStorage<HardcoreRevivalData>() {
@@ -26,6 +26,7 @@ public class HardcoreRevivalDataCapability {
                 CompoundNBT tagCompound = new CompoundNBT();
                 tagCompound.putBoolean(KNOCKED_OUT, instance.isKnockedOut());
                 tagCompound.putInt(KNOCKOUT_TICKS_PASSED, instance.getKnockoutTicksPassed());
+                tagCompound.putLong(LOGOUT_WORLD_TIME, instance.getLogoutWorldTime());
                 return tagCompound;
             }
 
@@ -34,6 +35,7 @@ public class HardcoreRevivalDataCapability {
                 CompoundNBT tagCompound = (CompoundNBT) base;
                 instance.setKnockedOut(tagCompound.getBoolean(KNOCKED_OUT));
                 instance.setKnockoutTicksPassed(tagCompound.getInt(KNOCKOUT_TICKS_PASSED));
+                instance.setLogoutWorldTime(tagCompound.getLong(LOGOUT_WORLD_TIME));
             }
         }, HardcoreRevivalDataImpl::new);
     }

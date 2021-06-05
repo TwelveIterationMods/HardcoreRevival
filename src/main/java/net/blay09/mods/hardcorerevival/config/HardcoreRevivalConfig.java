@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.network.HardcoreRevivalConfigMessage;
 import net.blay09.mods.hardcorerevival.network.NetworkHandler;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -21,10 +20,11 @@ public class HardcoreRevivalConfig {
 
     public static class Common implements IHardcoreRevivalConfig {
         private final ForgeConfigSpec.IntValue ticksUntilDeath;
+        private final ForgeConfigSpec.BooleanValue continueTimerWhileOffline;
         private final ForgeConfigSpec.IntValue rescueActionTicks;
         private final ForgeConfigSpec.IntValue rescueRespawnHealth;
         private final ForgeConfigSpec.IntValue rescueRespawnFoodLevel;
-        private final ForgeConfigSpec.DoubleValue rescueRespawnFoodSaturation;
+//        private final ForgeConfigSpec.DoubleValue rescueRespawnFoodSaturation;
         private final ForgeConfigSpec.ConfigValue<List<? extends String>> rescueRespawnEffects;
         private final ForgeConfigSpec.DoubleValue rescueDistance;
         private final ForgeConfigSpec.BooleanValue glowOnKnockout;
@@ -44,6 +44,11 @@ public class HardcoreRevivalConfig {
                     .comment("The time in ticks in which a player can still be rescued from death. Set to 0 to disable the timer.")
                     .translation("config.hardcorerevival.ticksUntilDeath")
                     .defineInRange("ticksUntilDeath", 20 * 60 * 2, 0, Integer.MAX_VALUE);
+
+            continueTimerWhileOffline = builder
+                    .comment("If true, the timer until death continues even if the player logs out.")
+                    .translation("config.hardcorerevival.continueTimerWhileOffline")
+                    .define("continueTimerWhileOffline", false);
 
             builder.pop().push("rescue");
 
@@ -67,10 +72,11 @@ public class HardcoreRevivalConfig {
                     .translation("config.hardcorerevival.rescueRespawnFoodLevel")
                     .defineInRange("rescueRespawnFoodLevel", 5, 0, Integer.MAX_VALUE);
 
+            /* not yet supported:
             rescueRespawnFoodSaturation = builder
                     .comment("The food saturation to respawn with when a player was rescued.")
                     .translation("config.hardcorerevival.rescueRespawnFoodSaturation")
-                    .defineInRange("rescueRespawnFoodSaturation", 0, 0, Float.MAX_VALUE);
+                    .defineInRange("rescueRespawnFoodSaturation", 0, 0, Float.MAX_VALUE);*/
 
             rescueRespawnEffects = builder
                     .comment("Effects applied to a player when rescued, in the format \"effect|duration|amplifier\"")
@@ -117,7 +123,7 @@ public class HardcoreRevivalConfig {
 
         @Override
         public double getRescueRespawnFoodSaturation() {
-            return rescueRespawnFoodSaturation.get();
+            return 0f;
         }
 
         @Override
@@ -149,6 +155,11 @@ public class HardcoreRevivalConfig {
         @Override
         public boolean arePistolsAllowedWhileKnockout() {
             return allowPistols.get();
+        }
+
+        @Override
+        public boolean shouldContinueTimerWhileOffline() {
+            return continueTimerWhileOffline.get();
         }
     }
 
