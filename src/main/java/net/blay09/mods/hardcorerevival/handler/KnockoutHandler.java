@@ -34,7 +34,7 @@ public class KnockoutHandler {
             if (attacker instanceof MobEntity) {
                 ((MobEntity) attacker).setAttackTarget(null);
             }
-            if (event.getSource().canHarmInCreative() && event.getSource() != HardcoreRevivalManager.notRescuedInTime) {
+            if (!event.getSource().canHarmInCreative() && event.getSource() != HardcoreRevivalManager.notRescuedInTime) {
                 event.setCanceled(true);
             }
         }
@@ -51,7 +51,9 @@ public class KnockoutHandler {
                 event.setAmount(Math.min(event.getAmount(), Math.max(0f, player.getHealth() - 1f)));
 
                 // Trigger knockout for this player, if totem does not protect player
-                if (!((LivingEntityAccessor) player).callCheckTotemDeathProtection(event.getSource())) {
+                if (((LivingEntityAccessor) player).callCheckTotemDeathProtection(event.getSource())) {
+                    event.setCanceled(true);
+                } else {
                     HardcoreRevival.getManager().knockout(player, event.getSource());
                 }
             }
