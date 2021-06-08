@@ -35,7 +35,8 @@ import java.util.Objects;
 public class HardcoreRevivalManager implements IHardcoreRevivalManager {
     public static final DamageSource notRescuedInTime = new DamageSource("not_rescued_in_time")
             .setDamageIsAbsolute()
-            .setDamageBypassesArmor();
+            .setDamageBypassesArmor()
+            .setDamageAllowedInCreativeMode();
 
     @Override
     public HardcoreRevivalData getRevivalData(PlayerEntity player) {
