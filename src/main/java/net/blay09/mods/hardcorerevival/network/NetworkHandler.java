@@ -11,7 +11,8 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class NetworkHandler {
-    public static final SimpleChannel channel = NetworkRegistry.newSimpleChannel(new ResourceLocation(HardcoreRevival.MOD_ID, "network"), () -> "1.0", it -> true, it -> true);
+    public static final String NETWORK_VERSION = "6";
+    public static final SimpleChannel channel = NetworkRegistry.newSimpleChannel(new ResourceLocation(HardcoreRevival.MOD_ID, "network"), () -> NETWORK_VERSION, NETWORK_VERSION::equals, NETWORK_VERSION::equals);
 
     public static void init() {
         channel.registerMessage(0, HardcoreRevivalDataMessage.class, HardcoreRevivalDataMessage::encode, HardcoreRevivalDataMessage::decode, HardcoreRevivalDataMessage::handle);
