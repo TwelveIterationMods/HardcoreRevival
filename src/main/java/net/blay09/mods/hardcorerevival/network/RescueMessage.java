@@ -29,7 +29,7 @@ public class RescueMessage {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
             PlayerEntity player = context.getSender();
-            if (player == null || player.getHealth() <= 0 || player.isSpectator()) {
+            if (player == null || !player.isAlive() || player.isSpectator() || HardcoreRevival.getRevivalData(player).isKnockedOut()) {
                 return;
             }
 
