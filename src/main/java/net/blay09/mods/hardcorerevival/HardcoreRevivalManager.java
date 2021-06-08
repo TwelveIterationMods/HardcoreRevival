@@ -62,6 +62,7 @@ public class HardcoreRevivalManager implements IHardcoreRevivalManager {
         player.removePotionEffect(Effects.REGENERATION);
 
         revivalData.setKnockedOut(true);
+        revivalData.setKnockoutTicksPassed(0);
 
         // Fire event for compatibility addons
         MinecraftForge.EVENT_BUS.post(new PlayerKnockedOutEvent(player, source));

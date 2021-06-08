@@ -35,7 +35,7 @@ public class LoginLogoutHandler {
             HardcoreRevivalData revivalData = HardcoreRevival.getRevivalData(player);
             HardcoreRevivalDataCapability.REVIVAL_CAPABILITY.readNBT(revivalData, null, data.getCompound("HardcoreRevival"));
 
-            if (HardcoreRevivalConfig.getActive().shouldContinueTimerWhileOffline()) {
+            if (HardcoreRevivalConfig.getActive().shouldContinueTimerWhileOffline() && revivalData.isKnockedOut()) {
                 long worldTimeNow = player.world.getGameTime();
                 long worldTimeThen = revivalData.getLogoutWorldTime();
                 int worldTimePassed = (int) Math.max(0, worldTimeNow - worldTimeThen);
