@@ -167,7 +167,7 @@ public class HardcoreRevivalManager implements IHardcoreRevivalManager {
             ((ServerPlayerEntityAccessor) player).setRespawnInvulnerabilityTicks(0);
         }
 
-        player.attackEntityFrom(notRescuedInTime, player.getHealth());
+        player.onKillCommand();
         reset(player);
     }
 
