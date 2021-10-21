@@ -1,7 +1,0 @@
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
-package net.blay09.mods.hardcorerevival.network;
-
-import mcp.MethodsReturnNonnullByDefault;
-
-import javax.annotation.ParametersAreNonnullByDefault;

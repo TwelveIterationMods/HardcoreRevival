@@ -1,0 +1,33 @@
+modLoader="javafml"
+loaderVersion="[37,)"
+license="All rights reserved"
+issueTrackerURL="https://github.com/ModdingForBlockheads/HardcoreRevival/issues"
+[[mods]]
+modId="hardcorerevival"
+version="${file.jarVersion}"
+displayName="Hardcore Revival"
+displayURL="https://blay09.net/mods/hardcorerevival"
+logoFile="hardcorerevival-icon.png"
+credits="BlayTheNinth"
+authors="BlayTheNinth"
+description='''
+Help your friends back up after they die (if you can make it in time).
+'''
+[[dependencies.hardcorerevival]]
+    modId="forge"
+    mandatory=true
+    versionRange="[37,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.hardcorerevival]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.17.1,1.18)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.hardcorerevival]]
+    modId="balm"
+    mandatory=true
+    versionRange="[1.6.0,)"
+    ordering="NONE"
+    side="BOTH"
