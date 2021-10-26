@@ -1,6 +1,7 @@
 package net.blay09.mods.hardcorerevival.compat;
 
 import com.mrcrayfish.guns.event.GunFireEvent;
+import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.minecraft.resources.ResourceLocation;
@@ -19,7 +20,8 @@ public class MrCrayfishsGunModAddon {
     @SubscribeEvent
     public void onGunFirePre(GunFireEvent.Pre event) {
         if (HardcoreRevival.getRevivalData(event.getPlayer()).isKnockedOut()) {
-            boolean isFiringPistol = Objects.equals(event.getPlayer().getHeldItemMainhand().getItem().getRegistryName(), PISTOL);
+            ResourceLocation mainHandItemKey = Balm.getRegistries().getKey(event.getPlayer().getMainHandItem().getItem());
+            boolean isFiringPistol = Objects.equals(mainHandItemKey, PISTOL);
             if (isFiringPistol && HardcoreRevivalConfig.getActive().allowPistols) {
                 return;
             }

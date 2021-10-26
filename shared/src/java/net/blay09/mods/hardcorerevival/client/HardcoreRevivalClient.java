@@ -3,6 +3,12 @@ package net.blay09.mods.hardcorerevival.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.event.TickPhase;
+import net.blay09.mods.balm.api.event.TickType;
+import net.blay09.mods.balm.api.event.client.FovUpdateEvent;
+import net.blay09.mods.balm.api.event.client.GuiDrawEvent;
+import net.blay09.mods.balm.api.event.client.KeyInputEvent;
+import net.blay09.mods.balm.api.event.client.OpenScreenEvent;
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
@@ -18,13 +24,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.*;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = HardcoreRevival.MOD_ID)
 public class HardcoreRevivalClient {
 
     private static boolean wasKnockedOut;
@@ -33,41 +33,47 @@ public class HardcoreRevivalClient {
     private static float targetProgress;
     private static boolean beingRescued;
 
+    public static void initialize() {
+        Balm.getEvents().onEvent(OpenScreenEvent.class, HardcoreRevivalClient::onOpenScreen);
+        Balm.getEvents().onEvent(FovUpdateEvent.class, HardcoreRevivalClient::onFovUpdate);
+        Balm.getEvents().onEvent(KeyInputEvent.class, HardcoreRevivalClient::onKeyInput);
+        Balm.getEvents().onEvent(GuiDrawEvent.Pre.class, HardcoreRevivalClient::onGuiDrawPre);
+        Balm.getEvents().onEvent(GuiDrawEvent.Post.class, HardcoreRevivalClient::onGuiDrawPost);
+
+        Balm.getEvents().onTickEvent(TickType.Client, TickPhase.Start, HardcoreRevivalClient::onClientTick);
+    }
+
     private static boolean isKnockedOut() {
         LocalPlayer player = Minecraft.getInstance().player;
         return HardcoreRevival.getClientRevivalData().isKnockedOut() && player != null && player.isAlive();
     }
 
-    @SubscribeEvent
-    public static void onOpenGui(GuiOpenEvent event) {
-        if (isKnockedOut() && event.getGui() instanceof InventoryScreen) {
-            event.setGui(new KnockoutScreen());
+    public static void onOpenScreen(OpenScreenEvent event) {
+        if (isKnockedOut() && event.getScreen() instanceof InventoryScreen) {
+            event.setScreen(new KnockoutScreen());
         }
     }
 
-    @SubscribeEvent
-    public static void onFov(FOVUpdateEvent event) {
+    public static void onFovUpdate(FovUpdateEvent event) {
         if (isKnockedOut()) {
-            event.setNewfov(Mth.lerp(Minecraft.getInstance().options.fovEffectScale, 1f, 0.5f));
+            event.setFov(Mth.lerp(Minecraft.getInstance().options.fovEffectScale, 1f, 0.5f));
         }
     }
 
-    @SubscribeEvent
-    public static void onRenderGameOverlayPre(RenderGameOverlayEvent.Pre event) {
+    public static void onGuiDrawPre(GuiDrawEvent.Pre event) {
         // Flash the health bar red if the player is knocked out
-        if (event.getType() == RenderGameOverlayEvent.ElementType.HEALTH && isKnockedOut()) {
+        if (event.getElement() == GuiDrawEvent.Element.HEALTH && isKnockedOut()) {
             int knockoutTicksPassed = HardcoreRevival.getClientRevivalData().getKnockoutTicksPassed();
             float redness = (float) Math.sin(knockoutTicksPassed / 2f);
             RenderSystem.setShaderColor(1f, 1f - redness, 1 - redness, 1f);
         }
     }
 
-    @SubscribeEvent
-    public static void onRenderGameOverlayPost(RenderGameOverlayEvent.Post event) {
-        PoseStack poseStack = event.getMatrixStack();
+    public static void onGuiDrawPost(GuiDrawEvent.Post event) {
+        PoseStack poseStack = event.getPoseStack();
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
-        if (event.getType() == RenderGameOverlayEvent.ElementType.PORTAL) {
+        if (event.getElement() == GuiDrawEvent.Element.ALL) {
             Minecraft mc = Minecraft.getInstance();
             if (isKnockedOut()) {
                 poseStack.pushPose();
@@ -120,8 +126,7 @@ public class HardcoreRevivalClient {
         }
     }
 
-    @SubscribeEvent
-    public static void onKeyInput(InputEvent.KeyInputEvent event) {
+    public static void onKeyInput(KeyInputEvent event) {
         Minecraft mc = Minecraft.getInstance();
         // Suppress item drops and movement when knocked out
         if (isKnockedOut()) {
@@ -130,42 +135,38 @@ public class HardcoreRevivalClient {
         }
     }
 
-    @SubscribeEvent
-    public static void onClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
-            Minecraft mc = Minecraft.getInstance();
-            if (mc.player != null) {
-                if (isKnockedOut()) {
-                    if (!wasKnockedOut) {
-                        mc.player.setForcedPose(Pose.FALL_FLYING);
-                        mc.setScreen(new KnockoutScreen());
-                        wasKnockedOut = true;
-                    }
+    public static void onClientTick(Minecraft client) {
+        if (client.player != null) {
+            if (isKnockedOut()) {
+                if (!wasKnockedOut) {
+                    client.player.setForcedPose(Pose.FALL_FLYING);
+                    client.setScreen(new KnockoutScreen());
+                    wasKnockedOut = true;
+                }
 
-                    HardcoreRevivalData revivalData = HardcoreRevival.getRevivalData(mc.player);
-                    revivalData.setKnockoutTicksPassed(revivalData.getKnockoutTicksPassed() + 1);
+                HardcoreRevivalData revivalData = HardcoreRevival.getRevivalData(client.player);
+                revivalData.setKnockoutTicksPassed(revivalData.getKnockoutTicksPassed() + 1);
+            } else {
+                if (wasKnockedOut) {
+                    client.player.setForcedPose(null);
+                    wasKnockedOut = false;
+                }
+
+                // If knockout screen is still shown, close it
+                if (client.screen instanceof KnockoutScreen) {
+                    client.setScreen(null);
+                }
+
+                // If right mouse is held down, and player is not in spectator mode, send rescue packet
+                if (client.options.keyUse.isDown() && !client.player.isSpectator() && client.player.isAlive() && !HardcoreRevival.getClientRevivalData().isKnockedOut()) {
+                    if (!isRescuing) {
+                        Balm.getNetworking().sendToServer(new RescueMessage(true));
+                        isRescuing = true;
+                    }
                 } else {
-                    if (wasKnockedOut) {
-                        mc.player.setForcedPose(null);
-                        wasKnockedOut = false;
-                    }
-
-                    // If knockout screen is still shown, close it
-                    if (mc.screen instanceof KnockoutScreen) {
-                        mc.setScreen(null);
-                    }
-
-                    // If right mouse is held down, and player is not in spectator mode, send rescue packet
-                    if (mc.options.keyUse.isDown() && !mc.player.isSpectator() && mc.player.isAlive() && !HardcoreRevival.getClientRevivalData().isKnockedOut()) {
-                        if (!isRescuing) {
-                            Balm.getNetworking().sendToServer(new RescueMessage(true));
-                            isRescuing = true;
-                        }
-                    } else {
-                        if (isRescuing) {
-                            Balm.getNetworking().sendToServer(new RescueMessage(false));
-                            isRescuing = false;
-                        }
+                    if (isRescuing) {
+                        Balm.getNetworking().sendToServer(new RescueMessage(false));
+                        isRescuing = false;
                     }
                 }
             }

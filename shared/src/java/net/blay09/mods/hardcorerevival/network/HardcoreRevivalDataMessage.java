@@ -3,12 +3,9 @@ package net.blay09.mods.hardcorerevival.network;
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.client.HardcoreRevivalClient;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
 
 public class HardcoreRevivalDataMessage {
     private final int entityId;
@@ -39,17 +36,14 @@ public class HardcoreRevivalDataMessage {
     }
 
     public static void handle(Player player, HardcoreRevivalDataMessage message) {
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-            Minecraft mc = Minecraft.getInstance();
-            if (mc.level != null && mc.player != null) {
-                Entity entity = mc.level.getEntity(message.entityId);
-                if (entity != null) {
-                    HardcoreRevivalData revivalData = entity.getId() == mc.player.getId() ? HardcoreRevival.getClientRevivalData() : HardcoreRevival.getRevivalData(entity);
-                    revivalData.setKnockedOut(message.knockedOut);
-                    revivalData.setKnockoutTicksPassed(message.knockoutTicksPassed);
-                    HardcoreRevivalClient.setBeingRescued(message.beingRescued);
-                }
+        if (player != null) {
+            Entity entity = player.level.getEntity(message.entityId);
+            if (entity != null) {
+                HardcoreRevivalData revivalData = entity.getId() == player.getId() ? HardcoreRevival.getClientRevivalData() : HardcoreRevival.getRevivalData(entity);
+                revivalData.setKnockedOut(message.knockedOut);
+                revivalData.setKnockoutTicksPassed(message.knockoutTicksPassed);
+                HardcoreRevivalClient.setBeingRescued(message.beingRescued);
             }
-        });
+        }
     }
 }

@@ -142,13 +142,16 @@ repositories {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
+    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 
-    implementation fg.deobf("net.blay09.mods:balm:1.6.0+98")
+    implementation fg.deobf("net.blay09.mods:balm:1.7.0+119")
 
     compileOnly fg.deobf("mezz.jei:jei-1.17.1:8.1.0.19:api")
     runtimeOnly fg.deobf("mezz.jei:jei-1.17.1:8.1.0.19")
     implementation fg.deobf("curse.maven:the-one-probe-245211:3430022")
     implementation fg.deobf("curse.maven:wthit-455982:3480293")
+    implementation fg.deobf("curse.maven:wthit-455982:3480293")
+    compileOnly fg.deobf("curse.maven:mrcrayfishs-gun-mod-289479:3224957")
 
     compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:5.0.38")
 

@@ -2,6 +2,7 @@ modLoader="javafml"
 loaderVersion="[37,)"
 license="All rights reserved"
 issueTrackerURL="https://github.com/ModdingForBlockheads/HardcoreRevival/issues"
+
 [[mods]]
 modId="hardcorerevival"
 version="${file.jarVersion}"
@@ -13,6 +14,7 @@ authors="BlayTheNinth"
 description='''
 Help your friends back up after they die (if you can make it in time).
 '''
+
 [[dependencies.hardcorerevival]]
     modId="forge"
     mandatory=true
@@ -28,6 +30,6 @@ Help your friends back up after they die (if you can make it in time).
 [[dependencies.hardcorerevival]]
     modId="balm"
     mandatory=true
-    versionRange="[1.6.0,)"
+    versionRange="[1.7.0,)"
     ordering="NONE"
     side="BOTH"

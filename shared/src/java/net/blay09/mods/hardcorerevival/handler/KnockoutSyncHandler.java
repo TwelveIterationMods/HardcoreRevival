@@ -1,6 +1,7 @@
 package net.blay09.mods.hardcorerevival.handler;
 
 import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.event.ChunkTrackingEvent;
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.network.HardcoreRevivalDataMessage;
@@ -8,15 +9,14 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.event.world.ChunkWatchEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid = HardcoreRevival.MOD_ID)
 public class KnockoutSyncHandler {
-    @SubscribeEvent
-    public static void onChunkWatch(ChunkWatchEvent.Watch event) {
-        MinecraftServer server = event.getWorld().getServer();
+    public static void initialize() {
+        Balm.getEvents().onEvent(ChunkTrackingEvent.Start.class, KnockoutSyncHandler::onStartChunkTracking);
+    }
+
+    public static void onStartChunkTracking(ChunkTrackingEvent.Start event) {
+        MinecraftServer server = event.getLevel().getServer();
         for (ServerPlayer player : server.getPlayerList().getPlayers()) {
             HardcoreRevivalData revivalData = HardcoreRevival.getRevivalData(player);
             if (revivalData.isKnockedOut()) {

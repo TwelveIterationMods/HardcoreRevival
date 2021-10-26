@@ -1,80 +1,78 @@
 package net.blay09.mods.hardcorerevival.handler;
 
+import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.event.*;
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BowItem;
-import net.minecraftforge.event.entity.item.ItemTossEvent;
-import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
-import net.minecraftforge.event.entity.living.LivingHealEvent;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraft.world.item.ItemStack;
 
-@Mod.EventBusSubscriber(modid = HardcoreRevival.MOD_ID)
 public class KnockoutRestrictionHandler {
 
-    @SubscribeEvent
-    public static void onPlayerHeal(LivingHealEvent event) {
-        if (event.getEntityLiving() instanceof Player player) {
+    public static void initialize() {
+        Balm.getEvents().onEvent(UseBlockEvent.class, KnockoutRestrictionHandler::onUseBlock, EventPriority.Highest);
+        Balm.getEvents().onEvent(UseItemEvent.class, KnockoutRestrictionHandler::onUseItem, EventPriority.Highest);
+        Balm.getEvents().onEvent(TossItemEvent.class, KnockoutRestrictionHandler::onTossItem, EventPriority.Highest);
+        Balm.getEvents().onEvent(PlayerAttackEvent.class, KnockoutRestrictionHandler::onAttack, EventPriority.Highest);
+        Balm.getEvents().onEvent(DigSpeedEvent.class, KnockoutRestrictionHandler::onDigSpeed, EventPriority.Highest);
+        Balm.getEvents().onEvent(LivingHealEvent.class, KnockoutRestrictionHandler::onHeal);
+    }
+
+    public static void onHeal(LivingHealEvent event) {
+        if (event.getEntity() instanceof Player player) {
             if (HardcoreRevival.getRevivalData(player).isKnockedOut()) {
                 event.setCanceled(false);
             }
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void onBreakProgress(PlayerEvent.BreakSpeed event) {
+    public static void onDigSpeed(DigSpeedEvent event) {
         Player player = event.getPlayer();
         if (player != null && HardcoreRevival.getRevivalData(player).isKnockedOut()) {
-            event.setNewSpeed(0f);
+            event.setSpeedOverride(0f);
+            event.setCanceled(true);
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void onPlayerInteract(PlayerInteractEvent event) {
+    public static void onUseBlock(UseBlockEvent event) {
         Player player = event.getPlayer();
-        if (player != null && HardcoreRevival.getRevivalData(player).isKnockedOut()) {
-            if (!(event instanceof PlayerInteractEvent.RightClickEmpty || event instanceof PlayerInteractEvent.LeftClickEmpty)) {
-                if (!HardcoreRevivalConfig.getActive().allowBows || !(event.getItemStack().getItem() instanceof BowItem)) {
-                    event.setCanceled(true);
-                }
-            }
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void onPlayerUse(LivingEntityUseItemEvent event) {
-        LivingEntity entity = event.getEntityLiving();
-        if (event.isCancelable() && entity instanceof Player && HardcoreRevival.getRevivalData(entity).isKnockedOut()) {
-            if (!HardcoreRevivalConfig.getActive().allowBows || !(event.getItem().getItem() instanceof BowItem)) {
+        if (HardcoreRevival.getRevivalData(player).isKnockedOut()) {
+            ItemStack itemStack = player.getItemInHand(event.getHand());
+            if (!HardcoreRevivalConfig.getActive().allowBows || !(itemStack.getItem() instanceof BowItem)) {
                 event.setCanceled(true);
             }
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void onPlayerToss(ItemTossEvent event) {
+    public static void onUseItem(UseItemEvent event) {
+        LivingEntity player = event.getPlayer();
+        if (HardcoreRevival.getRevivalData(player).isKnockedOut()) {
+            ItemStack itemStack = player.getItemInHand(event.getHand());
+            if (!HardcoreRevivalConfig.getActive().allowBows || !(itemStack.getItem() instanceof BowItem)) {
+                event.setCanceled(true);
+            }
+        }
+    }
+
+    public static void onTossItem(TossItemEvent event) {
         Player player = event.getPlayer();
         if (HardcoreRevival.getRevivalData(player).isKnockedOut()) {
             // We try to suppress the drop on the client too, but if that failed for some reason, just try to revert the action
-            if (player.addItem(event.getEntityItem().getItem())) {
+            if (player.addItem(event.getItemEntity().getItem())) {
                 event.setCanceled(true);
             }
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void onAttack(AttackEntityEvent event) {
+    public static void onAttack(PlayerAttackEvent event) {
         Player player = event.getPlayer();
         if (player != null && HardcoreRevival.getRevivalData(player).isKnockedOut()) {
             if (HardcoreRevivalConfig.getActive().allowUnarmedMelee && player.getMainHandItem().isEmpty()) {
                 return;
             }
+
             event.setCanceled(true);
         }
     }

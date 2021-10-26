@@ -1,8 +1,13 @@
 package net.blay09.mods.hardcorerevival.capability;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 
 public class HardcoreRevivalDataImpl implements HardcoreRevivalData {
+	private static final String KNOCKED_OUT = "KnockedOut";
+	private static final String KNOCKOUT_TICKS_PASSED = "KnockoutTicksPassed";
+	private static final String LOGOUT_WORLD_TIME = "LogoutWorldTime";
+
 	private boolean knockedOut;
 	private int knockoutTicksPassed;
 	private long logoutWorldTime;
@@ -57,5 +62,21 @@ public class HardcoreRevivalDataImpl implements HardcoreRevivalData {
 	@Override
 	public Player getRescueTarget() {
 		return rescueTarget;
+	}
+
+	@Override
+	public CompoundTag serialize() {
+		CompoundTag tagCompound = new CompoundTag();
+		tagCompound.putBoolean(KNOCKED_OUT, isKnockedOut());
+		tagCompound.putInt(KNOCKOUT_TICKS_PASSED, getKnockoutTicksPassed());
+		tagCompound.putLong(LOGOUT_WORLD_TIME, getLogoutWorldTime());
+		return tagCompound;
+	}
+
+	@Override
+	public void deserialize(CompoundTag tag) {
+		setKnockedOut(tag.getBoolean(KNOCKED_OUT));
+		setKnockoutTicksPassed(tag.getInt(KNOCKOUT_TICKS_PASSED));
+		setLogoutWorldTime(tag.getLong(LOGOUT_WORLD_TIME));
 	}
 }

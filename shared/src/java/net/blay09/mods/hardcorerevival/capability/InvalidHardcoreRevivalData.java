@@ -1,5 +1,6 @@
 package net.blay09.mods.hardcorerevival.capability;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
@@ -52,5 +53,14 @@ public class InvalidHardcoreRevivalData implements HardcoreRevivalData {
     @Override
     public Player getRescueTarget() {
         return null;
+    }
+
+    @Override
+    public CompoundTag serialize() {
+        return new CompoundTag();
+    }
+
+    @Override
+    public void deserialize(CompoundTag tag) {
     }
 }

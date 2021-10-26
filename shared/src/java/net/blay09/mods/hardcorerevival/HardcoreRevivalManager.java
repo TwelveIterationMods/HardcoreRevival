@@ -2,9 +2,9 @@ package net.blay09.mods.hardcorerevival;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.hardcorerevival.api.PlayerKnockedOutEvent;
-import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalDataCapability;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalDataImpl;
+import net.blay09.mods.hardcorerevival.capability.InvalidHardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfigData;
 import net.blay09.mods.hardcorerevival.handler.KnockoutSyncHandler;
@@ -12,7 +12,6 @@ import net.blay09.mods.hardcorerevival.mixin.ServerPlayerAccessor;
 import net.blay09.mods.hardcorerevival.network.RevivalProgressMessage;
 import net.blay09.mods.hardcorerevival.network.RevivalSuccessMessage;
 import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -24,32 +23,18 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.scores.Team;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 
-public class HardcoreRevivalManager implements IHardcoreRevivalManager {
+public class HardcoreRevivalManager {
     public static final DamageSource notRescuedInTime = new DamageSource("not_rescued_in_time")
             .bypassMagic()
             .bypassArmor()
             .bypassInvul();
 
-    @Override
     public HardcoreRevivalData getRevivalData(Player player) {
-        return DistExecutor.runForDist(() -> () -> {
-            if (Minecraft.getInstance().player == player) {
-                return HardcoreRevival.getClientRevivalData();
-            }
-
-            LazyOptional<HardcoreRevivalData> revivalData = player.getCapability(HardcoreRevivalDataCapability.REVIVAL_CAPABILITY);
-            return revivalData.orElseGet(HardcoreRevivalDataImpl::new);
-        }, () -> () -> {
-            LazyOptional<HardcoreRevivalData> revivalData = player.getCapability(HardcoreRevivalDataCapability.REVIVAL_CAPABILITY);
-            return revivalData.orElseGet(HardcoreRevivalDataImpl::new);
-        });
+        HardcoreRevivalData provider = Balm.getProviders().getProvider(player, HardcoreRevivalData.class);
+        return provider != null ? provider : InvalidHardcoreRevivalData.INSTANCE;
     }
 
     public void knockout(Player player, DamageSource source) {
@@ -62,9 +47,8 @@ public class HardcoreRevivalManager implements IHardcoreRevivalManager {
 
         revivalData.setKnockedOut(true);
         revivalData.setKnockoutTicksPassed(0);
-
         // Fire event for compatibility addons
-        MinecraftForge.EVENT_BUS.post(new PlayerKnockedOutEvent(player, source));
+        Balm.getEvents().fireEvent(new PlayerKnockedOutEvent(player, source));
 
         // If enabled, show a death message
         if (player.level.getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES)) {
@@ -103,7 +87,7 @@ public class HardcoreRevivalManager implements IHardcoreRevivalManager {
                 String[] parts = effectString.split("\\|");
                 ResourceLocation registryName = ResourceLocation.tryParse(parts[0]);
                 if (registryName != null) {
-                    MobEffect effect = ForgeRegistries.MOB_EFFECTS.getValue(registryName);
+                    MobEffect effect = Balm.getRegistries().getMobEffect(registryName);
                     if (effect != null) {
                         int duration = tryParseInt(parts.length >= 2 ? parts[1] : null, 600);
                         int amplifier = tryParseInt(parts.length >= 3 ? parts[2] : null, 0);
@@ -198,5 +182,9 @@ public class HardcoreRevivalManager implements IHardcoreRevivalManager {
         KnockoutSyncHandler.sendHardcoreRevivalData(target, target, getRevivalData(target), true);
 
         player.setForcedPose(Pose.CROUCHING);
+    }
+
+    boolean isKnockedOut(Player player) {
+        return getRevivalData(player).isKnockedOut();
     }
 }
