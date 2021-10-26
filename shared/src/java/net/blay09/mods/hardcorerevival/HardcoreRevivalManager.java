@@ -151,7 +151,7 @@ public class HardcoreRevivalManager {
             accessor.setSpawnInvulnerableTime(0);
         }
 
-        player.hurt(notRescuedInTime, player.getHealth());
+        player.hurt(notRescuedInTime, Float.MAX_VALUE);
         reset(player);
     }
 
