@@ -30,6 +30,6 @@ Help your friends back up after they die (if you can make it in time).
 [[dependencies.hardcorerevival]]
     modId="balm"
     mandatory=true
-    versionRange="[1.7.0,)"
+    versionRange="[1.8.0,)"
     ordering="NONE"
     side="BOTH"
