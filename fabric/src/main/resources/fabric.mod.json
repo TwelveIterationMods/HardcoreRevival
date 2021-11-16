@@ -1,40 +1,36 @@
 {
   "schemaVersion": 1,
-  "id": "cookingforblockheads",
+  "id": "hardcorerevival",
   "version": "${version}",
 
-  "name": "Cooking for Blockheads",
-  "description": "Adds a cooking book and multiblock kitchens that only shows recipes you can make with what you currently have in your inventory.",
+  "name": "Hardcore Revival",
+  "description": "Help your friends back up after they die (if you can make it in time).",
   "authors": [
-    "BlayTheNinth",
-    "ZerotS"
+    "BlayTheNinth"
   ],
   "contact": {
-    "homepage": "https://blay09.net/mods/cookingforblockheads",
-    "sources": "https://github.com/ModdingForBlockheads/CookingForBlockheads",
-    "issues": "https://github.com/ModdingForBlockheads/CookingForBlockheads/issues"
+    "homepage": "https://blay09.net/mods/hardcorerevival",
+    "sources": "https://github.com/ModdingForBlockheads/HardcoreRevival",
+    "issues": "https://github.com/ModdingForBlockheads/HardcoreRevival/issues"
   },
 
   "license": "All Rights Reserved",
-  "icon": "cookingforblockheads-icon.png",
+  "icon": "hardcorerevival-icon.png",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.blay09.mods.craftingtweaks.FabricCookingForBlockheads"
+      "net.blay09.mods.hardcorerevival.FabricHardcoreRevival"
     ],
     "client": [
-      "net.blay09.mods.craftingtweaks.client.FabricCookingForBlockheadsClient"
+      "net.blay09.mods.hardcorerevival.client.FabricHardcoreRevivalClient"
     ],
     "modmenu": [
-      "net.blay09.mods.craftingtweaks.compat.ModMenuIntegration"
-    ],
-    "rei_plugins": [
-      "net.blay09.mods.craftingtweaks.compat.RoughlyEnoughItemsIntegration"
+      "net.blay09.mods.hardcorerevival.compat.ModMenuIntegration"
     ]
   },
   "mixins": [
-    "cookingforblockheads.mixins.json"
+    "hardcorerevival.mixins.json"
   ],
   "depends": {
     "cloth-config2": ">=5.0.34",

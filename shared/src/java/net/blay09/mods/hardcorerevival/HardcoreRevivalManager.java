@@ -23,8 +23,7 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.scores.Team;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class HardcoreRevivalManager {
     public static final DamageSource notRescuedInTime = new DamageSource("not_rescued_in_time")

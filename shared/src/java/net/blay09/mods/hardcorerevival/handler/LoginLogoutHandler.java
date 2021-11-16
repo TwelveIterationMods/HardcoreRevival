@@ -5,18 +5,12 @@ import net.blay09.mods.balm.api.event.PlayerLoginEvent;
 import net.blay09.mods.balm.api.event.PlayerLogoutEvent;
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
-import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalDataImpl;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Objects;
 
 public class LoginLogoutHandler {
 

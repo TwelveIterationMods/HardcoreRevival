@@ -18,7 +18,6 @@ public class KnockoutHandler {
 
     public static void initialize() {
         Balm.getEvents().onEvent(LivingDamageEvent.class, KnockoutHandler::onPlayerDamage);
-        Balm.getEvents().onEvent(PlayerDeathEvent.class, KnockoutHandler::onPlayerDeath);
         Balm.getEvents().onEvent(PlayerRespawnEvent.class, KnockoutHandler::onPlayerRespawn);
 
         Balm.getEvents().onTickEvent(TickType.ServerPlayer, TickPhase.Start, KnockoutHandler::onPlayerTick);
@@ -68,10 +67,6 @@ public class KnockoutHandler {
                 HardcoreRevival.getManager().notRescuedInTime(player);
             }
         }
-    }
-
-    public static void onPlayerDeath(PlayerDeathEvent event) {
-        HardcoreRevival.getManager().reset(event.getPlayer());
     }
 
     public static void onPlayerRespawn(PlayerRespawnEvent event) {

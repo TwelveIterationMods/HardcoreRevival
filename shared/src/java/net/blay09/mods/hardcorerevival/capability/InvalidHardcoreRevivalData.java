@@ -2,8 +2,7 @@ package net.blay09.mods.hardcorerevival.capability;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class InvalidHardcoreRevivalData implements HardcoreRevivalData {
 
