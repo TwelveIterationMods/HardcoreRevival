@@ -5,11 +5,12 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "EntityMixin",
-    "PlayerEntityMixin",
+    "PlayerMixin",
     "TargetingConditionsMixin",
     "ServerPlayNetHandlerMixin",
     "ServerPlayerAccessor",
-    "LivingEntityAccessor"
+    "LivingEntityAccessor",
+    "FabricPlayerMixin"
   ],
   "client": [
   ],

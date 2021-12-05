@@ -19,6 +19,6 @@ public class FabricHardcoreRevival implements ModInitializer {
         ResourceLocation identifier = new ResourceLocation(HardcoreRevival.MOD_ID, "player_data");
         providers.registerProvider(identifier, HardcoreRevivalData.class);
         var lookup = EntityApiLookup.get(identifier, HardcoreRevivalData.class, Void.class);
-        lookup.registerForType((entity, context) -> null, EntityType.PLAYER);
+        lookup.registerForType((entity, context) -> ((FabricPlayer) entity).getHardcoreRevivalData(), EntityType.PLAYER);
     }
 }

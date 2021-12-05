@@ -6,7 +6,7 @@
   "refmap": "hardcorerevival.refmap.json",
   "mixins": [
     "EntityMixin",
-    "PlayerEntityMixin",
+    "PlayerMixin",
     "TargetingConditionsMixin",
     "ServerPlayNetHandlerMixin",
     "ServerPlayerAccessor",
