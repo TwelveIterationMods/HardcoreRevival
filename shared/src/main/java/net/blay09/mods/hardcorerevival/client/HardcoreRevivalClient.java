@@ -139,7 +139,7 @@ public class HardcoreRevivalClient {
         if (client.player != null) {
             if (isKnockedOut()) {
                 if (!wasKnockedOut) {
-                    client.playerUpd.setForcedPose(Pose.FALL_FLYING);
+                    client.player.setForcedPose(Pose.FALL_FLYING);
                     client.setScreen(new KnockoutScreen());
                     wasKnockedOut = true;
                 }

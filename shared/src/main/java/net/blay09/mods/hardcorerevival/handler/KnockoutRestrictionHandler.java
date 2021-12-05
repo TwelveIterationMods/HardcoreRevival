@@ -60,7 +60,7 @@ public class KnockoutRestrictionHandler {
         Player player = event.getPlayer();
         if (HardcoreRevival.getRevivalData(player).isKnockedOut()) {
             // We try to suppress the drop on the client too, but if that failed for some reason, just try to revert the action
-            if (player.addItem(event.getItemEntity().getItem())) {
+            if (player.addItem(event.getItemStack())) {
                 event.setCanceled(true);
             }
         }
