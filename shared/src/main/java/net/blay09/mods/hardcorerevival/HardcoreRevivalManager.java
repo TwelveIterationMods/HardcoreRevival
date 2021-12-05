@@ -1,9 +1,9 @@
 package net.blay09.mods.hardcorerevival;
 
 import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.mixin.DamageSourceAccessor;
 import net.blay09.mods.hardcorerevival.api.PlayerKnockedOutEvent;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
-import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalDataImpl;
 import net.blay09.mods.hardcorerevival.capability.InvalidHardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfigData;
@@ -23,13 +23,21 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.scores.Team;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class HardcoreRevivalManager {
-    public static final DamageSource notRescuedInTime = new DamageSource("not_rescued_in_time")
-            .bypassMagic()
-            .bypassArmor()
-            .bypassInvul();
+    public static final DamageSource notRescuedInTime = createNotRescuedInTimeDamageSource();
+
+    @NotNull
+    private static DamageSource createNotRescuedInTimeDamageSource() {
+        DamageSource damageSource = DamageSourceAccessor.create("not_rescued_in_time");
+        DamageSourceAccessor damageSourceAccessor = ((DamageSourceAccessor) damageSource);
+        damageSourceAccessor.callBypassMagic();
+        damageSourceAccessor.callBypassArmor();
+        damageSourceAccessor.callBypassInvul();
+        return damageSource;
+    }
 
     public HardcoreRevivalData getRevivalData(Player player) {
         HardcoreRevivalData provider = Balm.getProviders().getProvider(player, HardcoreRevivalData.class);
@@ -128,7 +136,7 @@ public class HardcoreRevivalManager {
             }
         }
 
-        player.setForcedPose(null);
+        Balm.getHooks().setForcedPose(player, null);
     }
 
     public void abortRescue(Player player) {
@@ -137,11 +145,11 @@ public class HardcoreRevivalManager {
         if (rescueTarget != null) {
             revivalData.setRescueTime(0);
             revivalData.setRescueTarget(null);
-            Balm.getNetworking().sendTo(player,new RevivalProgressMessage(-1, -1) );
+            Balm.getNetworking().sendTo(player, new RevivalProgressMessage(-1, -1));
             KnockoutSyncHandler.sendHardcoreRevivalData(rescueTarget, rescueTarget, getRevivalData(rescueTarget));
         }
 
-        player.setForcedPose(null);
+        Balm.getHooks().setForcedPose(player, null);
     }
 
     public void notRescuedInTime(Player player) {
@@ -168,7 +176,7 @@ public class HardcoreRevivalManager {
             player.setGlowingTag(revivalData.isKnockedOut());
         }
 
-        player.setForcedPose(revivalData.isKnockedOut() ? Pose.FALL_FLYING : null);
+        Balm.getHooks().setForcedPose(player, revivalData.isKnockedOut() ? Pose.FALL_FLYING : null);
 
         KnockoutSyncHandler.sendHardcoreRevivalDataToWatching(player, revivalData);
     }
@@ -180,7 +188,7 @@ public class HardcoreRevivalManager {
         Balm.getNetworking().sendTo(player, new RevivalProgressMessage(target.getId(), 0.1f));
         KnockoutSyncHandler.sendHardcoreRevivalData(target, target, getRevivalData(target), true);
 
-        player.setForcedPose(Pose.CROUCHING);
+        Balm.getHooks().setForcedPose(player, Pose.CROUCHING);
     }
 
     boolean isKnockedOut(Player player) {
