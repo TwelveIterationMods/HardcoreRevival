@@ -139,7 +139,7 @@ public class HardcoreRevivalClient {
         if (client.player != null) {
             if (isKnockedOut()) {
                 if (!wasKnockedOut) {
-                    client.player.setForcedPose(Pose.FALL_FLYING);
+                    Balm.getHooks().setForcedPose(client.player, Pose.FALL_FLYING);
                     client.setScreen(new KnockoutScreen());
                     wasKnockedOut = true;
                 }
@@ -148,7 +148,7 @@ public class HardcoreRevivalClient {
                 revivalData.setKnockoutTicksPassed(revivalData.getKnockoutTicksPassed() + 1);
             } else {
                 if (wasKnockedOut) {
-                    client.player.setForcedPose(null);
+                    Balm.getHooks().setForcedPose(client.player, null);
                     wasKnockedOut = false;
                 }
 
@@ -178,12 +178,12 @@ public class HardcoreRevivalClient {
             targetEntity = -1;
             targetProgress = 0f;
 
-            Minecraft.getInstance().player.setForcedPose(null);
+            Balm.getHooks().setForcedPose(Minecraft.getInstance().player, null);
         } else {
             targetEntity = entityId;
             targetProgress = progress;
 
-            Minecraft.getInstance().player.setForcedPose(Pose.CROUCHING);
+            Balm.getHooks().setForcedPose(Minecraft.getInstance().player, Pose.CROUCHING);
         }
     }
 
