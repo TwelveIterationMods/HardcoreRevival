@@ -13,8 +13,8 @@ This mod is available for both Forge and Fabric (starting Minecraft 1.17).
 
 #### Fabric
 
-[![Versions](http://cf.way2muchnoise.eu/versions/_latest.svg)](https://www.curseforge.com/minecraft/mc-mods/hardcore-revival-fabric)
-[![Downloads](http://cf.way2muchnoise.eu/full__downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/hardcore-revival-fabric)
+[![Versions](http://cf.way2muchnoise.eu/versions/554587_latest.svg)](https://www.curseforge.com/minecraft/mc-mods/hardcore-revival-fabric)
+[![Downloads](http://cf.way2muchnoise.eu/full_554587_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/hardcore-revival-fabric)
 
 ## Contributing
 
