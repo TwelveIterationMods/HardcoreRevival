@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import me.shedaniel.autoconfig.annotation.Config;
 import net.blay09.mods.balm.api.config.BalmConfigData;
 import net.blay09.mods.balm.api.config.Comment;
+import net.blay09.mods.balm.api.config.ExpectedType;
 import net.blay09.mods.balm.api.config.Synced;
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
 
@@ -29,6 +30,7 @@ public class HardcoreRevivalConfigData implements BalmConfigData {
     @Comment("The food level to respawn with when a player was rescued, out of 20.")
     public int rescueRespawnFoodLevel = 5;
 
+    @ExpectedType(String.class)
     @Comment("Effects applied to a player when rescued, in the format \"effect|duration|amplifier\"")
     public List<String> rescueRespawnEffects = Lists.newArrayList("minecraft:hunger|600|0", "minecraft:weakness|1200|0");
 
