@@ -9,7 +9,7 @@ public class ModNetworking {
         networking.registerClientboundPacket(id("revival_data"), HardcoreRevivalDataMessage.class, HardcoreRevivalDataMessage::encode, HardcoreRevivalDataMessage::decode, HardcoreRevivalDataMessage::handle);
         networking.registerServerboundPacket(id("revival_success"), RevivalSuccessMessage.class, RevivalSuccessMessage::encode, RevivalSuccessMessage::decode, RevivalSuccessMessage::handle);
         networking.registerServerboundPacket(id("rescue"), RescueMessage.class, RescueMessage::encode, RescueMessage::decode, RescueMessage::handle);
-        networking.registerServerboundPacket(id("revival_progress"), RevivalProgressMessage.class, RevivalProgressMessage::encode, RevivalProgressMessage::decode, RevivalProgressMessage::handle);
+        networking.registerClientboundPacket(id("revival_progress"), RevivalProgressMessage.class, RevivalProgressMessage::encode, RevivalProgressMessage::decode, RevivalProgressMessage::handle);
         networking.registerServerboundPacket(id("accept_fate"), AcceptFateMessage.class, (message, buf) -> {}, it -> new AcceptFateMessage(), AcceptFateMessage::handle);
     }
 
