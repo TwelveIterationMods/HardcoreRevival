@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[38,)"
+loaderVersion="[41,)"
 license="All rights reserved"
 issueTrackerURL="https://github.com/ModdingForBlockheads/HardcoreRevival/issues"
 
@@ -18,18 +18,18 @@ Help your friends back up after they die (if you can make it in time).
 [[dependencies.hardcorerevival]]
     modId="forge"
     mandatory=true
-    versionRange="[38,)"
+    versionRange="[41,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.hardcorerevival]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.18,1.19)"
+    versionRange="[1.19,1.20)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.hardcorerevival]]
     modId="balm"
     mandatory=true
-    versionRange="[2.1.0,)"
+    versionRange="[4.0.0,)"
     ordering="NONE"
     side="BOTH"

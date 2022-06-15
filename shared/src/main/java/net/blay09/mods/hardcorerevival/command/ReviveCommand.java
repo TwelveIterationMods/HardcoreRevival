@@ -7,7 +7,7 @@ import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
@@ -32,9 +32,9 @@ public class ReviveCommand {
         }
 
         if (targets.size() == 1) {
-            source.sendSuccess(new TranslatableComponent("commands.revive.success.single", targets.iterator().next().getDisplayName()), true);
+            source.sendSuccess(Component.translatable("commands.revive.success.single", targets.iterator().next().getDisplayName()), true);
         } else {
-            source.sendSuccess(new TranslatableComponent("commands.revive.success.multiple", targets.size()), true);
+            source.sendSuccess(Component.translatable("commands.revive.success.multiple", targets.size()), true);
         }
 
         return targets.size();

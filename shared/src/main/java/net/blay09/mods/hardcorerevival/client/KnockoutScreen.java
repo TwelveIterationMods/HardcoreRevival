@@ -6,7 +6,7 @@ import net.blay09.mods.hardcorerevival.network.AcceptFateMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 
 public class KnockoutScreen extends Screen {
 
@@ -14,12 +14,12 @@ public class KnockoutScreen extends Screen {
     private float enableButtonTimer;
 
     protected KnockoutScreen() {
-        super(new TranslatableComponent("gui.hardcorerevival.knocked_out"));
+        super(Component.translatable("gui.hardcorerevival.knocked_out"));
     }
 
     @Override
     protected void init() {
-        buttonDie = new Button(width / 2 - 100, height / 2 - 30, 200, 20, new TranslatableComponent("gui.hardcorerevival.die", ""), it -> {
+        buttonDie = new Button(width / 2 - 100, height / 2 - 30, 200, 20, Component.translatable("gui.hardcorerevival.die", ""), it -> {
             buttonDie.playDownSound(Minecraft.getInstance().getSoundManager());
             Balm.getNetworking().sendToServer(new AcceptFateMessage());
         });
@@ -34,13 +34,13 @@ public class KnockoutScreen extends Screen {
             enableButtonTimer += partialTicks;
             if (enableButtonTimer >= 40) {
                 buttonDie.active = true;
-                buttonDie.setMessage(new TranslatableComponent("gui.hardcorerevival.die", ""));
+                buttonDie.setMessage(Component.translatable("gui.hardcorerevival.die", ""));
             } else if (enableButtonTimer >= 30) {
-                buttonDie.setMessage(new TranslatableComponent("gui.hardcorerevival.die", "..."));
+                buttonDie.setMessage(Component.translatable("gui.hardcorerevival.die", "..."));
             } else if (enableButtonTimer >= 20) {
-                buttonDie.setMessage(new TranslatableComponent("gui.hardcorerevival.die", ".."));
+                buttonDie.setMessage(Component.translatable("gui.hardcorerevival.die", ".."));
             } else if (enableButtonTimer >= 10) {
-                buttonDie.setMessage(new TranslatableComponent("gui.hardcorerevival.die", "."));
+                buttonDie.setMessage(Component.translatable("gui.hardcorerevival.die", "."));
             }
 
             GuiHelper.renderKnockedOutTitle(poseStack, width);

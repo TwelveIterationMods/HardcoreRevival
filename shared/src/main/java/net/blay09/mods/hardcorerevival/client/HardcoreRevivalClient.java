@@ -19,7 +19,6 @@ import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Pose;
@@ -56,7 +55,7 @@ public class HardcoreRevivalClient {
 
     public static void onFovUpdate(FovUpdateEvent event) {
         if (isKnockedOut()) {
-            event.setFov(Mth.lerp(Minecraft.getInstance().options.fovEffectScale, 1f, 0.5f));
+            event.setFov((float) Mth.lerp(Minecraft.getInstance().options.fovEffectScale().get(), 1f, 0.5f));
         }
     }
 
@@ -88,7 +87,7 @@ public class HardcoreRevivalClient {
                     GuiHelper.renderDeathTimer(poseStack, width, height, beingRescued);
 
                     Component openDeathScreenKey = mc.options.keyInventory.getTranslatedKeyMessage(); // getDisplayName()
-                    final TranslatableComponent openDeathScreenText = new TranslatableComponent("gui.hardcorerevival.open_death_screen", openDeathScreenKey);
+                    final var openDeathScreenText = Component.translatable("gui.hardcorerevival.open_death_screen", openDeathScreenKey);
                     GuiComponent.drawCenteredString(poseStack, mc.font, openDeathScreenText, width / 2, height / 2 + 25, 0xFFFFFFFF);
 
                     RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
@@ -97,7 +96,7 @@ public class HardcoreRevivalClient {
                 if (targetEntity != -1 && targetProgress > 0) {
                     Entity entity = mc.level.getEntity(targetEntity);
                     if (entity instanceof Player) {
-                        TranslatableComponent textComponent = new TranslatableComponent("gui.hardcorerevival.rescuing", entity.getDisplayName());
+                        var textComponent = Component.translatable("gui.hardcorerevival.rescuing", entity.getDisplayName());
                         if (targetProgress >= 0.75f) {
                             textComponent.append(" ...");
                         } else if (targetProgress >= 0.5f) {
@@ -114,7 +113,7 @@ public class HardcoreRevivalClient {
                     Entity pointedEntity = Minecraft.getInstance().crosshairPickEntity;
                     if (pointedEntity != null && HardcoreRevival.getRevivalData(pointedEntity).isKnockedOut() && mc.player.distanceTo(pointedEntity) <= HardcoreRevivalConfig.getActive().rescueDistance) {
                         Component rescueKeyText = mc.options.keyUse.getTranslatedKeyMessage();
-                        TranslatableComponent textComponent = new TranslatableComponent("gui.hardcorerevival.hold_to_rescue", rescueKeyText);
+                        var textComponent = Component.translatable("gui.hardcorerevival.hold_to_rescue", rescueKeyText);
                         mc.font.drawShadow(poseStack, textComponent, mc.getWindow().getGuiScaledWidth() / 2f - mc.font.width(textComponent) / 2f, mc.getWindow().getGuiScaledHeight() / 2f + 30, 0xFFFFFFFF);
                         RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
                     }

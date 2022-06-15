@@ -64,12 +64,12 @@ public class HardcoreRevivalManager {
                 Team team = player.getTeam();
                 if (team != null && team.getDeathMessageVisibility() != Team.Visibility.ALWAYS) {
                     if (team.getDeathMessageVisibility() == Team.Visibility.HIDE_FOR_OTHER_TEAMS) {
-                        server.getPlayerList().broadcastToTeam(player, player.getCombatTracker().getDeathMessage());
+                        server.getPlayerList().broadcastSystemToTeam(player, player.getCombatTracker().getDeathMessage());
                     } else if (team.getDeathMessageVisibility() == Team.Visibility.HIDE_FOR_OWN_TEAM) {
-                        server.getPlayerList().broadcastToAllExceptTeam(player, player.getCombatTracker().getDeathMessage());
+                        server.getPlayerList().broadcastSystemToAllExceptTeam(player, player.getCombatTracker().getDeathMessage());
                     }
                 } else {
-                    server.getPlayerList().broadcastMessage(player.getCombatTracker().getDeathMessage(), ChatType.SYSTEM, Util.NIL_UUID);
+                    server.getPlayerList().broadcastSystemMessage(player.getCombatTracker().getDeathMessage(), ChatType.SYSTEM);
                 }
             }
         }
