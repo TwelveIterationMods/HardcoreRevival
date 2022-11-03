@@ -20,4 +20,6 @@
   "config.hardcorerevival.rescueRespawnHealth.tooltip": "玩家被救起后的生命值,不能为20.",
   "config.hardcorerevival.rescueRespawnFoodLevel": "被救起后的饱食度",
   "config.hardcorerevival.rescueRespawnFoodLevel.tooltip": "玩家被救起后的饱食度,不能为20."
+  "commands.revive.success.single": "复活了 %s",
+  "commands.revive.success.multiple": "复活了 %s 玩家"
 }
