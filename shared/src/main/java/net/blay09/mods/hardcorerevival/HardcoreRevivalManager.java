@@ -69,7 +69,7 @@ public class HardcoreRevivalManager {
                         server.getPlayerList().broadcastSystemToAllExceptTeam(player, player.getCombatTracker().getDeathMessage());
                     }
                 } else {
-                    server.getPlayerList().broadcastSystemMessage(player.getCombatTracker().getDeathMessage(), ChatType.SYSTEM);
+                    server.getPlayerList().broadcastSystemMessage(player.getCombatTracker().getDeathMessage(), false);
                 }
             }
         }

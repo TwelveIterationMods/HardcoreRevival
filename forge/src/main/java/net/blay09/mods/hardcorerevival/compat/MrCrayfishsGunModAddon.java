@@ -19,8 +19,8 @@ public class MrCrayfishsGunModAddon {
 
     @SubscribeEvent
     public void onGunFirePre(GunFireEvent.Pre event) {
-        if (HardcoreRevival.getRevivalData(event.getPlayer()).isKnockedOut()) {
-            ResourceLocation mainHandItemKey = Balm.getRegistries().getKey(event.getPlayer().getMainHandItem().getItem());
+        if (HardcoreRevival.getRevivalData(event.getEntity()).isKnockedOut()) {
+            ResourceLocation mainHandItemKey = Balm.getRegistries().getKey(event.getEntity().getMainHandItem().getItem());
             boolean isFiringPistol = Objects.equals(mainHandItemKey, PISTOL);
             if (isFiringPistol && HardcoreRevivalConfig.getActive().allowPistols) {
                 return;
