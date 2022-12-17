@@ -19,10 +19,10 @@ public class KnockoutScreen extends Screen {
 
     @Override
     protected void init() {
-        buttonDie = new Button(width / 2 - 100, height / 2 - 30, 200, 20, Component.translatable("gui.hardcorerevival.die", ""), it -> {
+        buttonDie = Button.builder(Component.translatable("gui.hardcorerevival.die", ""), it -> {
             buttonDie.playDownSound(Minecraft.getInstance().getSoundManager());
             Balm.getNetworking().sendToServer(new AcceptFateMessage());
-        });
+        }).pos(width / 2 - 100, height / 2 - 30).size(200, 20).build();
         buttonDie.active = false;
         addRenderableWidget(buttonDie);
     }
