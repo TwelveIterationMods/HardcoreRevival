@@ -9,9 +9,12 @@ import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.mixin.LivingEntityAccessor;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.Pose;
 
 
 public class KnockoutHandler {
@@ -32,13 +35,13 @@ public class KnockoutHandler {
                 if (attacker instanceof Mob mob) {
                     mob.setTarget(null);
                 }
-                if (!damageSource.isBypassInvul() && damageSource != HardcoreRevivalManager.notRescuedInTime) {
+                if (!damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && !damageSource.is(HardcoreRevivalManager.NOT_RESCUED_IN_TIME)) {
                     event.setCanceled(true);
                 }
                 return;
             }
 
-            boolean canDamageSourceKnockout = damageSource != DamageSource.OUT_OF_WORLD && damageSource != HardcoreRevivalManager.notRescuedInTime;
+            boolean canDamageSourceKnockout = !damageSource.is(DamageTypes.OUT_OF_WORLD) && !damageSource.is(HardcoreRevivalManager.NOT_RESCUED_IN_TIME);
             if (canDamageSourceKnockout && player.getHealth() - event.getDamageAmount() <= 0f) {
                 // Reduce damage to prevent the player from dying
                 event.setDamageAmount(Math.min(event.getDamageAmount(), Math.max(0f, player.getHealth() - 1f)));
@@ -61,6 +64,10 @@ public class KnockoutHandler {
             player.setHealth(1f);
 
             revivalData.setKnockoutTicksPassed(revivalData.getKnockoutTicksPassed() + 1);
+
+            if(player.tickCount % 20 == 0) {
+                Balm.getHooks().setForcedPose(player, revivalData.isKnockedOut() ? Pose.FALL_FLYING : null);
+            }
 
             int maxTicksUntilDeath = HardcoreRevivalConfig.getActive().ticksUntilDeath;
             if (maxTicksUntilDeath > 0 && revivalData.getKnockoutTicksPassed() >= maxTicksUntilDeath) {

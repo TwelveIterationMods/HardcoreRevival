@@ -1,7 +1,6 @@
 package net.blay09.mods.hardcorerevival;
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.mixin.DamageSourceAccessor;
 import net.blay09.mods.hardcorerevival.api.PlayerKnockedOutEvent;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.capability.InvalidHardcoreRevivalData;
@@ -11,11 +10,12 @@ import net.blay09.mods.hardcorerevival.handler.KnockoutSyncHandler;
 import net.blay09.mods.hardcorerevival.mixin.ServerPlayerAccessor;
 import net.blay09.mods.hardcorerevival.network.RevivalProgressMessage;
 import net.blay09.mods.hardcorerevival.network.RevivalSuccessMessage;
-import net.minecraft.Util;
-import net.minecraft.network.chat.ChatType;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -23,21 +23,10 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.scores.Team;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class HardcoreRevivalManager {
-    public static final DamageSource notRescuedInTime = createNotRescuedInTimeDamageSource();
-
-    @NotNull
-    private static DamageSource createNotRescuedInTimeDamageSource() {
-        DamageSource damageSource = DamageSourceAccessor.create("not_rescued_in_time");
-        DamageSourceAccessor damageSourceAccessor = ((DamageSourceAccessor) damageSource);
-        damageSourceAccessor.callBypassMagic();
-        damageSourceAccessor.callBypassArmor();
-        damageSourceAccessor.callBypassInvul();
-        return damageSource;
-    }
+    public static final ResourceKey<DamageType> NOT_RESCUED_IN_TIME = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(HardcoreRevival.MOD_ID, "not_rescued_in_time"));
 
     public HardcoreRevivalData getRevivalData(Player player) {
         HardcoreRevivalData provider = Balm.getProviders().getProvider(player, HardcoreRevivalData.class);
@@ -158,7 +147,9 @@ public class HardcoreRevivalManager {
             accessor.setSpawnInvulnerableTime(0);
         }
 
-        player.hurt(notRescuedInTime, Float.MAX_VALUE);
+        final var damageTypes = player.level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
+        final var damageSource = new DamageSource(damageTypes.getHolderOrThrow(NOT_RESCUED_IN_TIME));
+        player.hurt(damageSource, Float.MAX_VALUE);
         reset(player);
     }
 
