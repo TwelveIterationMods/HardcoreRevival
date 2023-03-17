@@ -147,9 +147,9 @@ public class HardcoreRevivalManager {
             revivalData.setRescueTarget(null);
             Balm.getNetworking().sendTo(player, new RevivalProgressMessage(-1, -1));
             KnockoutSyncHandler.sendHardcoreRevivalData(rescueTarget, rescueTarget, getRevivalData(rescueTarget));
-        }
 
-        Balm.getHooks().setForcedPose(player, null);
+            Balm.getHooks().setForcedPose(player, null);
+        }
     }
 
     public void notRescuedInTime(Player player) {
@@ -189,6 +189,12 @@ public class HardcoreRevivalManager {
         KnockoutSyncHandler.sendHardcoreRevivalData(target, target, getRevivalData(target), true);
 
         Balm.getHooks().setForcedPose(player, Pose.CROUCHING);
+    }
+
+    public boolean isRescuing(Player player) {
+        HardcoreRevivalData revivalData = getRevivalData(player);
+        Player rescueTarget = revivalData.getRescueTarget();
+        return rescueTarget != null;
     }
 
     boolean isKnockedOut(Player player) {
