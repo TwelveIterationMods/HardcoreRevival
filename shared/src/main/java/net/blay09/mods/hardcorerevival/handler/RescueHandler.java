@@ -20,13 +20,17 @@ public class RescueHandler {
     }
 
     public static void onUseItem(UseItemEvent event) {
-        // Stop rescuing if the player does something other than rescuing
-        HardcoreRevival.getManager().abortRescue(event.getPlayer());
+        // Prevent player from using items while they're rescuing
+        if (HardcoreRevival.getManager().isRescuing(event.getPlayer())) {
+            event.setCanceled(true);
+        }
     }
 
     public static void onUseBlock(UseBlockEvent event) {
-        // Stop rescuing if the player does something other than rescuing
-        HardcoreRevival.getManager().abortRescue(event.getPlayer());
+        // Prevent player from placing blocks while they're rescuing
+        if (HardcoreRevival.getManager().isRescuing(event.getPlayer())) {
+            event.setCanceled(true);
+        }
     }
 
     public static void onAttack(PlayerAttackEvent event) {
@@ -61,7 +65,8 @@ public class RescueHandler {
                     if (rescueTime >= maxRescueActionTicks) {
                         HardcoreRevival.getManager().finishRescue(player);
                     } else if (rescueTime % step == 0) {
-                        Balm.getNetworking().sendTo(player, new RevivalProgressMessage(rescueTarget.getId(), (float) rescueTime / (float) maxRescueActionTicks));
+                        Balm.getNetworking()
+                                .sendTo(player, new RevivalProgressMessage(rescueTarget.getId(), (float) rescueTime / (float) maxRescueActionTicks));
                         KnockoutSyncHandler.sendHardcoreRevivalData(rescueTarget, rescueTarget, rescueTargetData, true);
                     }
                 }
