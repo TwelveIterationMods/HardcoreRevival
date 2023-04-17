@@ -1,13 +1,14 @@
 {
-  "gui.hardcorerevival.knocked_out": "你倒地了.",
+  "gui.hardcorerevival.knocked_out": "你被击倒了。",
   "gui.hardcorerevival.die": "%1$s 接受你的命运 %1$s",
   "gui.hardcorerevival.open_death_screen": "按 %s 打开死亡界面。",
+  "gui.hardcorerevival.hold_to_rescue": "按住 %s 进行救援。",
   "gui.hardcorerevival.rescue_time_left": "还剩 %d 秒可被救起",
-  "gui.hardcorerevival.wait_for_rescue": "等待救援或接受命运.",
+  "gui.hardcorerevival.wait_for_rescue": "等待救援或接受命运。",
+  "gui.hardcorerevival.being_rescued": "你正在被救援……",
   "gui.hardcorerevival.rescuing": "救援 %s",
   "death.attack.not_rescued_in_time": "%1$s 未及时获救",
   "death.attack.not_rescued_in_time.player": "%1$s 未及时获救",
-  "gui.hardcorerevival.send_ping": "发送标记",
   "config.hardcorerevival.maxDeathTicks": "死亡计时",
   "config.hardcorerevival.maxDeathTicks.tooltip": "一名玩家死亡时可被救起的 tick 时间。20 ticks 等于一秒。",
   "config.hardcorerevival.maxRescueDist": "最大救援距离",
@@ -15,11 +16,11 @@
   "config.hardcorerevival.rescueTime": "救援时间",
   "config.hardcorerevival.rescueTime.tooltip": "救起一名玩家所需的 tick 时间。20 ticks 等于一秒。",
   "config.hardcorerevival.disableDeathTimer": "禁用死亡计时",
-  "config.hardcorerevival.disableDeathTimer.tooltip": "设置为true将完全禁用死亡计时，这意味着你将有无限的时间来救援他人.",
+  "config.hardcorerevival.disableDeathTimer.tooltip": "设置为true将完全禁用死亡计时，这意味着你将有无限的时间来救援他人。",
   "config.hardcorerevival.rescueRespawnHealth": "被救起后的生命值",
-  "config.hardcorerevival.rescueRespawnHealth.tooltip": "玩家被救起后的生命值,不能为20.",
+  "config.hardcorerevival.rescueRespawnHealth.tooltip": "玩家被救起后的生命值，不能为20。",
   "config.hardcorerevival.rescueRespawnFoodLevel": "被救起后的饱食度",
-  "config.hardcorerevival.rescueRespawnFoodLevel.tooltip": "玩家被救起后的饱食度,不能为20."
+  "config.hardcorerevival.rescueRespawnFoodLevel.tooltip": "玩家被救起后的饱食度，不能为20。",
   "commands.revive.success.single": "复活了 %s",
   "commands.revive.success.multiple": "复活了 %s 玩家"
 }
