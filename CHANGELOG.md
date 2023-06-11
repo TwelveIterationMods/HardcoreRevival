@@ -1,4 +1,1 @@
-- Updated to Minecraft 1.19.4
-- Fixed being unable to rescue someone while having an item in hand
-- Fixed downed pose resetting when trying to attack while knocked out
-- Fixed knockout restrictions (like preventing block placements) not working correctly on Fabric (update Balm!)
+- Updated to Minecraft 1.20
