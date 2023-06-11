@@ -1,16 +1,12 @@
 package net.blay09.mods.hardcorerevival.config;
 
 import com.google.common.collect.Lists;
-import me.shedaniel.autoconfig.annotation.Config;
-import net.blay09.mods.balm.api.config.BalmConfigData;
-import net.blay09.mods.balm.api.config.Comment;
-import net.blay09.mods.balm.api.config.ExpectedType;
-import net.blay09.mods.balm.api.config.Synced;
+import net.blay09.mods.balm.api.config.*;
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
 
 import java.util.List;
 
-@Config(name = HardcoreRevival.MOD_ID)
+@Config(HardcoreRevival.MOD_ID)
 public class HardcoreRevivalConfigData implements BalmConfigData {
 
     @Comment("The time in ticks in which a player can still be rescued from death. Set to 0 to disable the timer.")

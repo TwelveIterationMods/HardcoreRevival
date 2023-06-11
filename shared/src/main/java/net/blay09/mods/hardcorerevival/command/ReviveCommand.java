@@ -32,9 +32,9 @@ public class ReviveCommand {
         }
 
         if (targets.size() == 1) {
-            source.sendSuccess(Component.translatable("commands.revive.success.single", targets.iterator().next().getDisplayName()), true);
+            source.sendSuccess(() -> Component.translatable("commands.revive.success.single", targets.iterator().next().getDisplayName()), true);
         } else {
-            source.sendSuccess(Component.translatable("commands.revive.success.multiple", targets.size()), true);
+            source.sendSuccess(() -> Component.translatable("commands.revive.success.multiple", targets.size()), true);
         }
 
         return targets.size();

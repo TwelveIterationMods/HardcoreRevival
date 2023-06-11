@@ -5,7 +5,7 @@ issueTrackerURL="https://github.com/TwelveIterationMods/HardcoreRevival/issues"
 
 [[mods]]
 modId="hardcorerevival"
-version="${file.jarVersion}"
+version="${mod_version}"
 displayName="Hardcore Revival"
 displayURL="https://mods.twelveiterations.com/mc/hardcorerevival"
 logoFile="hardcorerevival-icon.png"

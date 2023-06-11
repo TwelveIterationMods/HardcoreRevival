@@ -26,7 +26,7 @@ public class LoginLogoutHandler {
         revivalData.deserialize(data.getCompound("HardcoreRevival"));
 
         if (HardcoreRevivalConfig.getActive().continueTimerWhileOffline && revivalData.isKnockedOut()) {
-            long worldTimeNow = player.level.getGameTime();
+            long worldTimeNow = player.level().getGameTime();
             long worldTimeThen = revivalData.getLogoutWorldTime();
             int worldTimePassed = (int) Math.max(0, worldTimeNow - worldTimeThen);
             revivalData.setKnockoutTicksPassed(revivalData.getKnockoutTicksPassed() + worldTimePassed);
@@ -39,7 +39,7 @@ public class LoginLogoutHandler {
         Player player = event.getPlayer();
         CompoundTag data = Balm.getHooks().getPersistentData(player);
         HardcoreRevivalData revivalData = HardcoreRevival.getRevivalData(player);
-        revivalData.setLogoutWorldTime(player.level.getGameTime());
+        revivalData.setLogoutWorldTime(player.level().getGameTime());
         Tag tag = revivalData.serialize();
         if (tag != null) {
             data.put("HardcoreRevival", tag);

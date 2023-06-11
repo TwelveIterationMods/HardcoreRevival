@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.hardcorerevival.network.AcceptFateMessage;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -28,7 +29,7 @@ public class KnockoutScreen extends Screen {
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null) {
             enableButtonTimer += partialTicks;
@@ -43,13 +44,13 @@ public class KnockoutScreen extends Screen {
                 buttonDie.setMessage(Component.translatable("gui.hardcorerevival.die", "."));
             }
 
-            GuiHelper.renderKnockedOutTitle(poseStack, width);
-            GuiHelper.renderDeathTimer(poseStack, width, height, HardcoreRevivalClient.isBeingRescued());
+            GuiHelper.renderKnockedOutTitle(guiGraphics, width);
+            GuiHelper.renderDeathTimer(guiGraphics, width, height, HardcoreRevivalClient.isBeingRescued());
         } else if (buttonDie != null) {
             buttonDie.visible = false;
         }
 
-        super.render(poseStack, mouseX, mouseY, partialTicks);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override

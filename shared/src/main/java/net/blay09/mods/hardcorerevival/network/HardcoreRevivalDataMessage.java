@@ -37,7 +37,7 @@ public class HardcoreRevivalDataMessage {
 
     public static void handle(Player player, HardcoreRevivalDataMessage message) {
         if (player != null) {
-            Entity entity = player.level.getEntity(message.entityId);
+            Entity entity = player.level().getEntity(message.entityId);
             if (entity != null) {
                 HardcoreRevivalData revivalData = entity.getId() == player.getId() ? HardcoreRevival.getClientRevivalData() : HardcoreRevival.getRevivalData(entity);
                 revivalData.setKnockedOut(message.knockedOut);

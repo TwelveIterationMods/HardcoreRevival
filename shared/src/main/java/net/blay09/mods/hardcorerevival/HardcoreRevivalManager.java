@@ -47,7 +47,7 @@ public class HardcoreRevivalManager {
         Balm.getEvents().fireEvent(new PlayerKnockedOutEvent(player, source));
 
         // If enabled, show a death message
-        if (player.level.getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES)) {
+        if (player.level().getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES)) {
             MinecraftServer server = player.getServer();
             if (server != null) {
                 Team team = player.getTeam();
@@ -147,7 +147,7 @@ public class HardcoreRevivalManager {
             accessor.setSpawnInvulnerableTime(0);
         }
 
-        final var damageTypes = player.level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
+        final var damageTypes = player.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
         final var damageSource = new DamageSource(damageTypes.getHolderOrThrow(NOT_RESCUED_IN_TIME));
         player.hurt(damageSource, Float.MAX_VALUE);
         reset(player);

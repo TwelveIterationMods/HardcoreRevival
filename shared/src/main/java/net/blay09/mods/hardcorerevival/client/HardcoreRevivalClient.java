@@ -1,7 +1,6 @@
 package net.blay09.mods.hardcorerevival.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.event.TickPhase;
 import net.blay09.mods.balm.api.event.TickType;
@@ -14,7 +13,7 @@ import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.network.RescueMessage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
@@ -69,28 +68,27 @@ public class HardcoreRevivalClient {
     }
 
     public static void onGuiDrawPost(GuiDrawEvent.Post event) {
-        PoseStack poseStack = event.getPoseStack();
+        GuiGraphics guiGraphics = event.getGuiGraphics();
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
         if (event.getElement() == GuiDrawEvent.Element.ALL) {
             Minecraft mc = Minecraft.getInstance();
             if (isKnockedOut()) {
+                var poseStack = guiGraphics.pose();
                 poseStack.pushPose();
                 poseStack.translate(0, 0, -300);
-                GuiHelper.drawGradientRectW(poseStack, 0, 0, mc.getWindow().getWidth(), mc.getWindow().getHeight(), 0x60500000, 0x90FF0000);
+                GuiHelper.drawGradientRectW(guiGraphics, 0, 0, mc.getWindow().getWidth(), mc.getWindow().getHeight(), 0x60500000, 0x90FF0000);
                 poseStack.popPose();
 
                 if (mc.screen == null || mc.screen instanceof ChatScreen) {
                     int width = event.getWindow().getGuiScaledWidth();
                     int height = event.getWindow().getGuiScaledHeight();
-                    GuiHelper.renderKnockedOutTitle(poseStack, width);
-                    GuiHelper.renderDeathTimer(poseStack, width, height, beingRescued);
+                    GuiHelper.renderKnockedOutTitle(guiGraphics, width);
+                    GuiHelper.renderDeathTimer(guiGraphics, width, height, beingRescued);
 
                     Component openDeathScreenKey = mc.options.keyInventory.getTranslatedKeyMessage(); // getDisplayName()
                     final var openDeathScreenText = Component.translatable("gui.hardcorerevival.open_death_screen", openDeathScreenKey);
-                    GuiComponent.drawCenteredString(poseStack, mc.font, openDeathScreenText, width / 2, height / 2 + 25, 0xFFFFFFFF);
-
-                    RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
+                    guiGraphics.drawCenteredString(mc.font, openDeathScreenText, width / 2, height / 2 + 25, 0xFFFFFFFF);
                 }
             } else {
                 if (targetEntity != -1 && targetProgress > 0) {
@@ -104,8 +102,7 @@ public class HardcoreRevivalClient {
                         } else if (targetProgress >= 0.25f) {
                             textComponent.append(" .");
                         }
-                        mc.font.drawShadow(poseStack, textComponent, mc.getWindow().getGuiScaledWidth() / 2f - mc.font.width(textComponent) / 2f, mc.getWindow().getGuiScaledHeight() / 2f + 30, 0xFFFFFFFF);
-                        RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
+                        guiGraphics.drawString(mc.font, textComponent, mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(textComponent) / 2, mc.getWindow().getGuiScaledHeight() / 2 + 30, 0xFFFFFFFF, true);
                     }
                 }
 
@@ -114,8 +111,7 @@ public class HardcoreRevivalClient {
                     if (pointedEntity != null && HardcoreRevival.getRevivalData(pointedEntity).isKnockedOut() && mc.player.distanceTo(pointedEntity) <= HardcoreRevivalConfig.getActive().rescueDistance) {
                         Component rescueKeyText = mc.options.keyUse.getTranslatedKeyMessage();
                         var textComponent = Component.translatable("gui.hardcorerevival.hold_to_rescue", rescueKeyText);
-                        mc.font.drawShadow(poseStack, textComponent, mc.getWindow().getGuiScaledWidth() / 2f - mc.font.width(textComponent) / 2f, mc.getWindow().getGuiScaledHeight() / 2f + 30, 0xFFFFFFFF);
-                        RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
+                        guiGraphics.drawString(mc.font, textComponent, mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(textComponent) / 2, mc.getWindow().getGuiScaledHeight() / 2 + 30, 0xFFFFFFFF, true);
                     }
                 }
             }

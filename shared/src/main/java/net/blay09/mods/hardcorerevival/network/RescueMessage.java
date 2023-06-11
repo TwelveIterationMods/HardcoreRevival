@@ -31,7 +31,7 @@ public class RescueMessage {
 
         if (message.active) {
             final double range = HardcoreRevivalConfig.getActive().rescueDistance;
-            List<Player> candidates = player.level.getEntitiesOfClass(Player.class, player.getBoundingBox().inflate(range), p -> p != null && HardcoreRevival.getRevivalData(p).isKnockedOut());
+            List<Player> candidates = player.level().getEntitiesOfClass(Player.class, player.getBoundingBox().inflate(range), p -> p != null && HardcoreRevival.getRevivalData(p).isKnockedOut());
             float minDist = Float.MAX_VALUE;
             Player target = null;
             for (Player candidate : candidates) {

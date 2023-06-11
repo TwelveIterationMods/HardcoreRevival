@@ -41,7 +41,7 @@ public class KnockoutHandler {
                 return;
             }
 
-            boolean canDamageSourceKnockout = !damageSource.is(DamageTypes.OUT_OF_WORLD) && !damageSource.is(HardcoreRevivalManager.NOT_RESCUED_IN_TIME);
+            boolean canDamageSourceKnockout = !damageSource.is(DamageTypes.FELL_OUT_OF_WORLD) && !damageSource.is(HardcoreRevivalManager.NOT_RESCUED_IN_TIME);
             if (canDamageSourceKnockout && player.getHealth() - event.getDamageAmount() <= 0f) {
                 // Reduce damage to prevent the player from dying
                 event.setDamageAmount(Math.min(event.getDamageAmount(), Math.max(0f, player.getHealth() - 1f)));
