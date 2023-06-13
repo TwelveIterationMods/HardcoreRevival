@@ -9,14 +9,14 @@ import java.util.List;
 @Config(HardcoreRevival.MOD_ID)
 public class HardcoreRevivalConfigData implements BalmConfigData {
 
-    @Comment("The time in ticks in which a player can still be rescued from death. Set to 0 to disable the timer.")
+    @Comment("The time in ticks in which a player can still be rescued from death. 20 ticks are one second. Set to 0 to disable the timer.")
     @Synced
     public int ticksUntilDeath = 20 * 60 * 2;
 
     @Comment("If true, the timer until death continues even if the player logs out.")
     public boolean continueTimerWhileOffline = false;
 
-    @Comment("The time in ticks it takes to rescue a player.")
+    @Comment("The time in ticks it takes to rescue a player. 20 ticks are one second.")
     @Synced
     public int rescueActionTicks = 40;
 
