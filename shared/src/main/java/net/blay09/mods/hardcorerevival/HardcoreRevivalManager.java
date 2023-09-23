@@ -149,8 +149,8 @@ public class HardcoreRevivalManager {
 
         final var damageTypes = player.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
         final var damageSource = new DamageSource(damageTypes.getHolderOrThrow(NOT_RESCUED_IN_TIME));
-        player.hurt(damageSource, Float.MAX_VALUE);
         reset(player);
+        player.hurt(damageSource, Float.MAX_VALUE);
     }
 
     public void reset(Player player) {
