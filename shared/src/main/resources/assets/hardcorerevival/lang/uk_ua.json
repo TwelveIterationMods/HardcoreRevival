@@ -1,0 +1,14 @@
+{
+  "gui.hardcorerevival.knocked_out": "Ви в нокауті",
+  "gui.hardcorerevival.die": "Прийняти долю",
+  "gui.hardcorerevival.open_death_screen": "Натисніть %s, щоб померти.",
+  "gui.hardcorerevival.hold_to_rescue": "Утримуйте %s, щоб підняти.",
+  "gui.hardcorerevival.rescue_time_left": "%d залишилося секунд до порятунку",
+  "gui.hardcorerevival.wait_for_rescue": "Чекати на порятунок або прийняти свою долю.",
+  "gui.hardcorerevival.being_rescued": "Вас рятують...",
+  "gui.hardcorerevival.rescuing": "Врятувати %s",
+  "death.attack.not_rescued_in_time": "%1$s не вдалося врятувати вчасно",
+  "death.attack.not_rescued_in_time.player": "Не вдалося вчасно врятувати %1$s",
+  "commands.revive.success.single": "Врятовано %s",
+  "commands.revive.success.multiple": "Врятовано %s гравців"
+}
