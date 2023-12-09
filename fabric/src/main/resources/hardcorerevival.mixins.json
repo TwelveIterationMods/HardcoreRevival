@@ -6,10 +6,10 @@
   "mixins": [
     "EntityMixin",
     "PlayerMixin",
-    "TargetingConditionsMixin",
     "ServerPlayNetHandlerMixin",
     "ServerPlayerAccessor",
     "LivingEntityAccessor",
+    "LivingEntityMixin",
     "FabricPlayerMixin"
   ],
   "client": [

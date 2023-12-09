@@ -7,9 +7,9 @@
   "mixins": [
     "EntityMixin",
     "PlayerMixin",
-    "TargetingConditionsMixin",
     "ServerPlayNetHandlerMixin",
     "ServerPlayerAccessor",
+    "LivingEntityMixin",
     "LivingEntityAccessor"
   ],
   "client": [
