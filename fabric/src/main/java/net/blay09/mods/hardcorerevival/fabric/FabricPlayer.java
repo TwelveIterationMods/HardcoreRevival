@@ -1,4 +1,4 @@
-package net.blay09.mods.hardcorerevival;
+package net.blay09.mods.hardcorerevival.fabric;
 
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 

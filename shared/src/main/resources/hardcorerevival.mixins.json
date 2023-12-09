@@ -3,14 +3,14 @@
   "minVersion": "0.8",
   "package": "net.blay09.mods.hardcorerevival.mixin",
   "compatibilityLevel": "JAVA_17",
+  "refmap": "${mod_id}.refmap.json",
   "mixins": [
     "EntityMixin",
     "PlayerMixin",
     "TargetingConditionsMixin",
     "ServerPlayNetHandlerMixin",
     "ServerPlayerAccessor",
-    "LivingEntityAccessor",
-    "FabricPlayerMixin"
+    "LivingEntityAccessor"
   ],
   "client": [
   ],

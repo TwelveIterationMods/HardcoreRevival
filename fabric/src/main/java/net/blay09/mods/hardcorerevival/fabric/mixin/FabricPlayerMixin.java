@@ -1,6 +1,6 @@
-package net.blay09.mods.hardcorerevival.mixin;
+package net.blay09.mods.hardcorerevival.fabric.mixin;
 
-import net.blay09.mods.hardcorerevival.FabricPlayer;
+import net.blay09.mods.hardcorerevival.fabric.FabricPlayer;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalDataImpl;
 import net.minecraft.world.entity.player.Player;
