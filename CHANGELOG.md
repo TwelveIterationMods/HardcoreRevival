@@ -1,1 +1,1 @@
-- Updated to Minecraft 1.20
+- Fixed mobs sometimes continuing to attack after knockout
