@@ -26,7 +26,7 @@ public class GuiHelper {
         if (beingRescued) {
             guiGraphics.drawCenteredString(font, I18n.get("gui.hardcorerevival.being_rescued"), width / 2, height / 2 + 10, 16777215);
         } else {
-            int maxTicksUntilDeath = HardcoreRevivalConfig.getActive().ticksUntilDeath;
+            int maxTicksUntilDeath = HardcoreRevivalConfig.getActive().secondsUntilDeath * 20;
             if (maxTicksUntilDeath > 0) {
                 int deathSecondsLeft = Math.max(0, (maxTicksUntilDeath - HardcoreRevival.getClientRevivalData().getKnockoutTicksPassed()) / 20);
                 guiGraphics.drawCenteredString(font, I18n.get("gui.hardcorerevival.rescue_time_left", deathSecondsLeft), width / 2, height / 2 + 10, 16777215);

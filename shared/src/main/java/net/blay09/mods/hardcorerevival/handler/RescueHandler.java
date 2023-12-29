@@ -46,7 +46,7 @@ public class RescueHandler {
             // Stop rescuing if the target logged out
             HardcoreRevivalData rescueTargetData = HardcoreRevival.getRevivalData(rescueTarget);
             final int knockoutTicksPassed = rescueTargetData.getKnockoutTicksPassed();
-            final int maxTicksUntilDeath = HardcoreRevivalConfig.getActive().ticksUntilDeath;
+            final int maxTicksUntilDeath = HardcoreRevivalConfig.getActive().secondsUntilDeath * 20;
             if (!rescueTarget.isAlive() || (maxTicksUntilDeath > 0 && knockoutTicksPassed >= maxTicksUntilDeath)) {
                 HardcoreRevival.getManager().abortRescue(player);
             } else {
