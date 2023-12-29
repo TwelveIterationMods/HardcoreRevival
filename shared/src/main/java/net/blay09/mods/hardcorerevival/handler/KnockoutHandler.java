@@ -4,6 +4,7 @@ package net.blay09.mods.hardcorerevival.handler;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.event.*;
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
+import net.blay09.mods.hardcorerevival.api.PlayerAboutToKnockOutEvent;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
@@ -47,9 +48,12 @@ public class KnockoutHandler {
                 // Reduce damage to prevent the player from dying
                 event.setDamageAmount(Math.min(event.getDamageAmount(), Math.max(0f, player.getHealth() - 1f)));
 
+                final var aboutToKnockOutEvent = new PlayerAboutToKnockOutEvent(player, damageSource);
+                Balm.getEvents().fireEvent(aboutToKnockOutEvent);
+
                 // Trigger knockout for this player, if totem does not protect player
-                if (((LivingEntityAccessor) player).callCheckTotemDeathProtection(damageSource)) {
-                    event.setCanceled(true);
+                if (aboutToKnockOutEvent.isCanceled() || ((LivingEntityAccessor) player).callCheckTotemDeathProtection(damageSource)) {
+                    aboutToKnockOutEvent.setCanceled(true);
                 } else {
                     HardcoreRevival.getManager().knockout(player, damageSource);
                 }
