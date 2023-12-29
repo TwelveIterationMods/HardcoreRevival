@@ -49,4 +49,9 @@ public class HardcoreRevivalConfigData implements BalmConfigData {
     @Synced
     public boolean allowPistols = false;
 
+    @Comment("If true, Hardcore Revival will not be active in singleplayer.")
+    public boolean disableInSingleplayer = true;
+
+    @Comment("If true, Hardcore Revival will not be active when playing alone in multiplayer.")
+    public boolean disableInLonelyMultiplayer = false;
 }
