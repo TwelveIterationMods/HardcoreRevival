@@ -91,10 +91,10 @@ public class HardcoreRevivalManager {
                         int amplifier = tryParseInt(parts.length >= 3 ? parts[2] : null, 0);
                         player.addEffect(new MobEffectInstance(effect, duration, amplifier));
                     } else {
-                        HardcoreRevival.logger.info("Invalid rescue potion effect '{}'" + parts[0]);
+                        HardcoreRevival.logger.info("Invalid rescue potion effect '{}'", parts[0]);
                     }
                 } else {
-                    HardcoreRevival.logger.info("Invalid rescue potion effect '{}'" + parts[0]);
+                    HardcoreRevival.logger.info("Invalid rescue potion effect '{}'", parts[0]);
                 }
             }
         }
