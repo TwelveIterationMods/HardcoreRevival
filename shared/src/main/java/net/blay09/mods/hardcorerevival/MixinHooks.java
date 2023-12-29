@@ -15,6 +15,10 @@ public class MixinHooks {
         return HardcoreRevival.getRevivalData(entity).isKnockedOut();
     }
 
+    public static boolean shouldCancelFire(Entity entity) {
+        return HardcoreRevival.getRevivalData(entity).isKnockedOut();
+    }
+
     public static void handleProcessPlayerRotation(ServerPlayer player, ServerboundMovePlayerPacket packet) {
         float yaw = packet.getYRot(player.getYRot());
         float pitch = packet.getXRot(player.getXRot());
