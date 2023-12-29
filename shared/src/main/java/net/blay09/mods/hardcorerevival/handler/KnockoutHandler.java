@@ -8,6 +8,7 @@ import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.mixin.LivingEntityAccessor;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
@@ -42,7 +43,7 @@ public class KnockoutHandler {
             }
 
             boolean canDamageSourceKnockout = !damageSource.is(DamageTypes.FELL_OUT_OF_WORLD) && !damageSource.is(HardcoreRevivalManager.NOT_RESCUED_IN_TIME);
-            if (canDamageSourceKnockout && player.getHealth() - event.getDamageAmount() <= 0f) {
+            if (canDamageSourceKnockout && isKnockoutEnabled(player) && player.getHealth() - event.getDamageAmount() <= 0f) {
                 // Reduce damage to prevent the player from dying
                 event.setDamageAmount(Math.min(event.getDamageAmount(), Math.max(0f, player.getHealth() - 1f)));
 
@@ -56,6 +57,23 @@ public class KnockoutHandler {
         }
     }
 
+    private static boolean isKnockoutEnabled(ServerPlayer player) {
+        final var server = player.getServer();
+        if (HardcoreRevivalConfig.getActive().disableInSingleplayer && server != null && server.isSingleplayer()) {
+            return false;
+        } else {
+            if (HardcoreRevivalConfig.getActive().disableInLonelyMultiplayer && server != null && !server.isSingleplayer()) {
+                int playerCount = server.getPlayerList()
+                        .getPlayers()
+                        .size();
+                if (playerCount <= 1) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public static void onPlayerTick(ServerPlayer player) {
         //if (event.phase == TickEvent.Phase.START && event.side == LogicalSide.SERVER) {
         HardcoreRevivalData revivalData = HardcoreRevival.getRevivalData(player);
@@ -65,7 +83,7 @@ public class KnockoutHandler {
 
             revivalData.setKnockoutTicksPassed(revivalData.getKnockoutTicksPassed() + 1);
 
-            if(player.tickCount % 20 == 0) {
+            if (player.tickCount % 20 == 0) {
                 Balm.getHooks().setForcedPose(player, revivalData.isKnockedOut() ? Pose.FALL_FLYING : null);
             }
 
