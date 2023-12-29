@@ -120,13 +120,14 @@ public class HardcoreRevivalManager {
             MinecraftServer server = rescueTarget.getServer();
             if (server != null) {
                 wakeup(rescueTarget);
-                Balm.getEvents().fireEvent(new PlayerRescuedEvent(rescueTarget, player));
 
                 Balm.getNetworking().sendTo(player, new RevivalProgressMessage(rescueTarget.getId(), -1f));
                 Balm.getNetworking().sendTo(rescueTarget, new RevivalSuccessMessage(rescueTarget.getId()));
                 Balm.getNetworking().sendToTracking(rescueTarget, new RevivalSuccessMessage(rescueTarget.getId()));
 
                 revivalData.setRescueTarget(null);
+
+                Balm.getEvents().fireEvent(new PlayerRescuedEvent(rescueTarget, player));
             }
         }
 
