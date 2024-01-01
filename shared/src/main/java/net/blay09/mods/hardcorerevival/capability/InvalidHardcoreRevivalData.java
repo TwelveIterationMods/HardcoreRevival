@@ -36,11 +36,11 @@ public class InvalidHardcoreRevivalData implements HardcoreRevivalData {
     }
 
     @Override
-    public void setLogoutWorldTime(long logoutWorldTime) {
+    public void setLastLogoutAt(long lastLogoutAt) {
     }
 
     @Override
-    public long getLogoutWorldTime() {
+    public long getLastLogoutAt() {
         return 0;
     }
 

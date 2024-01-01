@@ -16,9 +16,9 @@ public interface HardcoreRevivalData {
 
     long getLastKnockoutAt();
 
-    void setLogoutWorldTime(long logoutWorldTime);
+    void setLastLogoutAt(long lastLogoutAt);
 
-    long getLogoutWorldTime();
+    long getLastLogoutAt();
 
     void setRescueTime(int rescueTime);
 
