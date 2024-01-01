@@ -12,6 +12,10 @@ public interface HardcoreRevivalData {
 
     int getKnockoutTicksPassed();
 
+    void setLastKnockoutAt(long lastKnockoutAt);
+
+    long getLastKnockoutAt();
+
     void setLogoutWorldTime(long logoutWorldTime);
 
     long getLogoutWorldTime();

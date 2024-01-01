@@ -45,6 +45,7 @@ public class HardcoreRevivalManager {
 
         revivalData.setKnockedOut(true);
         revivalData.setKnockoutTicksPassed(0);
+        revivalData.setLastKnockoutAt(System.currentTimeMillis());
         // Fire event for compatibility addons
         Balm.getEvents().fireEvent(new PlayerKnockedOutEvent(player, source));
 

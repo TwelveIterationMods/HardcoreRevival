@@ -6,10 +6,12 @@ import net.minecraft.world.entity.player.Player;
 public class HardcoreRevivalDataImpl implements HardcoreRevivalData {
 	private static final String KNOCKED_OUT = "KnockedOut";
 	private static final String KNOCKOUT_TICKS_PASSED = "KnockoutTicksPassed";
+	private static final String LAST_KNOCKOUT_AT = "LastKnockoutAt";
 	private static final String LOGOUT_WORLD_TIME = "LogoutWorldTime";
 
 	private boolean knockedOut;
 	private int knockoutTicksPassed;
+	private long lastKnockoutAt;
 	private long logoutWorldTime;
 	private int rescueTime;
 	private Player rescueTarget;
@@ -32,6 +34,16 @@ public class HardcoreRevivalDataImpl implements HardcoreRevivalData {
 	@Override
 	public int getKnockoutTicksPassed() {
 		return knockoutTicksPassed;
+	}
+
+	@Override
+	public void setLastKnockoutAt(long lastKnockoutAt) {
+		this.lastKnockoutAt = lastKnockoutAt;
+	}
+
+	@Override
+	public long getLastKnockoutAt() {
+		return lastKnockoutAt;
 	}
 
 	@Override
@@ -70,6 +82,7 @@ public class HardcoreRevivalDataImpl implements HardcoreRevivalData {
 		tagCompound.putBoolean(KNOCKED_OUT, isKnockedOut());
 		tagCompound.putInt(KNOCKOUT_TICKS_PASSED, getKnockoutTicksPassed());
 		tagCompound.putLong(LOGOUT_WORLD_TIME, getLogoutWorldTime());
+		tagCompound.putLong(LAST_KNOCKOUT_AT, getLastKnockoutAt());
 		return tagCompound;
 	}
 
@@ -78,5 +91,6 @@ public class HardcoreRevivalDataImpl implements HardcoreRevivalData {
 		setKnockedOut(tag.getBoolean(KNOCKED_OUT));
 		setKnockoutTicksPassed(tag.getInt(KNOCKOUT_TICKS_PASSED));
 		setLogoutWorldTime(tag.getLong(LOGOUT_WORLD_TIME));
+		setLastKnockoutAt(tag.getLong(LAST_KNOCKOUT_AT));
 	}
 }
