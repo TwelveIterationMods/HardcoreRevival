@@ -12,7 +12,7 @@ public class HardcoreRevivalConfigData implements BalmConfigData {
 
     @Comment("The time in seconds in which a player can still be rescued from death. Set to 0 to disable the timer.")
     @Synced
-    public int secondsUntilDeath = 90;
+    public int secondsUntilDeath = 120;
 
     @Comment("If true, the timer until death continues even if the player logs out.")
     public boolean continueTimerWhileOffline = false;
