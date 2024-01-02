@@ -28,7 +28,8 @@ import net.minecraft.world.scores.Team;
 import org.jetbrains.annotations.Nullable;
 
 public class HardcoreRevivalManager {
-    public static final ResourceKey<DamageType> NOT_RESCUED_IN_TIME = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(HardcoreRevival.MOD_ID, "not_rescued_in_time"));
+    public static final ResourceKey<DamageType> NOT_RESCUED_IN_TIME = ResourceKey.create(Registries.DAMAGE_TYPE,
+            new ResourceLocation(HardcoreRevival.MOD_ID, "not_rescued_in_time"));
 
     public HardcoreRevivalData getRevivalData(Player player) {
         HardcoreRevivalData provider = Balm.getProviders().getProvider(player, HardcoreRevivalData.class);
@@ -44,7 +45,14 @@ public class HardcoreRevivalManager {
         player.removeEffect(MobEffects.REGENERATION);
 
         revivalData.setKnockedOut(true);
-        revivalData.setKnockoutTicksPassed(0);
+        final var lastRescuedAt = revivalData.getLastRescuedAt();
+        final var resumeTimerThresholdSeconds = HardcoreRevivalConfig.getActive().resumeTimerWithinSeconds;
+        final var secondsSinceLastRescue = (System.currentTimeMillis() - lastRescuedAt) / 1000;
+        if (resumeTimerThresholdSeconds > 0 && lastRescuedAt > 0 && secondsSinceLastRescue <= resumeTimerThresholdSeconds) {
+            revivalData.setKnockoutTicksPassed(revivalData.getLastKnockoutTicksPassed());
+        } else {
+            revivalData.setKnockoutTicksPassed(0);
+        }
         revivalData.setLastKnockoutAt(System.currentTimeMillis());
         // Fire event for compatibility addons
         Balm.getEvents().fireEvent(new PlayerKnockedOutEvent(player, source));

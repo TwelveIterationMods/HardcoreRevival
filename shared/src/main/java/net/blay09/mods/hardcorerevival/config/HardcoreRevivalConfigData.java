@@ -12,10 +12,13 @@ public class HardcoreRevivalConfigData implements BalmConfigData {
 
     @Comment("The time in seconds in which a player can still be rescued from death. Set to 0 to disable the timer.")
     @Synced
-    public int secondsUntilDeath = 20 * 60;
+    public int secondsUntilDeath = 90;
 
     @Comment("If true, the timer until death continues even if the player logs out.")
     public boolean continueTimerWhileOffline = false;
+
+    @Comment("The threshold of seconds that consecutive knockouts will continue the previous timer rather than starting a new one.")
+    public int resumeTimerWithinSeconds = 0;
 
     @Comment("The time in ticks it takes to rescue a player. 20 ticks are one second.")
     @Synced

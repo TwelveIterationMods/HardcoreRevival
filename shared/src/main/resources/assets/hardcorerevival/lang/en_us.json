@@ -13,6 +13,8 @@
   "config.hardcorerevival.ticksUntilDeath.tooltip": "The time in ticks in which a player can still be rescued from death. 20 ticks are one second. Set to 0 to disable the timer.",
   "config.hardcorerevival.continueTimerWhileOffline": "Continue Timer while Offline",
   "config.hardcorerevival.continueTimerWhileOffline.tooltip": "If true, the timer until death continues even if the player logs out.",
+  "config.hardcorerevival.resumeTimerWithinSeconds": "Resume Timer within Seconds",
+  "config.hardcorerevival.resumeTimerWithinSeconds.tooltip": "The threshold of seconds that consecutive knockouts will continue the previous timer rather than starting a new one.",
   "config.hardcorerevival.rescueDistance": "Max Rescue Distance",
   "config.hardcorerevival.rescueDistance.tooltip": "The distance at which a player can rescue another.",
   "config.hardcorerevival.rescueActionTicks": "Rescue Action Ticks",
