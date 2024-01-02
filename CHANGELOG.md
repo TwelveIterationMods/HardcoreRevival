@@ -1,1 +1,8 @@
+- Added instantDeathSources option to configure certain damage types that should skip the knockout timer
+- Added disableInSingleplayer and disableInLonelyMultiplayer options to skip the knockout timer in singleplayer or when playing alone on a server
+- Added consecutiveKnockoutThresholdSeconds, resumeTimerOnConsecutiveKnockout and multiplyTimerOnConsecutiveKnockout options to be able to discourage reviving over and over in a short timespan
+- Added allowCommands option (default: true) that allows preventing players from running commands while knocked out
+- Fixed annoying continuous burning when knocked out in lava
+- Fixed rescuing being impossible if secondsUntilDeath was set to 0
+- Changed ticksUntilDeath option to secondsUntilDeath
 - Updated to Minecraft 1.20.4
