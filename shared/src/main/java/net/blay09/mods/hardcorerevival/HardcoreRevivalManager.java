@@ -74,6 +74,9 @@ public class HardcoreRevivalManager {
     }
 
     public void wakeup(Player player, boolean applyEffects) {
+        final var revivalData = getRevivalData(player);
+        revivalData.setLastRescuedAt(System.currentTimeMillis());
+        revivalData.setLastKnockoutTicksPassed(revivalData.getKnockoutTicksPassed());
         reset(player);
 
         if (applyEffects) {
@@ -156,6 +159,8 @@ public class HardcoreRevivalManager {
 
         final var damageTypes = player.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
         final var damageSource = new DamageSource(damageTypes.getHolderOrThrow(NOT_RESCUED_IN_TIME));
+        final var revivalData = getRevivalData(player);
+        revivalData.setLastKnockoutTicksPassed(0);
         reset(player);
         player.hurt(damageSource, Float.MAX_VALUE);
     }

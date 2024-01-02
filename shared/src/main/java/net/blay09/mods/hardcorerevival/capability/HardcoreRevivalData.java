@@ -12,6 +12,14 @@ public interface HardcoreRevivalData {
 
     int getKnockoutTicksPassed();
 
+    void setLastKnockoutTicksPassed(int lastKnockoutTicksPassed);
+
+    int getLastKnockoutTicksPassed();
+
+    void setLastRescuedAt(long lastRescuedAt);
+
+    long getLastRescuedAt();
+
     void setLastKnockoutAt(long lastKnockoutAt);
 
     long getLastKnockoutAt();

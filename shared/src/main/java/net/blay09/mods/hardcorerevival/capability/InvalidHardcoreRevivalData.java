@@ -27,6 +27,24 @@ public class InvalidHardcoreRevivalData implements HardcoreRevivalData {
     }
 
     @Override
+    public void setLastKnockoutTicksPassed(int lastKnockoutTicksPassed) {
+    }
+
+    @Override
+    public int getLastKnockoutTicksPassed() {
+        return 0;
+    }
+
+    @Override
+    public void setLastRescuedAt(long lastRescuedAt) {
+    }
+
+    @Override
+    public long getLastRescuedAt() {
+        return 0;
+    }
+
+    @Override
     public void setLastKnockoutAt(long lastKnockoutAt) {
     }
 

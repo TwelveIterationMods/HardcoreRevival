@@ -1,6 +1,5 @@
 package net.blay09.mods.hardcorerevival.config;
 
-import com.google.common.collect.Lists;
 import net.blay09.mods.balm.api.config.*;
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.minecraft.resources.ResourceLocation;
@@ -30,7 +29,7 @@ public class HardcoreRevivalConfigData implements BalmConfigData {
 
     @ExpectedType(String.class)
     @Comment("Effects applied to a player when rescued, in the format \"effect|duration|amplifier\"")
-    public List<String> rescueRespawnEffects = Lists.newArrayList("minecraft:hunger|600|0", "minecraft:weakness|1200|0");
+    public List<String> rescueRespawnEffects = List.of("minecraft:hunger|600|0", "minecraft:weakness|1200|0");
 
     @Comment("The distance at which a player can rescue another.")
     @Synced
