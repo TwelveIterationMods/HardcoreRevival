@@ -45,15 +45,25 @@ public class HardcoreRevivalManager {
         player.removeEffect(MobEffects.REGENERATION);
 
         revivalData.setKnockedOut(true);
-        final var lastRescuedAt = revivalData.getLastRescuedAt();
-        final var resumeTimerThresholdSeconds = HardcoreRevivalConfig.getActive().resumeTimerWithinSeconds;
-        final var secondsSinceLastRescue = (System.currentTimeMillis() - lastRescuedAt) / 1000;
-        if (resumeTimerThresholdSeconds > 0 && lastRescuedAt > 0 && secondsSinceLastRescue <= resumeTimerThresholdSeconds) {
-            revivalData.setKnockoutTicksPassed(revivalData.getLastKnockoutTicksPassed());
-        } else {
-            revivalData.setKnockoutTicksPassed(0);
-        }
+        revivalData.setKnockoutTicksPassed(0);
         revivalData.setLastKnockoutAt(System.currentTimeMillis());
+
+        // Punish consecutive knockouts
+        final var lastRescuedAt = revivalData.getLastRescuedAt();
+        final var consecutiveThresholdSeconds = HardcoreRevivalConfig.getActive().consecutiveKnockoutThresholdSeconds;
+        final var secondsSinceLastRescue = (System.currentTimeMillis() - lastRescuedAt) / 1000;
+        final var isConsecutiveKnockout = consecutiveThresholdSeconds > 0 && lastRescuedAt > 0 && secondsSinceLastRescue <= consecutiveThresholdSeconds;
+        if (isConsecutiveKnockout) {
+            if (HardcoreRevivalConfig.getActive().resumeTimerOnConsecutiveKnockout) {
+                revivalData.setKnockoutTicksPassed(revivalData.getLastKnockoutTicksPassed());
+            }
+            final var multiplyTimerOnConsecutiveKnockout = HardcoreRevivalConfig.getActive().multiplyTimerOnConsecutiveKnockout;
+            final var maxTicksUntilDeath = HardcoreRevivalConfig.getActive().secondsUntilDeath * 20;
+            final var ticksLeft = maxTicksUntilDeath - revivalData.getKnockoutTicksPassed();
+            final var newTicksLeft = (int) (ticksLeft * multiplyTimerOnConsecutiveKnockout);
+            revivalData.setKnockoutTicksPassed(maxTicksUntilDeath - newTicksLeft);
+        }
+
         // Fire event for compatibility addons
         Balm.getEvents().fireEvent(new PlayerKnockedOutEvent(player, source));
 

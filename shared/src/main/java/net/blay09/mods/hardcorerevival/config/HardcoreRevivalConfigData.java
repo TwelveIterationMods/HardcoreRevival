@@ -17,8 +17,14 @@ public class HardcoreRevivalConfigData implements BalmConfigData {
     @Comment("If true, the timer until death continues even if the player logs out.")
     public boolean continueTimerWhileOffline = false;
 
-    @Comment("The threshold of seconds that consecutive knockouts will continue the previous timer rather than starting a new one.")
-    public int resumeTimerWithinSeconds = 0;
+    @Comment("The threshold of seconds that knockout will be treated as a consecutive knockout. See resumeTimerOnConsecutiveKnockout and multiplyTimerOnConsecutiveKnockout.")
+    public int consecutiveKnockoutThresholdSeconds = 40;
+
+    @Comment("If true, the timer until death resumes from its last time on consecutive knockouts.")
+    public boolean resumeTimerOnConsecutiveKnockout = false;
+
+    @Comment("The multiplier to apply to the time remaining on consecutive knockouts.")
+    public float multiplyTimerOnConsecutiveKnockout = 1f;
 
     @Comment("The time in ticks it takes to rescue a player. 20 ticks are one second.")
     @Synced
