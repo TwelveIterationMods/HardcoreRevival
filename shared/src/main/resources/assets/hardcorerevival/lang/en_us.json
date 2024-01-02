@@ -31,6 +31,8 @@
   "config.hardcorerevival.rescueRespawnEffects.tooltip": "Effects applied to a player when rescued, in the format \"effect|duration|amplifier\"",
   "config.hardcorerevival.glowOnKnockout": "Glow on Knockout",
   "config.hardcorerevival.glowOnKnockout.tooltip": "If true, knocked out players will glow, making them visible through blocks.",
+  "config.hardcorerevival.allowCommands": "Allow Commands",
+  "config.hardcorerevival.allowCommands.tooltip": "If true, knocked out players are still able to run commands. OPs are always able to run commands.",
   "config.hardcorerevival.allowUnarmedMelee": "Allow Unarmed Melee",
   "config.hardcorerevival.allowUnarmedMelee.tooltip": "If true, knocked out players are still able to punch nearby enemies.",
   "config.hardcorerevival.allowBows": "Allow Bows",
@@ -38,5 +40,6 @@
   "config.hardcorerevival.allowPistols": "Allow Pistols",
   "config.hardcorerevival.allowPistols.tooltip": "If true, knocked out players are still able to fire pistols from Mr Crayfish's Gun Mod.",
   "commands.revive.success.single": "Revived %s",
-  "commands.revive.success.multiple": "Revived %s players"
+  "commands.revive.success.multiple": "Revived %s players",
+  "commands.disabled_when_knocked_out": "You cannot use commands while knocked out."
 }
