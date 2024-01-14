@@ -39,6 +39,7 @@ public class HardcoreRevivalManager {
             return;
         }
 
+        player.stopUsingItem();
         player.removeEffect(MobEffects.REGENERATION);
 
         revivalData.setKnockedOut(true);
