@@ -1,4 +1,5 @@
 - Fixed players not being dismounted when knocked out, causing various possible issues 
+- Fixed using of items not being stopped when knocked out
 
 - Added instantDeathSources option to configure certain damage types that should skip the knockout timer
 - Added disableInSingleplayer and disableInLonelyMultiplayer options to skip the knockout timer in singleplayer or when playing alone on a server
