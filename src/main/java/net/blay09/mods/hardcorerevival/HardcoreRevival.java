@@ -50,6 +50,13 @@ public class HardcoreRevival {
                     logger.warn("Could not load MrCrayfish's Gun Mod compatibility for Hardcore Revival");
                 }
             }
+            if (ModList.get().isLoaded(Compat.TIMELESS_CLASSICS_GUNS_MOD)) {
+                try {
+                    Class.forName("net.blay09.mods.hardcorerevival.compat.TimelessClassicsGunsModAddon").newInstance();
+                } catch (Throwable e) {
+                    logger.warn("Could not load Timeless Classics Guns Mod compatibility for Hardcore Revival");
+                }
+            }
         });
     }
 
