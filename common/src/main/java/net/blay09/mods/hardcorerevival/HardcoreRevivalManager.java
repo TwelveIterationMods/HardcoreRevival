@@ -12,13 +12,13 @@ import net.blay09.mods.hardcorerevival.handler.KnockoutSyncHandler;
 import net.blay09.mods.hardcorerevival.mixin.ServerPlayerAccessor;
 import net.blay09.mods.hardcorerevival.network.RevivalProgressMessage;
 import net.blay09.mods.hardcorerevival.network.RevivalSuccessMessage;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Pose;
@@ -109,11 +109,11 @@ public class HardcoreRevivalManager {
                 String[] parts = effectString.split("\\|");
                 ResourceLocation registryName = ResourceLocation.tryParse(parts[0]);
                 if (registryName != null) {
-                    MobEffect effect = Balm.getRegistries().getMobEffect(registryName);
-                    if (effect != null) {
+                    final var holder = BuiltInRegistries.MOB_EFFECT.getHolder(registryName);
+                    if (holder.isPresent()) {
                         int duration = tryParseInt(parts.length >= 2 ? parts[1] : null, 600);
                         int amplifier = tryParseInt(parts.length >= 3 ? parts[2] : null, 0);
-                        player.addEffect(new MobEffectInstance(effect, duration, amplifier));
+                        player.addEffect(new MobEffectInstance(holder.get(), duration, amplifier));
                     } else {
                         HardcoreRevival.logger.info("Invalid rescue potion effect '{}'", parts[0]);
                     }

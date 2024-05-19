@@ -3,19 +3,24 @@ package net.blay09.mods.hardcorerevival.network;
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
 
-public class RescueMessage {
+public class RescueMessage implements CustomPacketPayload {
+
+    public static final CustomPacketPayload.Type<RescueMessage> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(HardcoreRevival.MOD_ID, "rescue"));
+
     private final boolean active;
 
     public RescueMessage(boolean active) {
         this.active = active;
     }
 
-    public static void encode(RescueMessage message, FriendlyByteBuf buf) {
+    public static void encode(FriendlyByteBuf buf, RescueMessage message) {
         buf.writeBoolean(message.active);
     }
 
@@ -48,5 +53,10 @@ public class RescueMessage {
         } else {
             HardcoreRevival.getManager().abortRescue(player);
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

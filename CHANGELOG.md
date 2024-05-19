@@ -1,3 +1,5 @@
+Updated to Minecraft 1.20.6
+
 - Fixed players not being dismounted when knocked out, causing various possible issues 
 - Fixed using of items not being stopped when knocked out
 

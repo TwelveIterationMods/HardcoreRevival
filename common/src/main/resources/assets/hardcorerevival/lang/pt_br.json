@@ -1,0 +1,27 @@
+{
+    "gui.hardcorerevival.knocked_out": "Você foi nocauteado",
+    "gui.hardcorerevival.die": "%1$s Aceite seu destino %1$s",
+    "gui.hardcorerevival.open_death_screen": "Pressione %s para morrer.",
+    "gui.hardcorerevival.hold_to_rescue": "Aguarde %s para resgatar.",
+    "gui.hardcorerevival.rescue_time_left": "%d segundos restantes para ser resgatado",
+    "gui.hardcorerevival.wait_for_rescue": "Espere para ser resgatado ou aceite seu destino.",
+    "gui.hardcorerevival.being_rescued": "Você está sendo resgatado...",
+    "gui.hardcorerevival.rescuing": "Resgatando %s",
+    "death.attack.not_rescued_in_time": "%1$s não foi resgatado a tempo",
+    "death.attack.not_rescued_in_time.player": "%1$s não foi resgatado a tempo",
+    "config.hardcorerevival.maxDeathTicks": "tempo da Morte",
+    "config.hardcorerevival.maxDeathTicks.tooltip": "O tempo em tiques em que um jogador ainda pode ser resgatado da morte. 20 tiques são um segundo.",
+    "config.hardcorerevival.maxRescueDist": "Distância máxima de resgate",
+    "config.hardcorerevival.maxRescueDist.tooltip": "A distância na qual um jogador pode resgatar outro.",
+    "config.hardcorerevival.rescueTime": "Tempo de resgate",
+    "config.hardcorerevival.rescueTime.tooltip": "O tempo em tiques que leva para resgatar um jogador. 20 tiques são um segundo.",
+    "config.hardcorerevival.disableDeathTimer": "Desabilitar tempo da Morte",
+    "config.hardcorerevival.disableDeathTimer.tooltip": "Defina como true para desabilitar completamente o cronômetro da morte, o que significa que você terá tempo infinito para salvar outras pessoas.",
+    "config.hardcorerevival.rescueRespawnHealth": "Resgate Respawn Health",
+    "config.hardcorerevival.rescueRespawnHealth.tooltip": "A quantidade de saúde para reaparecer quando um jogador foi resgatado, de 20.",
+    "config.hardcorerevival.rescueRespawnFoodLevel": "Nível de Comida de Ressurgimento de Resgate",
+    "config.hardcorerevival.rescueRespawnFoodLevel.tooltip": "O nível de comida para reaparecer quando um jogador foi resgatado, de 20.",
+    "commands.revive.success.single": "Reviveu %s",
+    "commands.revive.success.multiple": "Reviveu %s jogadores"
+  }
+  

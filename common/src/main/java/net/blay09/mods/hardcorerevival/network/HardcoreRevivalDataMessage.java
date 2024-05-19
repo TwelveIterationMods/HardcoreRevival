@@ -4,10 +4,16 @@ import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.client.HardcoreRevivalClient;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
-public class HardcoreRevivalDataMessage {
+public class HardcoreRevivalDataMessage implements CustomPacketPayload {
+
+    public static CustomPacketPayload.Type<HardcoreRevivalDataMessage> TYPE = new CustomPacketPayload.Type(new ResourceLocation(HardcoreRevival.MOD_ID,
+            "hardcore_revival_data"));
+
     private final int entityId;
     private final boolean knockedOut;
     private final int knockoutTicksPassed;
@@ -20,7 +26,7 @@ public class HardcoreRevivalDataMessage {
         this.beingRescued = beingRescued;
     }
 
-    public static void encode(HardcoreRevivalDataMessage message, FriendlyByteBuf buf) {
+    public static void encode(FriendlyByteBuf buf, HardcoreRevivalDataMessage message) {
         buf.writeInt(message.entityId);
         buf.writeBoolean(message.knockedOut);
         buf.writeInt(message.knockoutTicksPassed);
@@ -39,11 +45,17 @@ public class HardcoreRevivalDataMessage {
         if (player != null) {
             Entity entity = player.level().getEntity(message.entityId);
             if (entity != null) {
-                HardcoreRevivalData revivalData = entity.getId() == player.getId() ? HardcoreRevival.getClientRevivalData() : HardcoreRevival.getRevivalData(entity);
+                HardcoreRevivalData revivalData = entity.getId() == player.getId() ? HardcoreRevival.getClientRevivalData() : HardcoreRevival.getRevivalData(
+                        entity);
                 revivalData.setKnockedOut(message.knockedOut);
                 revivalData.setKnockoutTicksPassed(message.knockoutTicksPassed);
                 HardcoreRevivalClient.setBeingRescued(message.beingRescued);
             }
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

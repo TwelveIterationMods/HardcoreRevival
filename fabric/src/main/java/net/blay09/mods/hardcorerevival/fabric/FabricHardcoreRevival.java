@@ -1,6 +1,7 @@
 package net.blay09.mods.hardcorerevival.fabric;
 
 import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.EmptyLoadContext;
 import net.blay09.mods.balm.fabric.provider.FabricBalmProviders;
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
@@ -12,7 +13,7 @@ import net.minecraft.world.entity.EntityType;
 public class FabricHardcoreRevival implements ModInitializer {
     @Override
     public void onInitialize() {
-        Balm.initialize(HardcoreRevival.MOD_ID, HardcoreRevival::initialize);
+        Balm.initialize(HardcoreRevival.MOD_ID, EmptyLoadContext.INSTANCE, HardcoreRevival::initialize);
 
         var providers = ((FabricBalmProviders) Balm.getProviders());
         ResourceLocation identifier = new ResourceLocation(HardcoreRevival.MOD_ID, "player_data");

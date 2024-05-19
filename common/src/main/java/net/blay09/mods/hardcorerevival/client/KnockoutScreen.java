@@ -30,6 +30,8 @@ public class KnockoutScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null) {
             enableButtonTimer += partialTicks;
@@ -49,8 +51,6 @@ public class KnockoutScreen extends Screen {
         } else if (buttonDie != null) {
             buttonDie.visible = false;
         }
-
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override
