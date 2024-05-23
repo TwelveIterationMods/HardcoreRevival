@@ -1,6 +1,6 @@
 dependencies {
-    implementation fg.deobf("net.blay09.mods:balm-forge:${balm_version}") {
+    implementation("net.blay09.mods:balm-forge:${balm_version}") {
         changing = balm_version.contains("SNAPSHOT")
     }
-    compileOnly fg.deobf("curse.maven:mrcrayfishs-gun-mod-289479:3224957")
+    compileOnly("curse.maven:mrcrayfishs-gun-mod-289479:3224957")
 }

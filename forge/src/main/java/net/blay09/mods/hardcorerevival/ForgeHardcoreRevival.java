@@ -1,6 +1,7 @@
 package net.blay09.mods.hardcorerevival;
 
 import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.EmptyLoadContext;
 import net.blay09.mods.balm.api.client.BalmClient;
 import net.blay09.mods.balm.forge.provider.ForgeBalmProviders;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
@@ -31,8 +32,8 @@ public class ForgeHardcoreRevival {
     });
 
     public ForgeHardcoreRevival() {
-        Balm.initialize(HardcoreRevival.MOD_ID, HardcoreRevival::initialize);
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> BalmClient.initialize(HardcoreRevival.MOD_ID, HardcoreRevivalClient::initialize));
+        Balm.initialize(HardcoreRevival.MOD_ID, EmptyLoadContext.INSTANCE, HardcoreRevival::initialize);
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> BalmClient.initialize(HardcoreRevival.MOD_ID, EmptyLoadContext.INSTANCE, HardcoreRevivalClient::initialize));
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerCapabilities);
         MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, this::attachEntityCapabilities);
