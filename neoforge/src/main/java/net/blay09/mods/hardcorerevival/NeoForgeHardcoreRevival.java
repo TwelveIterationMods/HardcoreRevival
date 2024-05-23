@@ -2,6 +2,7 @@ package net.blay09.mods.hardcorerevival;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.client.BalmClient;
+import net.blay09.mods.balm.neoforge.NeoForgeLoadContext;
 import net.blay09.mods.balm.neoforge.provider.NeoForgeBalmProviders;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalDataImpl;
@@ -22,8 +23,9 @@ public class NeoForgeHardcoreRevival {
             "entity_data"), HardcoreRevivalData.class);
 
     public NeoForgeHardcoreRevival(IEventBus eventBus) {
-        Balm.initialize(HardcoreRevival.MOD_ID, HardcoreRevival::initialize);
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> BalmClient.initialize(HardcoreRevival.MOD_ID, HardcoreRevivalClient::initialize));
+        final var context = new NeoForgeLoadContext(eventBus);
+        Balm.initialize(HardcoreRevival.MOD_ID, context, HardcoreRevival::initialize);
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> BalmClient.initialize(HardcoreRevival.MOD_ID, context, HardcoreRevivalClient::initialize));
 
         eventBus.addListener(this::registerCapabilities);
 
