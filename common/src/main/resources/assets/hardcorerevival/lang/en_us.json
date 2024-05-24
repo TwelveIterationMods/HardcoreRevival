@@ -9,7 +9,7 @@
   "gui.hardcorerevival.rescuing": "Rescuing %s",
   "death.attack.not_rescued_in_time": "%1$s was not rescued in time",
   "death.attack.not_rescued_in_time.player": "%1$s was not rescued in time",
-  "chat.hardcorerevival.knockouts": "Knocked out: %s",
+  "stat.hardcorerevival.knockouts": "Knocked out: %s",
   "config.hardcorerevival.secondsUntilDeath": "Seconds until Death",
   "config.hardcorerevival.secondsUntilDeath.tooltip": "The time in seconds in which a player can still be rescued from death. Set to 0 to disable the timer.",
   "config.hardcorerevival.continueTimerWhileOffline": "Continue Timer while Offline",
