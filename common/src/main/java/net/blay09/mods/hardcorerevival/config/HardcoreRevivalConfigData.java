@@ -63,6 +63,10 @@ public class HardcoreRevivalConfigData implements BalmConfigData {
     @Synced
     public boolean allowPistols = false;
 
+    @Comment("Set to false to remove the Accept your Fate button and force players to wait out the timer.")
+    @Synced
+    public boolean allowAcceptingFate = true;
+
     @Comment("If true, Hardcore Revival will not be active in singleplayer.")
     public boolean disableInSingleplayer = true;
 

@@ -2,6 +2,7 @@ package net.blay09.mods.hardcorerevival.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.network.AcceptFateMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -25,6 +26,7 @@ public class KnockoutScreen extends Screen {
             Balm.getNetworking().sendToServer(new AcceptFateMessage());
         }).pos(width / 2 - 100, height / 2 - 30).size(200, 20).build();
         buttonDie.active = false;
+        buttonDie.visible = HardcoreRevivalConfig.getActive().allowAcceptingFate;
         addRenderableWidget(buttonDie);
     }
 

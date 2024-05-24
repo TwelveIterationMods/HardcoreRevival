@@ -86,9 +86,11 @@ public class HardcoreRevivalClient {
                     GuiHelper.renderKnockedOutTitle(guiGraphics, width);
                     GuiHelper.renderDeathTimer(guiGraphics, width, height, beingRescued);
 
-                    Component openDeathScreenKey = mc.options.keyInventory.getTranslatedKeyMessage(); // getDisplayName()
-                    final var openDeathScreenText = Component.translatable("gui.hardcorerevival.open_death_screen", openDeathScreenKey);
-                    guiGraphics.drawCenteredString(mc.font, openDeathScreenText, width / 2, height / 2 + 25, 0xFFFFFFFF);
+                    if (HardcoreRevivalConfig.getActive().allowAcceptingFate) {
+                        Component openDeathScreenKey = mc.options.keyInventory.getTranslatedKeyMessage();
+                        final var openDeathScreenText = Component.translatable("gui.hardcorerevival.open_death_screen", openDeathScreenKey);
+                        guiGraphics.drawCenteredString(mc.font, openDeathScreenText, width / 2, height / 2 + 25, 0xFFFFFFFF);
+                    }
                 }
             } else {
                 if (targetEntity != -1 && targetProgress > 0) {
@@ -102,16 +104,28 @@ public class HardcoreRevivalClient {
                         } else if (targetProgress >= 0.25f) {
                             textComponent.append(" .");
                         }
-                        guiGraphics.drawString(mc.font, textComponent, mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(textComponent) / 2, mc.getWindow().getGuiScaledHeight() / 2 + 30, 0xFFFFFFFF, true);
+                        guiGraphics.drawString(mc.font,
+                                textComponent,
+                                mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(textComponent) / 2,
+                                mc.getWindow().getGuiScaledHeight() / 2 + 30,
+                                0xFFFFFFFF,
+                                true);
                     }
                 }
 
-                if (!HardcoreRevival.getClientRevivalData().isKnockedOut() && mc.player != null && !mc.player.isSpectator() && mc.player.isAlive() && !isRescuing) {
+                if (!HardcoreRevival.getClientRevivalData()
+                        .isKnockedOut() && mc.player != null && !mc.player.isSpectator() && mc.player.isAlive() && !isRescuing) {
                     Entity pointedEntity = Minecraft.getInstance().crosshairPickEntity;
-                    if (pointedEntity != null && HardcoreRevival.getRevivalData(pointedEntity).isKnockedOut() && mc.player.distanceTo(pointedEntity) <= HardcoreRevivalConfig.getActive().rescueDistance) {
+                    if (pointedEntity != null && HardcoreRevival.getRevivalData(pointedEntity)
+                            .isKnockedOut() && mc.player.distanceTo(pointedEntity) <= HardcoreRevivalConfig.getActive().rescueDistance) {
                         Component rescueKeyText = mc.options.keyUse.getTranslatedKeyMessage();
                         var textComponent = Component.translatable("gui.hardcorerevival.hold_to_rescue", rescueKeyText);
-                        guiGraphics.drawString(mc.font, textComponent, mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(textComponent) / 2, mc.getWindow().getGuiScaledHeight() / 2 + 30, 0xFFFFFFFF, true);
+                        guiGraphics.drawString(mc.font,
+                                textComponent,
+                                mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(textComponent) / 2,
+                                mc.getWindow().getGuiScaledHeight() / 2 + 30,
+                                0xFFFFFFFF,
+                                true);
                     }
                 }
             }
@@ -153,7 +167,8 @@ public class HardcoreRevivalClient {
                 }
 
                 // If right mouse is held down, and player is not in spectator mode, send rescue packet
-                if (client.options.keyUse.isDown() && !client.player.isSpectator() && client.player.isAlive() && !HardcoreRevival.getClientRevivalData().isKnockedOut()) {
+                if (client.options.keyUse.isDown() && !client.player.isSpectator() && client.player.isAlive() && !HardcoreRevival.getClientRevivalData()
+                        .isKnockedOut()) {
                     if (!isRescuing) {
                         Balm.getNetworking().sendToServer(new RescueMessage(true));
                         isRescuing = true;
