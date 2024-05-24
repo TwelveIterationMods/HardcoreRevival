@@ -1,2 +1,2 @@
-- Fixed players not being dismounted when knocked out, causing various possible issues
-- Fixed using of items not being stopped when knocked out
+- Added disableInSingleplayer and disableInLonelyMultiplayer options to skip the knockout timer in singleplayer or when playing alone on a server
+- Added allowAcceptingFate option (default: true) to remove the Accept your Fate button and force players to wait it out
