@@ -10,6 +10,7 @@ import net.blay09.mods.hardcorerevival.compat.Compat;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.handler.*;
 import net.blay09.mods.hardcorerevival.network.ModNetworking;
+import net.blay09.mods.hardcorerevival.stats.ModStats;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import org.apache.logging.log4j.LogManager;
@@ -27,6 +28,7 @@ public class HardcoreRevival {
         HardcoreRevivalConfig.initialize();
 
         ModNetworking.initialize(Balm.getNetworking());
+        ModStats.initialize(Balm.getStats());
 
         Balm.getCommands().register(ReviveCommand::register);
 
