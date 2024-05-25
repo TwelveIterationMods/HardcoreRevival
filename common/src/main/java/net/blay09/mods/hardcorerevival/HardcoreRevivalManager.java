@@ -12,6 +12,7 @@ import net.blay09.mods.hardcorerevival.handler.KnockoutSyncHandler;
 import net.blay09.mods.hardcorerevival.mixin.ServerPlayerAccessor;
 import net.blay09.mods.hardcorerevival.network.RevivalProgressMessage;
 import net.blay09.mods.hardcorerevival.network.RevivalSuccessMessage;
+import net.blay09.mods.hardcorerevival.stats.ModStats;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -49,6 +50,7 @@ public class HardcoreRevivalManager {
         revivalData.setKnockedOut(true);
         revivalData.setKnockoutTicksPassed(0);
         revivalData.setLastKnockoutAt(System.currentTimeMillis());
+        player.awardStat(ModStats.knockouts);
 
         // Punish consecutive knockouts
         final var lastRescuedAt = revivalData.getLastRescuedAt();
