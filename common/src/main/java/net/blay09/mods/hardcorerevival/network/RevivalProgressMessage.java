@@ -9,7 +9,7 @@ import net.minecraft.world.entity.player.Player;
 
 public class RevivalProgressMessage implements CustomPacketPayload {
 
-    public static CustomPacketPayload.Type<RevivalProgressMessage> TYPE = new CustomPacketPayload.Type(new ResourceLocation(HardcoreRevival.MOD_ID,
+    public static CustomPacketPayload.Type<RevivalProgressMessage> TYPE = new CustomPacketPayload.Type(ResourceLocation.fromNamespaceAndPath(HardcoreRevival.MOD_ID,
             "revival_progress"));
 
     private final int entityId;

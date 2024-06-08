@@ -6,7 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ModStats {
 
-    public static final ResourceLocation knockouts = new ResourceLocation(HardcoreRevival.MOD_ID, "knockouts");
+    public static final ResourceLocation knockouts = ResourceLocation.fromNamespaceAndPath(HardcoreRevival.MOD_ID, "knockouts");
 
     public static void initialize(BalmStats stats) {
         stats.registerCustomStat(knockouts);

@@ -12,7 +12,7 @@ import java.util.List;
 
 public class RescueMessage implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<RescueMessage> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(HardcoreRevival.MOD_ID, "rescue"));
+    public static final CustomPacketPayload.Type<RescueMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(HardcoreRevival.MOD_ID, "rescue"));
 
     private final boolean active;
 

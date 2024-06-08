@@ -16,7 +16,7 @@ public class FabricHardcoreRevival implements ModInitializer {
         Balm.initialize(HardcoreRevival.MOD_ID, EmptyLoadContext.INSTANCE, HardcoreRevival::initialize);
 
         var providers = ((FabricBalmProviders) Balm.getProviders());
-        ResourceLocation identifier = new ResourceLocation(HardcoreRevival.MOD_ID, "player_data");
+        ResourceLocation identifier = ResourceLocation.fromNamespaceAndPath(HardcoreRevival.MOD_ID, "player_data");
         providers.registerProvider(identifier, HardcoreRevivalData.class);
         var lookup = EntityApiLookup.get(identifier, HardcoreRevivalData.class, Void.class);
         lookup.registerForType((entity, context) -> ((FabricPlayer) entity).getHardcoreRevivalData(), EntityType.PLAYER);

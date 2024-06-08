@@ -30,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class HardcoreRevivalManager {
     public static final ResourceKey<DamageType> NOT_RESCUED_IN_TIME = ResourceKey.create(Registries.DAMAGE_TYPE,
-            new ResourceLocation(HardcoreRevival.MOD_ID, "not_rescued_in_time"));
+            ResourceLocation.fromNamespaceAndPath(HardcoreRevival.MOD_ID, "not_rescued_in_time"));
 
     public HardcoreRevivalData getRevivalData(Player player) {
         HardcoreRevivalData provider = Balm.getProviders().getProvider(player, HardcoreRevivalData.class);

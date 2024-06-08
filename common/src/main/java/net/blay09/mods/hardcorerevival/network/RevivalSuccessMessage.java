@@ -12,7 +12,7 @@ import net.minecraft.world.entity.player.Player;
 
 public class RevivalSuccessMessage implements CustomPacketPayload {
 
-    public static CustomPacketPayload.Type<RevivalSuccessMessage> TYPE = new CustomPacketPayload.Type(new ResourceLocation(HardcoreRevival.MOD_ID, "revival_success"));
+    public static CustomPacketPayload.Type<RevivalSuccessMessage> TYPE = new CustomPacketPayload.Type(ResourceLocation.fromNamespaceAndPath(HardcoreRevival.MOD_ID, "revival_success"));
 
     private final int entityId;
 

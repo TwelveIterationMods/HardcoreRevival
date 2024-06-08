@@ -8,7 +8,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class AcceptFateMessage implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<AcceptFateMessage> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(HardcoreRevival.MOD_ID,
+    public static final CustomPacketPayload.Type<AcceptFateMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(HardcoreRevival.MOD_ID,
             "accept_fate"));
 
     public static void handle(ServerPlayer player, AcceptFateMessage message) {

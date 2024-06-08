@@ -11,7 +11,7 @@ import net.minecraft.world.entity.player.Player;
 
 public class HardcoreRevivalDataMessage implements CustomPacketPayload {
 
-    public static CustomPacketPayload.Type<HardcoreRevivalDataMessage> TYPE = new CustomPacketPayload.Type(new ResourceLocation(HardcoreRevival.MOD_ID,
+    public static CustomPacketPayload.Type<HardcoreRevivalDataMessage> TYPE = new CustomPacketPayload.Type(ResourceLocation.fromNamespaceAndPath(HardcoreRevival.MOD_ID,
             "hardcore_revival_data"));
 
     private final int entityId;
