@@ -11,7 +11,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import java.util.Objects;
 
 public class MrCrayfishsGunModAddon {
-    private final ResourceLocation PISTOL = new ResourceLocation("cgm:pistol");
+    private final ResourceLocation PISTOL = ResourceLocation.fromNamespaceAndPath("cgm", "pistol");
 
     public MrCrayfishsGunModAddon() {
         MinecraftForge.EVENT_BUS.register(this);

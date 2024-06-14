@@ -49,7 +49,7 @@ public class ForgeHardcoreRevival {
 
     private void attachEntityCapabilities(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof Player) {
-            event.addCapability(new ResourceLocation(HardcoreRevival.MOD_ID, "entity_data"), new ICapabilityProvider() {
+            event.addCapability(ResourceLocation.fromNamespaceAndPath(HardcoreRevival.MOD_ID, "entity_data"), new ICapabilityProvider() {
                 private LazyOptional<HardcoreRevivalData> revival;
 
                 private LazyOptional<HardcoreRevivalData> getRevivalCapabilityInstance() {
