@@ -1,1 +1,1 @@
-- Updated to Minecraft 1.21
+- Fixed instantDeathSources option not loading correctly
