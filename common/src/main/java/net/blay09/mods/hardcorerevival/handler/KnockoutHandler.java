@@ -63,7 +63,7 @@ public class KnockoutHandler {
 
     private static boolean isKnockoutEnabledFor(ServerPlayer player, DamageSource damageSource) {
         final var server = player.getServer();
-        if(server == null) {
+        if (server == null) {
             return false;
         }
 
@@ -73,18 +73,12 @@ public class KnockoutHandler {
             return false;
         }
 
-        if (HardcoreRevivalConfig.getActive().disableInSingleplayer && server.isSingleplayer()) {
+        if (HardcoreRevivalConfig.getActive().disableInSingleplayer && server.isSingleplayer() && server.getPlayerCount() == 1) {
             return false;
-        } else {
-            if (HardcoreRevivalConfig.getActive().disableInLonelyMultiplayer && !server.isSingleplayer()) {
-                int playerCount = server.getPlayerList()
-                        .getPlayers()
-                        .size();
-                if (playerCount <= 1) {
-                    return false;
-                }
-            }
+        } else if (HardcoreRevivalConfig.getActive().disableInLonelyMultiplayer && !server.isSingleplayer() && server.getPlayerCount() == 1) {
+            return false;
         }
+
         return true;
     }
 
