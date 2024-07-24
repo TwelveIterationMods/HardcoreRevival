@@ -73,7 +73,7 @@ public class HardcoreRevivalConfigData implements BalmConfigData {
     @Comment("If true, Hardcore Revival will not be active when playing alone in multiplayer.")
     public boolean disableInLonelyMultiplayer = false;
 
-    @Comment("If true, Hardcore Revival will not be active when playing alone in multiplayer.")
+    @Comment("The damage sources that kill a player without allowing rescuing.")
     @ExpectedType(ResourceLocation.class)
     public Set<ResourceLocation> instantDeathSources = Set.of(ResourceLocation.withDefaultNamespace("lava"));
 }
