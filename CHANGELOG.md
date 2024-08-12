@@ -1,2 +1,1 @@
-- Fixed disableInSingleplayer also disabling the mod on LAN servers
-- Changed default of disableInSingleplayer to false to avoid confusion when people test the mod
+- Updated to Minecraft 1.21.1
