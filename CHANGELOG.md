@@ -1,1 +1,2 @@
 - Updated to Minecraft 1.21.1
+- Fixed incorrect config comment for instantDeathSources option
