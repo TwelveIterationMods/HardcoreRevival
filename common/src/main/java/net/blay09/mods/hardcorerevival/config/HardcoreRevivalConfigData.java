@@ -42,7 +42,7 @@ public class HardcoreRevivalConfigData implements BalmConfigData {
 
     @Comment("The distance at which a player can rescue another.")
     @Synced
-    public double rescueDistance = 5;
+    public double rescueDistance = 3;
 
     @Comment("If true, knocked out players will glow, making them visible through blocks.")
     public boolean glowOnKnockout = true;

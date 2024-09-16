@@ -6,13 +6,15 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
 
 public class RescueMessage implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<RescueMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(HardcoreRevival.MOD_ID, "rescue"));
+    public static final CustomPacketPayload.Type<RescueMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(HardcoreRevival.MOD_ID,
+            "rescue"));
 
     private final boolean active;
 
@@ -29,6 +31,18 @@ public class RescueMessage implements CustomPacketPayload {
         return new RescueMessage(active);
     }
 
+    private static boolean isLookingTowards(Player player, Entity candidate) {
+        double dx = candidate.getX() - player.getX();
+        double dy = candidate.getY() - 1 - player.getY();
+        double dz = candidate.getZ() - player.getZ();
+
+        // Calculate the dot product of the view vector and the vector to the candidate
+        double dotProduct = player.getLookAngle().x * dx + player.getLookAngle().y * dy + player.getLookAngle().z * dz;
+
+        // Check if the candidate is within a 60-degree cone in front of the player
+        return dotProduct > 0 && Math.abs(Math.acos(dotProduct / Math.sqrt(dx * dx + dy * dy + dz * dz))) < Math.PI / 3;
+    }
+
     public static void handle(ServerPlayer player, RescueMessage message) {
         if (player == null || !player.isAlive() || player.isSpectator() || HardcoreRevival.getRevivalData(player).isKnockedOut()) {
             return;
@@ -36,7 +50,18 @@ public class RescueMessage implements CustomPacketPayload {
 
         if (message.active) {
             final double range = HardcoreRevivalConfig.getActive().rescueDistance;
-            List<Player> candidates = player.level().getEntitiesOfClass(Player.class, player.getBoundingBox().inflate(range), p -> p != null && HardcoreRevival.getRevivalData(p).isKnockedOut());
+            List<Player> candidates = player.level().getEntitiesOfClass(Player.class, player.getBoundingBox().inflate(range), p -> {
+                if (p == null || !HardcoreRevival.getRevivalData(p).isKnockedOut()) {
+                    return false;
+                }
+
+                if (!player.hasLineOfSight(p)) {
+                    return false;
+                }
+
+                return isLookingTowards(player, p);
+            });
+
             float minDist = Float.MAX_VALUE;
             Player target = null;
             for (Player candidate : candidates) {
