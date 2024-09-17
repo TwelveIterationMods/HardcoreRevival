@@ -17,6 +17,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
 
+import java.util.Objects;
+
 
 public class KnockoutHandler {
 
@@ -65,7 +67,7 @@ public class KnockoutHandler {
 
         boolean canDamageSourceKnockout = !damageSource.is(DamageTypes.FELL_OUT_OF_WORLD) && !damageSource.is(HardcoreRevivalManager.NOT_RESCUED_IN_TIME);
         final var damageSourceId = player.getServer().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getKey(damageSource.type());
-        if (!canDamageSourceKnockout || HardcoreRevivalConfig.getActive().instantDeathSources.contains(damageSourceId)) {
+        if (!canDamageSourceKnockout || HardcoreRevivalConfig.getActive().instantDeathSources.contains(Objects.toString(damageSourceId))) {
             return false;
         }
 

@@ -3,10 +3,8 @@ package net.blay09.mods.hardcorerevival.config;
 import com.google.common.collect.Lists;
 import net.blay09.mods.balm.api.config.*;
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
-import java.util.Set;
 
 @Config(HardcoreRevival.MOD_ID)
 public class HardcoreRevivalConfigData implements BalmConfigData {
@@ -62,6 +60,6 @@ public class HardcoreRevivalConfigData implements BalmConfigData {
     public boolean disableInLonelyMultiplayer = false;
 
     @Comment("The damage sources that kill a player instantly, without a K.O. period.")
-    @ExpectedType(ResourceLocation.class)
-    public Set<ResourceLocation> instantDeathSources = Set.of(new ResourceLocation("lava"));
+    @ExpectedType(String.class)
+    public List<String> instantDeathSources = Lists.newArrayList("minecraft:lava");
 }

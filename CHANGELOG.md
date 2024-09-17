@@ -1,3 +1,5 @@
+- Fixed crash on Forge
+
 - Fixed disableInSingleplayer also disabling the mod on LAN servers
 - Changed default of disableInSingleplayer to false to avoid confusion when people test the mod
 - Added instantDeathSources option to control which damage sources kill the player without a K.O. period
