@@ -1,2 +1,3 @@
-- Added disableInSingleplayer and disableInLonelyMultiplayer options to skip the knockout timer in singleplayer or when playing alone on a server
-- Added allowAcceptingFate option (default: true) to remove the Accept your Fate button and force players to wait it out
+- Fixed disableInSingleplayer also disabling the mod on LAN servers
+- Changed default of disableInSingleplayer to false to avoid confusion when people test the mod
+- Added instantDeathSources option to control which damage sources kill the player without a K.O. period
