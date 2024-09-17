@@ -8,7 +8,7 @@ import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.mixin.LivingEntityAccessor;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
@@ -43,7 +43,7 @@ public class KnockoutHandler {
             }
 
             boolean canDamageSourceKnockout = !damageSource.is(DamageTypes.FELL_OUT_OF_WORLD) && !damageSource.is(HardcoreRevivalManager.NOT_RESCUED_IN_TIME);
-            if (canDamageSourceKnockout && isKnockoutEnabled(player) && player.getHealth() - event.getDamageAmount() <= 0f) {
+            if (canDamageSourceKnockout && isKnockoutEnabledFor(player, damageSource) && player.getHealth() - event.getDamageAmount() <= 0f) {
                 // Reduce damage to prevent the player from dying
                 event.setDamageAmount(Math.min(event.getDamageAmount(), Math.max(0f, player.getHealth() - 1f)));
 
@@ -57,20 +57,24 @@ public class KnockoutHandler {
         }
     }
 
-    private static boolean isKnockoutEnabled(ServerPlayer player) {
+    private static boolean isKnockoutEnabledFor(ServerPlayer player, DamageSource damageSource) {
         final var server = player.getServer();
-        if (HardcoreRevivalConfig.getActive().disableInSingleplayer && server != null && server.isSingleplayer()) {
+        if (server == null) {
             return false;
-        } else {
-            if (HardcoreRevivalConfig.getActive().disableInLonelyMultiplayer && server != null && !server.isSingleplayer()) {
-                int playerCount = server.getPlayerList()
-                        .getPlayers()
-                        .size();
-                if (playerCount <= 1) {
-                    return false;
-                }
-            }
         }
+
+        boolean canDamageSourceKnockout = !damageSource.is(DamageTypes.FELL_OUT_OF_WORLD) && !damageSource.is(HardcoreRevivalManager.NOT_RESCUED_IN_TIME);
+        final var damageSourceId = player.getServer().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getKey(damageSource.type());
+        if (!canDamageSourceKnockout || HardcoreRevivalConfig.getActive().instantDeathSources.contains(damageSourceId)) {
+            return false;
+        }
+
+        if (HardcoreRevivalConfig.getActive().disableInSingleplayer && server.isSingleplayer() && server.getPlayerCount() == 1) {
+            return false;
+        } else if (HardcoreRevivalConfig.getActive().disableInLonelyMultiplayer && !server.isSingleplayer() && server.getPlayerCount() == 1) {
+            return false;
+        }
+
         return true;
     }
 

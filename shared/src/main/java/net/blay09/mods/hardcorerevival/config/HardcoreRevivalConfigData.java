@@ -3,8 +3,10 @@ package net.blay09.mods.hardcorerevival.config;
 import com.google.common.collect.Lists;
 import net.blay09.mods.balm.api.config.*;
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
+import java.util.Set;
 
 @Config(HardcoreRevival.MOD_ID)
 public class HardcoreRevivalConfigData implements BalmConfigData {
@@ -58,4 +60,8 @@ public class HardcoreRevivalConfigData implements BalmConfigData {
 
     @Comment("If true, Hardcore Revival will not be active when playing alone in multiplayer.")
     public boolean disableInLonelyMultiplayer = false;
+
+    @Comment("The damage sources that kill a player instantly, without a K.O. period.")
+    @ExpectedType(ResourceLocation.class)
+    public Set<ResourceLocation> instantDeathSources = Set.of(new ResourceLocation("lava"));
 }
