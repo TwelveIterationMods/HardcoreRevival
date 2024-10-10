@@ -18,6 +18,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -37,7 +38,7 @@ public class HardcoreRevivalManager {
         return provider != null ? provider : InvalidHardcoreRevivalData.INSTANCE;
     }
 
-    public void knockout(Player player, DamageSource source) {
+    public void knockout(ServerPlayer player, DamageSource source) {
         HardcoreRevivalData revivalData = getRevivalData(player);
         if (revivalData.isKnockedOut()) {
             return;
@@ -72,7 +73,7 @@ public class HardcoreRevivalManager {
         Balm.getEvents().fireEvent(new PlayerKnockedOutEvent(player, source));
 
         // If enabled, show a death message
-        if (player.level().getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES)) {
+        if (player.serverLevel().getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES)) {
             MinecraftServer server = player.getServer();
             if (server != null) {
                 Team team = player.getTeam();
@@ -111,7 +112,7 @@ public class HardcoreRevivalManager {
                 String[] parts = effectString.split("\\|");
                 ResourceLocation registryName = ResourceLocation.tryParse(parts[0]);
                 if (registryName != null) {
-                    final var holder = BuiltInRegistries.MOB_EFFECT.getHolder(registryName);
+                    final var holder = BuiltInRegistries.MOB_EFFECT.get(registryName);
                     if (holder.isPresent()) {
                         int duration = tryParseInt(parts.length >= 2 ? parts[1] : null, 600);
                         int amplifier = tryParseInt(parts.length >= 3 ? parts[2] : null, 0);
@@ -179,8 +180,8 @@ public class HardcoreRevivalManager {
             accessor.setSpawnInvulnerableTime(0);
         }
 
-        final var damageTypes = player.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
-        final var damageSource = new DamageSource(damageTypes.getHolderOrThrow(NOT_RESCUED_IN_TIME));
+        final var damageTypes = player.level().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE);
+        final var damageSource = new DamageSource(damageTypes.getOrThrow(NOT_RESCUED_IN_TIME));
         final var revivalData = getRevivalData(player);
         revivalData.setLastKnockoutTicksPassed(0);
         reset(player);

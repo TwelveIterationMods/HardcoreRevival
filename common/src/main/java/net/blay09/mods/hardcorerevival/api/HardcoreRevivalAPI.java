@@ -1,7 +1,7 @@
 package net.blay09.mods.hardcorerevival.api;
 
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.player.Player;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -18,23 +18,23 @@ public class HardcoreRevivalAPI {
         }
     }
 
-    public static void knockout(Player player, DamageSource damageSource) {
+    public static void knockout(ServerPlayer player, DamageSource damageSource) {
         internalMethods.knockout(player, damageSource);
     }
 
-    public static void wakeup(Player player, boolean applyEffects) {
+    public static void wakeup(ServerPlayer player, boolean applyEffects) {
         internalMethods.wakeup(player, applyEffects);
     }
 
-    public static boolean isKnockedOut(Player player) {
+    public static boolean isKnockedOut(ServerPlayer player) {
         return internalMethods.isKnockedOut(player);
     }
 
-    public static int getKnockoutTicksPassed(Player player) {
+    public static int getKnockoutTicksPassed(ServerPlayer player) {
         return internalMethods.getKnockoutTicksPassed(player);
     }
 
-    public static int getKnockoutTicksLeft(Player player) {
+    public static int getKnockoutTicksLeft(ServerPlayer player) {
         return internalMethods.getKnockoutTicksLeft(player);
     }
 }

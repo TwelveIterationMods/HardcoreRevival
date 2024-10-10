@@ -1,16 +1,16 @@
 package net.blay09.mods.hardcorerevival.api;
 
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.player.Player;
 
 public interface InternalMethods {
-    void knockout(Player player, DamageSource damageSource);
+    void knockout(ServerPlayer player, DamageSource damageSource);
 
-    void wakeup(Player player, boolean applyEffects);
+    void wakeup(ServerPlayer player, boolean applyEffects);
 
-    boolean isKnockedOut(Player player);
+    boolean isKnockedOut(ServerPlayer player);
 
-    int getKnockoutTicksPassed(Player player);
+    int getKnockoutTicksPassed(ServerPlayer player);
 
-    int getKnockoutTicksLeft(Player player);
+    int getKnockoutTicksLeft(ServerPlayer player);
 }
