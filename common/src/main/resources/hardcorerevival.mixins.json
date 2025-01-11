@@ -6,11 +6,12 @@
   "refmap": "${mod_id}.refmap.json",
   "mixins": [
     "EntityMixin",
+    "LivingEntityAccessor",
+    "LivingEntityMixin",
+    "PlayerAccessor",
     "PlayerMixin",
     "ServerGamePacketListenerImplMixin",
-    "ServerPlayerAccessor",
-    "LivingEntityMixin",
-    "LivingEntityAccessor"
+    "ServerPlayerAccessor"
   ],
   "client": [
     "LocalPlayerMixin"

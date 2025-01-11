@@ -7,6 +7,7 @@ import net.blay09.mods.hardcorerevival.api.PlayerRevivedEvent;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfigData;
 import net.blay09.mods.hardcorerevival.handler.KnockoutSyncHandler;
+import net.blay09.mods.hardcorerevival.mixin.PlayerAccessor;
 import net.blay09.mods.hardcorerevival.mixin.ServerPlayerAccessor;
 import net.blay09.mods.hardcorerevival.network.RevivalProgressMessage;
 import net.blay09.mods.hardcorerevival.network.RevivalSuccessMessage;
@@ -35,6 +36,7 @@ public class HardcoreRevivalManager {
             return;
         }
 
+        ((PlayerAccessor) player).callCloseContainer();
         player.stopUsingItem();
         player.stopRiding();
         player.removeEffect(MobEffects.REGENERATION);
