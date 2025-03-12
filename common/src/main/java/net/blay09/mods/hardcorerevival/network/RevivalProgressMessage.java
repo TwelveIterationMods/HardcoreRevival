@@ -1,35 +1,25 @@
 package net.blay09.mods.hardcorerevival.network;
 
-import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.client.HardcoreRevivalClient;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
-public class RevivalProgressMessage implements CustomPacketPayload {
+import static net.blay09.mods.hardcorerevival.HardcoreRevival.id;
 
-    public static CustomPacketPayload.Type<RevivalProgressMessage> TYPE = new CustomPacketPayload.Type(ResourceLocation.fromNamespaceAndPath(HardcoreRevival.MOD_ID,
-            "revival_progress"));
+public record RevivalProgressMessage(int entityId, float progress) implements CustomPacketPayload {
 
-    private final int entityId;
-    private final float progress;
-
-    public RevivalProgressMessage(int entityId, float progress) {
-        this.entityId = entityId;
-        this.progress = progress;
-    }
-
-    public static void encode(FriendlyByteBuf buf, RevivalProgressMessage message) {
-        buf.writeInt(message.entityId);
-        buf.writeFloat(message.progress);
-    }
-
-    public static RevivalProgressMessage decode(FriendlyByteBuf buf) {
-        int entityId = buf.readInt();
-        float progress = buf.readFloat();
-        return new RevivalProgressMessage(entityId, progress);
-    }
+    public static final CustomPacketPayload.Type<RevivalProgressMessage> TYPE = new CustomPacketPayload.Type<>(id("revival_progress"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, RevivalProgressMessage> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.INT,
+            RevivalProgressMessage::entityId,
+            ByteBufCodecs.FLOAT,
+            RevivalProgressMessage::progress,
+            RevivalProgressMessage::new
+    );
 
     public static void handle(Player player, RevivalProgressMessage message) {
         HardcoreRevivalClient.setRevivalProgress(message.entityId, message.progress);

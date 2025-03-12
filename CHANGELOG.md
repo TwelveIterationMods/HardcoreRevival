@@ -1,1 +1,1 @@
-- Possibly fixed an issue where the screen goes black in menus sometimes
+- Updated to Minecraft 1.21.5

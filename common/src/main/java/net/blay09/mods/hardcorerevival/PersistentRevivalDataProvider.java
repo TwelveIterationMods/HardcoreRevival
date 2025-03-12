@@ -1,6 +1,7 @@
 package net.blay09.mods.hardcorerevival;
 
 import net.blay09.mods.balm.api.Balm;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +19,7 @@ public class PersistentRevivalDataProvider implements RevivalDataProvider {
 
     private static CompoundTag getRevivalData(Player player) {
         CompoundTag persistedData = Balm.getHooks().getPersistentData(player);
-        CompoundTag compound = persistedData.getCompound(TAG_NAME);
+        CompoundTag compound = persistedData.getCompoundOrEmpty(TAG_NAME);
         persistedData.put(TAG_NAME, compound);
         return compound;
     }
@@ -30,7 +31,7 @@ public class PersistentRevivalDataProvider implements RevivalDataProvider {
 
     @Override
     public boolean isKnockedOut(Player player) {
-        return getRevivalData(player).getBoolean(KNOCKED_OUT);
+        return getRevivalData(player).getBooleanOr(KNOCKED_OUT, false);
     }
 
     @Override
@@ -40,7 +41,7 @@ public class PersistentRevivalDataProvider implements RevivalDataProvider {
 
     @Override
     public int getKnockoutTicksPassed(Player player) {
-        return getRevivalData(player).getInt(KNOCKOUT_TICKS_PASSED);
+        return getRevivalData(player).getIntOr(KNOCKOUT_TICKS_PASSED, 0);
     }
 
     @Override
@@ -50,7 +51,7 @@ public class PersistentRevivalDataProvider implements RevivalDataProvider {
 
     @Override
     public int getLastKnockoutTicksPassed(Player player) {
-        return getRevivalData(player).getInt(LAST_KNOCKOUT_TICKS_PASSED);
+        return getRevivalData(player).getIntOr(LAST_KNOCKOUT_TICKS_PASSED, 0);
     }
 
     @Override
@@ -60,7 +61,7 @@ public class PersistentRevivalDataProvider implements RevivalDataProvider {
 
     @Override
     public long getLastRescuedAt(Player player) {
-        return getRevivalData(player).getLong(LAST_RESCUED_AT);
+        return getRevivalData(player).getLongOr(LAST_RESCUED_AT, 0);
     }
 
     @Override
@@ -70,7 +71,7 @@ public class PersistentRevivalDataProvider implements RevivalDataProvider {
 
     @Override
     public long getLastKnockoutAt(Player player) {
-        return getRevivalData(player).getLong(LAST_KNOCKOUT_AT);
+        return getRevivalData(player).getLongOr(LAST_KNOCKOUT_AT, 0);
     }
 
     @Override
@@ -80,7 +81,7 @@ public class PersistentRevivalDataProvider implements RevivalDataProvider {
 
     @Override
     public long getLastLogoutAt(Player player) {
-        return getRevivalData(player).getLong(LAST_LOGOUT_AT);
+        return getRevivalData(player).getLongOr(LAST_LOGOUT_AT, 0);
     }
 
     @Override
@@ -90,13 +91,13 @@ public class PersistentRevivalDataProvider implements RevivalDataProvider {
 
     @Override
     public int getRescueTime(Player player) {
-        return getRevivalData(player).getInt(LAST_RESCUED_AT);
+        return getRevivalData(player).getIntOr(LAST_RESCUED_AT, 0);
     }
 
     @Override
     public void setRescueTarget(Player player, @Nullable Player rescueTarget) {
         if (rescueTarget != null) {
-            getRevivalData(player).putUUID(RESCUE_TARGET, rescueTarget.getGameProfile().getId());
+            getRevivalData(player).store(RESCUE_TARGET, UUIDUtil.CODEC, rescueTarget.getGameProfile().getId());
         } else {
             getRevivalData(player).remove(RESCUE_TARGET);
         }
@@ -107,7 +108,7 @@ public class PersistentRevivalDataProvider implements RevivalDataProvider {
         final var server = player.level().getServer();
         if (server != null) {
             final var tag = getRevivalData(player);
-            return tag.contains(RESCUE_TARGET) ? server.getPlayerList().getPlayer(tag.getUUID(RESCUE_TARGET)) : null;
+            return tag.read(RESCUE_TARGET, UUIDUtil.CODEC).map(it -> server.getPlayerList().getPlayer(it)).orElse(null);
         }
         return null;
     }

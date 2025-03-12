@@ -90,8 +90,6 @@ public class HardcoreRevivalClient {
                         guiGraphics.drawCenteredString(mc.font, openDeathScreenText, width / 2, height / 2 + 25, 0xFFFFFFFF);
                     }
                 }
-
-                RenderSystem.enableBlend();
             } else {
                 if (targetEntity != -1 && targetProgress > 0) {
                     Entity entity = mc.level.getEntity(targetEntity);
@@ -111,7 +109,6 @@ public class HardcoreRevivalClient {
                                 mc.getWindow().getGuiScaledHeight() / 2 + 30,
                                 0xFFFFFFFF,
                                 true);
-                        RenderSystem.enableBlend();
                     }
                 }
 
@@ -128,7 +125,6 @@ public class HardcoreRevivalClient {
                                 mc.getWindow().getGuiScaledHeight() / 2 + 30,
                                 0xFFFFFFFF,
                                 true);
-                        RenderSystem.enableBlend();
                     }
                 }
             }

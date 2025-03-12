@@ -7,6 +7,7 @@ import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.handler.*;
 import net.blay09.mods.hardcorerevival.network.ModNetworking;
 import net.blay09.mods.hardcorerevival.stats.ModStats;
+import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,4 +34,7 @@ public class HardcoreRevival {
         Balm.initializeIfLoaded(Compat.INVENTORY_TOTEM, "new.blay09.mods.hardcorerevival.compat.InventoryTotemAddon");
     }
 
+    public static ResourceLocation id(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    }
 }

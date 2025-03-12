@@ -1,45 +1,31 @@
 package net.blay09.mods.hardcorerevival.network;
 
-import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.PlayerHardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.client.HardcoreRevivalClient;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
-public class HardcoreRevivalDataMessage implements CustomPacketPayload {
+import static net.blay09.mods.hardcorerevival.HardcoreRevival.id;
 
-    public static CustomPacketPayload.Type<HardcoreRevivalDataMessage> TYPE = new CustomPacketPayload.Type(ResourceLocation.fromNamespaceAndPath(HardcoreRevival.MOD_ID,
-            "hardcore_revival_data"));
+public record HardcoreRevivalDataMessage(int entityId, boolean knockedOut, int knockoutTicksPassed, boolean beingRescued) implements CustomPacketPayload {
 
-    private final int entityId;
-    private final boolean knockedOut;
-    private final int knockoutTicksPassed;
-    private final boolean beingRescued;
+    public static final CustomPacketPayload.Type<HardcoreRevivalDataMessage> TYPE = new CustomPacketPayload.Type<>(id("hardcore_revival_data"));
 
-    public HardcoreRevivalDataMessage(int entityId, boolean knockedOut, int knockoutTicksPassed, boolean beingRescued) {
-        this.entityId = entityId;
-        this.knockedOut = knockedOut;
-        this.knockoutTicksPassed = knockoutTicksPassed;
-        this.beingRescued = beingRescued;
-    }
-
-    public static void encode(FriendlyByteBuf buf, HardcoreRevivalDataMessage message) {
-        buf.writeInt(message.entityId);
-        buf.writeBoolean(message.knockedOut);
-        buf.writeInt(message.knockoutTicksPassed);
-        buf.writeBoolean(message.beingRescued);
-    }
-
-    public static HardcoreRevivalDataMessage decode(FriendlyByteBuf buf) {
-        int entityId = buf.readInt();
-        boolean knockedOut = buf.readBoolean();
-        int knockoutTicksPassed = buf.readInt();
-        boolean beingRescued = buf.readBoolean();
-        return new HardcoreRevivalDataMessage(entityId, knockedOut, knockoutTicksPassed, beingRescued);
-    }
+    public static final StreamCodec<RegistryFriendlyByteBuf, HardcoreRevivalDataMessage> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.INT,
+            HardcoreRevivalDataMessage::entityId,
+            ByteBufCodecs.BOOL,
+            HardcoreRevivalDataMessage::knockedOut,
+            ByteBufCodecs.INT,
+            HardcoreRevivalDataMessage::knockoutTicksPassed,
+            ByteBufCodecs.BOOL,
+            HardcoreRevivalDataMessage::beingRescued,
+            HardcoreRevivalDataMessage::new
+    );
 
     public static void handle(Player player, HardcoreRevivalDataMessage message) {
         if (player != null) {

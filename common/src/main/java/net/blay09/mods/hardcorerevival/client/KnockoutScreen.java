@@ -23,7 +23,7 @@ public class KnockoutScreen extends Screen {
     protected void init() {
         buttonDie = Button.builder(Component.translatable("gui.hardcorerevival.die", ""), it -> {
             buttonDie.playDownSound(Minecraft.getInstance().getSoundManager());
-            Balm.getNetworking().sendToServer(new AcceptFateMessage());
+            Balm.getNetworking().sendToServer(AcceptFateMessage.INSTANCE);
         }).pos(width / 2 - 100, height / 2 - 30).size(200, 20).build();
         buttonDie.active = false;
         buttonDie.visible = HardcoreRevivalConfig.getActive().allowAcceptingFate;

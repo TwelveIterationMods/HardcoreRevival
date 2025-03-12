@@ -1,33 +1,25 @@
 package net.blay09.mods.hardcorerevival.network;
 
-import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
-public class RevivalSuccessMessage implements CustomPacketPayload {
+import static net.blay09.mods.hardcorerevival.HardcoreRevival.id;
 
-    public static CustomPacketPayload.Type<RevivalSuccessMessage> TYPE = new CustomPacketPayload.Type(ResourceLocation.fromNamespaceAndPath(HardcoreRevival.MOD_ID, "revival_success"));
+public record RevivalSuccessMessage(int entityId) implements CustomPacketPayload {
 
-    private final int entityId;
-
-    public RevivalSuccessMessage(int entityId) {
-        this.entityId = entityId;
-    }
-
-    public static RevivalSuccessMessage decode(FriendlyByteBuf buf) {
-        int entityId = buf.readInt();
-        return new RevivalSuccessMessage(entityId);
-    }
-
-    public static void encode(FriendlyByteBuf buf, RevivalSuccessMessage message) {
-        buf.writeInt(message.entityId);
-    }
+    public static final CustomPacketPayload.Type<RevivalSuccessMessage> TYPE = new CustomPacketPayload.Type<>(id("revival_success"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, RevivalSuccessMessage> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.INT,
+            RevivalSuccessMessage::entityId,
+            RevivalSuccessMessage::new
+    );
 
     public static void handle(Player player, RevivalSuccessMessage message) {
         Minecraft mc = Minecraft.getInstance();

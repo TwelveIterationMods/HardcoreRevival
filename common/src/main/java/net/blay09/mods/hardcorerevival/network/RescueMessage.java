@@ -1,37 +1,29 @@
 package net.blay09.mods.hardcorerevival.network;
 
-import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.PlayerHardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
 
-public class RescueMessage implements CustomPacketPayload {
+import static net.blay09.mods.hardcorerevival.HardcoreRevival.id;
 
-    public static final CustomPacketPayload.Type<RescueMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(HardcoreRevival.MOD_ID,
-            "rescue"));
+public record RescueMessage(boolean active) implements CustomPacketPayload {
 
-    private final boolean active;
-
-    public RescueMessage(boolean active) {
-        this.active = active;
-    }
-
-    public static void encode(FriendlyByteBuf buf, RescueMessage message) {
-        buf.writeBoolean(message.active);
-    }
-
-    public static RescueMessage decode(FriendlyByteBuf buf) {
-        boolean active = buf.readBoolean();
-        return new RescueMessage(active);
-    }
+    public static final CustomPacketPayload.Type<RescueMessage> TYPE = new CustomPacketPayload.Type<>(id("rescue"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, RescueMessage> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.BOOL,
+            RescueMessage::active,
+            RescueMessage::new
+    );
 
     private static boolean isLookingTowards(Player player, Entity candidate) {
         double dx = candidate.getX() - player.getX();
