@@ -5,7 +5,6 @@ import net.blay09.mods.hardcorerevival.api.PlayerKnockedOutEvent;
 import net.blay09.mods.hardcorerevival.api.PlayerRescuedEvent;
 import net.blay09.mods.hardcorerevival.api.PlayerRevivedEvent;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
-import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfigData;
 import net.blay09.mods.hardcorerevival.handler.KnockoutSyncHandler;
 import net.blay09.mods.hardcorerevival.network.RevivalProgressMessage;
 import net.blay09.mods.hardcorerevival.network.RevivalSuccessMessage;
@@ -94,7 +93,7 @@ public class HardcoreRevivalManager {
         reset(player);
 
         if (applyEffects) {
-            HardcoreRevivalConfigData config = HardcoreRevivalConfig.getActive();
+            HardcoreRevivalConfig config = HardcoreRevivalConfig.getActive();
             player.setHealth(config.rescueRespawnHealth);
             player.getFoodData().setFoodLevel(config.rescueRespawnFoodLevel);
             // client only, won't bother: player.getFoodStats().setFoodSaturationLevel((float) config.getRescueRespawnFoodSaturation());
