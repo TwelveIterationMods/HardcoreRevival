@@ -1,1 +1,2 @@
-- Added support for Charm of Undying and other mods supporting Totem of Undying in Curios or Trinkets
+- Fixed `continueTimerWhileOffline` always instantly killing upon login
+- Fixed running out of time during login resulting in a revive instead
