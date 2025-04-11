@@ -1,2 +1,1 @@
 - Fixed `continueTimerWhileOffline` always instantly killing upon login
-- Fixed running out of time during login resulting in a revive instead
