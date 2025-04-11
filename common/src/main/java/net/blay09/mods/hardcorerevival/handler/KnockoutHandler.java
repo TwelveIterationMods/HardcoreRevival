@@ -107,7 +107,7 @@ public class KnockoutHandler {
             }
 
             int maxTicksUntilDeath = HardcoreRevivalConfig.getActive().secondsUntilDeath * 20;
-            if (maxTicksUntilDeath > 0 && PlayerHardcoreRevivalManager.getKnockoutTicksPassed(player) >= maxTicksUntilDeath) {
+            if (maxTicksUntilDeath > 0 && PlayerHardcoreRevivalManager.getKnockoutTicksPassed(player) >= maxTicksUntilDeath && player.hasClientLoaded()) {
                 HardcoreRevivalManager.notRescuedInTime(player);
             }
         }
