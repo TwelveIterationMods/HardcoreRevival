@@ -34,7 +34,7 @@ public class LoginLogoutHandler {
 
     public static void onPlayerLogout(PlayerLogoutEvent event) {
         Player player = event.getPlayer();
-        PlayerHardcoreRevivalManager.setLastLogoutAt(player, player.level().getGameTime());
+        PlayerHardcoreRevivalManager.setLastLogoutAt(player, System.currentTimeMillis());
     }
 
 }
