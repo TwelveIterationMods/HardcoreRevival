@@ -64,7 +64,7 @@ public class HardcoreRevivalManager {
         Balm.getEvents().fireEvent(new PlayerKnockedOutEvent(player, source));
 
         // If enabled, show a death message
-        if (player.serverLevel().getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES)) {
+        if (player.level().getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES)) {
             MinecraftServer server = player.getServer();
             if (server != null) {
                 Team team = player.getTeam();

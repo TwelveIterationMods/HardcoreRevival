@@ -8,6 +8,6 @@ import net.fabricmc.api.ModInitializer;
 public class FabricHardcoreRevival implements ModInitializer {
     @Override
     public void onInitialize() {
-        Balm.initialize(HardcoreRevival.MOD_ID, EmptyLoadContext.INSTANCE, HardcoreRevival::initialize);
+        Balm.initializeMod(HardcoreRevival.MOD_ID, EmptyLoadContext.INSTANCE, HardcoreRevival::initialize);
     }
 }

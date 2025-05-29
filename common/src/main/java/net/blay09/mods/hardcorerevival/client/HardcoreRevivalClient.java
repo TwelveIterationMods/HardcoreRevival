@@ -1,6 +1,5 @@
 package net.blay09.mods.hardcorerevival.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.event.TickPhase;
 import net.blay09.mods.balm.api.event.TickType;
@@ -61,7 +60,7 @@ public class HardcoreRevivalClient {
         if (event.getElement() == GuiDrawEvent.Element.HEALTH && isKnockedOut()) {
             int knockoutTicksPassed = PlayerHardcoreRevivalManager.getKnockoutTicksPassed(Minecraft.getInstance().player);
             float redness = (float) Math.sin(knockoutTicksPassed / 2f);
-            RenderSystem.setShaderColor(1f, 1f - redness, 1 - redness, 1f);
+            // TODO 1.21.6: RenderSystem.setShaderColor(1f, 1f - redness, 1 - redness, 1f);
         }
     }
 
@@ -72,11 +71,11 @@ public class HardcoreRevivalClient {
             Minecraft mc = Minecraft.getInstance();
             if (isKnockedOut()) {
                 var poseStack = guiGraphics.pose();
-                poseStack.pushPose();
-                poseStack.translate(0, 0, -300);
-                RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+                poseStack.pushMatrix();
+                // TODO 1.21.6: poseStack.translate(0, 0, -300);
+                // TODO 1.21.6: RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
                 GuiHelper.drawGradientRectW(guiGraphics, 0, 0, mc.getWindow().getWidth(), mc.getWindow().getHeight(), 0x60500000, 0x90FF0000);
-                poseStack.popPose();
+                poseStack.popMatrix();
 
                 if (mc.screen == null || mc.screen instanceof ChatScreen) {
                     int width = event.getWindow().getGuiScaledWidth();
@@ -102,7 +101,7 @@ public class HardcoreRevivalClient {
                         } else if (targetProgress >= 0.25f) {
                             textComponent.append(" .");
                         }
-                        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+                        // TODO 1.21.6: RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
                         guiGraphics.drawString(mc.font,
                                 textComponent,
                                 mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(textComponent) / 2,
@@ -118,7 +117,7 @@ public class HardcoreRevivalClient {
                             pointedEntity) <= HardcoreRevivalConfig.getActive().rescueDistance) {
                         Component rescueKeyText = mc.options.keyUse.getTranslatedKeyMessage();
                         var textComponent = Component.translatable("gui.hardcorerevival.hold_to_rescue", rescueKeyText);
-                        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+                        // TODO 1.21.6: RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
                         guiGraphics.drawString(mc.font,
                                 textComponent,
                                 mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(textComponent) / 2,
@@ -129,7 +128,7 @@ public class HardcoreRevivalClient {
                 }
             }
         } else if (event.getElement() == GuiDrawEvent.Element.HEALTH && isKnockedOut()) {
-            RenderSystem.setShaderColor(1f, 1f, 1, 1f);
+            // TODO 1.21.6: RenderSystem.setShaderColor(1f, 1f, 1, 1f);
         }
     }
 

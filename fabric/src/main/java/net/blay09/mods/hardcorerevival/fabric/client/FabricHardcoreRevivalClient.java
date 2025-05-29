@@ -10,6 +10,6 @@ public class FabricHardcoreRevivalClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        BalmClient.initialize(HardcoreRevival.MOD_ID, EmptyLoadContext.INSTANCE, HardcoreRevivalClient::initialize);
+        BalmClient.initializeMod(HardcoreRevival.MOD_ID, EmptyLoadContext.INSTANCE, HardcoreRevivalClient::initialize);
     }
 }

@@ -16,10 +16,10 @@ public class GuiHelper {
 
     public static void renderKnockedOutTitle(GuiGraphics guiGraphics, int width) {
         var poseStack = guiGraphics.pose();
-        poseStack.pushPose();
-        poseStack.scale(2f, 2f, 2f);
+        poseStack.pushMatrix();
+        poseStack.scale(2f, 2f);
         guiGraphics.drawCenteredString(Minecraft.getInstance().font, I18n.get("gui.hardcorerevival.knocked_out"), width / 2 / 2, 30, 16777215);
-        poseStack.popPose();
+        poseStack.popMatrix();
     }
 
     public static void renderDeathTimer(GuiGraphics guiGraphics, int width, int height, boolean beingRescued) {
