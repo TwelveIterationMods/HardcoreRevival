@@ -10,7 +10,7 @@ public class NeoForgeHardcoreRevival {
 
     public NeoForgeHardcoreRevival(IEventBus eventBus) {
         final var context = new NeoForgeLoadContext(eventBus);
-        Balm.initialize(HardcoreRevival.MOD_ID, context, HardcoreRevival::initialize);
+        Balm.initializeMod(HardcoreRevival.MOD_ID, context, HardcoreRevival::initialize);
     }
 
 }

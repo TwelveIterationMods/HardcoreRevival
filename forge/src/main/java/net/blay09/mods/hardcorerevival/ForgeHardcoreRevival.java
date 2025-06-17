@@ -13,7 +13,7 @@ public class ForgeHardcoreRevival {
 
     public ForgeHardcoreRevival(FMLJavaModLoadingContext context) {
         final var loadContext = new ForgeLoadContext(context.getModEventBus());
-        Balm.initialize(HardcoreRevival.MOD_ID, loadContext, HardcoreRevival::initialize);
+        Balm.initializeMod(HardcoreRevival.MOD_ID, loadContext, HardcoreRevival::initialize);
         if (FMLEnvironment.dist.isClient()) {
             BalmClient.initialize(HardcoreRevival.MOD_ID, loadContext, HardcoreRevivalClient::initialize);
         }
