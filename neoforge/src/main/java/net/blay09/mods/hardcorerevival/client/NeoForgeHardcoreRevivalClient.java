@@ -12,6 +12,6 @@ public class NeoForgeHardcoreRevivalClient {
 
     public NeoForgeHardcoreRevivalClient(IEventBus eventBus) {
         final var context = new NeoForgeLoadContext(eventBus);
-        BalmClient.initialize(HardcoreRevival.MOD_ID, context, HardcoreRevivalClient::initialize);
+        BalmClient.initializeMod(HardcoreRevival.MOD_ID, context, HardcoreRevivalClient::initialize);
     }
 }
