@@ -6,7 +6,7 @@ import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 
 import java.util.Objects;
 
@@ -18,15 +18,12 @@ public class MrCrayfishsGunModAddon {
     }
 
     @SubscribeEvent
-    public void onGunFirePre(GunFireEvent.Pre event) {
+    public boolean onGunFirePre(GunFireEvent.Pre event) {
         if (PlayerHardcoreRevivalManager.isKnockedOut(event.getEntity())) {
             ResourceLocation mainHandItemKey = BuiltInRegistries.ITEM.getKey(event.getEntity().getMainHandItem().getItem());
             boolean isFiringPistol = Objects.equals(mainHandItemKey, PISTOL);
-            if (isFiringPistol && HardcoreRevivalConfig.getActive().allowPistols) {
-                return;
-            }
-
-            event.setCanceled(true);
+            return !isFiringPistol || !HardcoreRevivalConfig.getActive().allowPistols;
         }
+        return false;
     }
 }
