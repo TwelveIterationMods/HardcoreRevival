@@ -1,0 +1,103 @@
+repositories {
+    maven {
+        url = "https://www.cursemaven.com"
+        content {
+            includeGroup 'curse.maven'
+        }
+    }
+
+    maven {
+        url = "https://maven.shedaniel.me/"
+        content {
+            includeGroup "me.shedaniel"
+            includeGroup "me.shedaniel.cloth"
+            includeGroup "dev.architectury"
+        }
+    }
+
+    maven {
+        url = "https://maven.blamejared.com"
+        content {
+            includeGroup "mezz.jei"
+        }
+    }
+
+    maven {
+        url = "https://maven.bai.lol"
+        content {
+            includeGroup "lol.bai"
+            includeGroup "mcp.mobius.waila"
+        }
+    }
+
+    maven {
+        url = "https://maven.terraformersmc.com/releases"
+        content {
+            includeGroup "com.terraformersmc"
+            includeGroup "dev.emi"
+        }
+    }
+
+    maven {
+        url = "https://jm.gserv.me/repository/maven-public/"
+        content {
+            includeGroup "info.journeymap"
+            includeGroup "mysticdrew"
+        }
+    }
+
+    maven {
+        url = 'https://jitpack.io'
+        content {
+            includeGroup "com.github.BlueMap-Minecraft"
+            includeGroup "com.github.mattidragon"
+        }
+    }
+
+    maven {
+        url = "https://repo.mikeprimm.com/"
+        content {
+            includeGroup "us.dynmap"
+        }
+    }
+
+    maven {
+        url = 'https://maven.ladysnake.org/releases'
+        content {
+            includeGroup "dev.onyxstudios.cardinal-components-api"
+            includeGroup "org.ladysnake.cardinal-components-api"
+        }
+    }
+	
+	maven {
+        url "https://maven.siphalor.de/"
+        content {
+            includeGroup "de.siphalor"
+        }
+    }
+
+    maven {
+        url = "https://maven.theillusivec4.top/"
+        content {
+            includeGroup "top.theillusivec4.curios"
+        }
+    }
+
+    maven {
+        url = "https://dl.cloudsmith.io/public/novamachina-mods/release/maven/"
+        content {
+            includeGroup "novamachina.novacore"
+            includeGroup "novamachina.exnihilosequentia"
+        }
+    }
+	
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Minecraft'
+                url = 'https://libraries.minecraft.net/'
+            }
+        }
+        filter { includeGroupAndSubgroups("com.mojang") }
+    }
+}

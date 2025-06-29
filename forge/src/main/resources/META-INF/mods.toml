@@ -1,35 +1,31 @@
 modLoader="javafml"
 loaderVersion="${forge_loader_version_range}"
-license="All rights reserved"
-issueTrackerURL="https://github.com/TwelveIterationMods/HardcoreRevival/issues"
-
+license="${license}"
+issueTrackerURL="${issues}"
 [[mods]]
-modId="hardcorerevival"
-version="${mod_version}"
-displayName="Hardcore Revival"
-displayURL="https://mods.twelveiterations.com/mc/hardcorerevival"
-logoFile="hardcorerevival-icon.png"
+modId="${mod_id}"
+version="${version}"
+displayName="${mod_name}"
+displayURL="${homepage}"
+logoFile="${mod_id}.png"
 credits="BlayTheNinth"
 authors="BlayTheNinth"
-description='''
-Help your friends back up after they die (if you can make it in time).
-'''
-
-[[dependencies.hardcorerevival]]
-    modId="forge"
-    mandatory=true
-    versionRange="${forge_version_range}"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.hardcorerevival]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="${minecraft_version_range}"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.hardcorerevival]]
-    modId="balm"
-    mandatory=true
-    versionRange="${balm_version_range}"
-    ordering="NONE"
-    side="BOTH"
+description='''${description}'''
+[[dependencies.${mod_id}]]
+modId="forge"
+mandatory=true
+versionRange="${forge_version_range}"
+ordering="NONE"
+side="BOTH"
+[[dependencies.${mod_id}]]
+modId="minecraft"
+mandatory=true
+versionRange="${minecraft_version_range}"
+ordering="NONE"
+side="BOTH"
+[[dependencies.${mod_id}]]
+modId="balm"
+mandatory=true
+versionRange="${balm_version_range}"
+ordering="NONE"
+side="BOTH"

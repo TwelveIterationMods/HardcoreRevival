@@ -1,43 +1,42 @@
 {
   "schemaVersion": 1,
-  "id": "hardcorerevival",
+  "id": "${mod_id}",
   "version": "${version}",
 
-  "name": "Hardcore Revival",
-  "description": "Help your friends back up after they die (if you can make it in time).",
+  "name": "${mod_name}",
+  "description": "${description}",
   "authors": [
     "BlayTheNinth"
   ],
   "contact": {
-    "homepage": "https://mods.twelveiterations.com/mc/hardcorerevival",
-    "sources": "https://github.com/TwelveIterationMods/HardcoreRevival",
-    "issues": "https://github.com/TwelveIterationMods/HardcoreRevival/issues"
+    "homepage": "${homepage}",
+    "sources": "${sources}",
+    "issues": "${issues}"
   },
 
-  "license": "All Rights Reserved",
-  "icon": "hardcorerevival-icon.png",
+  "license": "${license}",
+  "icon": "${mod_id}.png",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.blay09.mods.hardcorerevival.FabricHardcoreRevival"
+      "net.blay09.mods.hardcorerevival.fabric.FabricHardcoreRevival"
     ],
     "client": [
-      "net.blay09.mods.hardcorerevival.client.FabricHardcoreRevivalClient"
-    ],
-    "modmenu": [
-      "net.blay09.mods.hardcorerevival.compat.ModMenuIntegration"
+      "net.blay09.mods.hardcorerevival.fabric.client.FabricHardcoreRevivalClient"
     ]
   },
   "mixins": [
-    "hardcorerevival.mixins.json"
+    "hardcorerevival.mixins.json",
+    "hardcorerevival.fabric.mixins.json"
   ],
+
   "depends": {
-    "balm-fabric": ">=7.0.0",
-    "fabricloader": ">=0.14.21",
-    "fabric": "*",
-    "minecraft": ">=1.20",
-    "java": ">=17"
+    "fabricloader": ">=${fabric_loader_version}",
+    "fabric-api": "*",
+    "balm-fabric": "*",
+    "minecraft": ">=${minimum_minecraft_version}",
+    "java": ">=${java_version}"
   },
   "suggests": {
   },
