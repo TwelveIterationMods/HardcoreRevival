@@ -1,1 +1,1 @@
-- Updated to Minecraft 1.21.6
+- Fixed labels not rendering on knockout screen
