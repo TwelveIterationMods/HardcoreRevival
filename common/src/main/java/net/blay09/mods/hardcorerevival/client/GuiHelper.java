@@ -18,21 +18,21 @@ public class GuiHelper {
         var poseStack = guiGraphics.pose();
         poseStack.pushMatrix();
         poseStack.scale(2f, 2f);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, I18n.get("gui.hardcorerevival.knocked_out"), width / 2 / 2, 30, 16777215);
+        guiGraphics.drawCenteredString(Minecraft.getInstance().font, I18n.get("gui.hardcorerevival.knocked_out"), width / 2 / 2, 30, 0xFFFFFFFF);
         poseStack.popMatrix();
     }
 
     public static void renderDeathTimer(GuiGraphics guiGraphics, int width, int height, boolean beingRescued) {
         Font font = Minecraft.getInstance().font;
         if (beingRescued) {
-            guiGraphics.drawCenteredString(font, I18n.get("gui.hardcorerevival.being_rescued"), width / 2, height / 2 + 10, 16777215);
+            guiGraphics.drawCenteredString(font, I18n.get("gui.hardcorerevival.being_rescued"), width / 2, height / 2 + 10, 0xFFFFFFFF);
         } else {
             int maxTicksUntilDeath = HardcoreRevivalConfig.getActive().secondsUntilDeath * 20;
             if (maxTicksUntilDeath > 0) {
                 int deathSecondsLeft = Math.max(0, (maxTicksUntilDeath - PlayerHardcoreRevivalManager.getKnockoutTicksPassed(Minecraft.getInstance().player)) / 20);
-                guiGraphics.drawCenteredString(font, I18n.get("gui.hardcorerevival.rescue_time_left", deathSecondsLeft), width / 2, height / 2 + 10, 16777215);
+                guiGraphics.drawCenteredString(font, I18n.get("gui.hardcorerevival.rescue_time_left", deathSecondsLeft), width / 2, height / 2 + 10, 0xFFFFFFFF);
             } else {
-                guiGraphics.drawCenteredString(font, I18n.get("gui.hardcorerevival.wait_for_rescue"), width / 2, height / 2 + 10, 16777215);
+                guiGraphics.drawCenteredString(font, I18n.get("gui.hardcorerevival.wait_for_rescue"), width / 2, height / 2 + 10, 0xFFFFFFFF);
             }
         }
     }
