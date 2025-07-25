@@ -19,7 +19,6 @@ public class KnockoutRestrictionHandler {
     public static void initialize() {
         Balm.getEvents().onEvent(UseBlockEvent.class, KnockoutRestrictionHandler::onUseBlock, EventPriority.Highest);
         Balm.getEvents().onEvent(UseItemEvent.class, KnockoutRestrictionHandler::onUseItem, EventPriority.Highest);
-        Balm.getEvents().onEvent(TossItemEvent.class, KnockoutRestrictionHandler::onTossItem, EventPriority.Highest);
         Balm.getEvents().onEvent(PlayerAttackEvent.class, KnockoutRestrictionHandler::onAttack, EventPriority.Highest);
         Balm.getEvents().onEvent(DigSpeedEvent.class, KnockoutRestrictionHandler::onDigSpeed, EventPriority.Highest);
         Balm.getEvents().onEvent(LivingHealEvent.class, KnockoutRestrictionHandler::onHeal);
@@ -65,18 +64,6 @@ public class KnockoutRestrictionHandler {
         }
     }
 
-    public static void onTossItem(TossItemEvent event) {
-        Player player = event.getPlayer();
-        if (HardcoreRevival.getRevivalData(player).isKnockedOut()) {
-            if (!mayTossItemKnockedOut(event.getItemStack())) {
-                // We try to suppress the drop on the client too, but if that failed for some reason, just try to revert the action
-                if (player.addItem(event.getItemStack())) {
-                    event.setCanceled(true);
-                }
-            }
-        }
-    }
-
     public static void onAttack(PlayerAttackEvent event) {
         Player player = event.getPlayer();
         if (player != null && HardcoreRevival.getRevivalData(player).isKnockedOut()) {
@@ -99,7 +86,7 @@ public class KnockoutRestrictionHandler {
         return itemStack.is(ModItemTags.ALLOW_USE_WHILE_KNOCKED_OUT);
     }
 
-    private static boolean mayTossItemKnockedOut(ItemStack itemStack) {
+    public static boolean mayTossItemKnockedOut(ItemStack itemStack) {
         return itemStack.is(ModItemTags.ALLOW_TOSS_WHILE_KNOCKED_OUT);
     }
 

@@ -7,12 +7,13 @@
   "mixins": [
     "EntityMixin",
     "PlayerMixin",
-    "ServerPlayNetHandlerMixin",
+    "ServerGamePacketListenerImplMixin",
     "ServerPlayerAccessor",
     "LivingEntityMixin",
     "LivingEntityAccessor"
   ],
   "client": [
+    "LocalPlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

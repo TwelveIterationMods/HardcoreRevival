@@ -6,13 +6,14 @@
   "mixins": [
     "EntityMixin",
     "PlayerMixin",
-    "ServerPlayNetHandlerMixin",
+    "ServerGamePacketListenerImplMixin",
     "ServerPlayerAccessor",
     "LivingEntityAccessor",
     "LivingEntityMixin",
     "FabricPlayerMixin"
   ],
   "client": [
+    "LocalPlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,9 +1,11 @@
 package net.blay09.mods.hardcorerevival;
 
+import net.blay09.mods.hardcorerevival.handler.KnockoutRestrictionHandler;
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 public class MixinHooks {
 
@@ -19,5 +21,13 @@ public class MixinHooks {
         float yaw = packet.getYRot(player.getYRot());
         float pitch = packet.getXRot(player.getXRot());
         player.absMoveTo(player.getX(), player.getY(), player.getZ(), yaw, pitch);
+    }
+
+    public static boolean shouldCancelToss(Player player, ItemStack itemStack) {
+        return HardcoreRevival.getRevivalData(player).isKnockedOut() && !KnockoutRestrictionHandler.mayTossItemKnockedOut(itemStack);
+    }
+
+    public static boolean shouldCancelTossAll(Player player) {
+        return HardcoreRevival.getRevivalData(player).isKnockedOut();
     }
 }
