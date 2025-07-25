@@ -28,10 +28,10 @@ public class MixinHooks {
     }
 
     public static boolean shouldCancelToss(Player player, ItemStack itemStack) {
-        return HardcoreRevival.getRevivalData(player).isKnockedOut() && !KnockoutRestrictionHandler.mayTossItemKnockedOut(itemStack);
+        return PlayerHardcoreRevivalManager.isKnockedOut(player) && !KnockoutRestrictionHandler.mayTossItemKnockedOut(itemStack);
     }
 
     public static boolean shouldCancelTossAll(Player player) {
-        return HardcoreRevival.getRevivalData(player).isKnockedOut();
+        return PlayerHardcoreRevivalManager.isKnockedOut(player);
     }
 }
