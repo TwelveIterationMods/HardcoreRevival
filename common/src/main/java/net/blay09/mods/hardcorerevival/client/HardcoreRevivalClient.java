@@ -6,7 +6,6 @@ import net.blay09.mods.balm.api.event.TickPhase;
 import net.blay09.mods.balm.api.event.TickType;
 import net.blay09.mods.balm.api.event.client.FovUpdateEvent;
 import net.blay09.mods.balm.api.event.client.GuiDrawEvent;
-import net.blay09.mods.balm.api.event.client.KeyInputEvent;
 import net.blay09.mods.balm.api.event.client.OpenScreenEvent;
 import net.blay09.mods.hardcorerevival.PlayerHardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
@@ -32,7 +31,6 @@ public class HardcoreRevivalClient {
     public static void initialize() {
         Balm.getEvents().onEvent(OpenScreenEvent.class, HardcoreRevivalClient::onOpenScreen);
         Balm.getEvents().onEvent(FovUpdateEvent.class, HardcoreRevivalClient::onFovUpdate);
-        Balm.getEvents().onEvent(KeyInputEvent.class, HardcoreRevivalClient::onKeyInput);
         Balm.getEvents().onEvent(GuiDrawEvent.Pre.class, HardcoreRevivalClient::onGuiDrawPre);
         Balm.getEvents().onEvent(GuiDrawEvent.Post.class, HardcoreRevivalClient::onGuiDrawPost);
 
@@ -134,15 +132,6 @@ public class HardcoreRevivalClient {
             }
         } else if (event.getElement() == GuiDrawEvent.Element.HEALTH && isKnockedOut()) {
             RenderSystem.setShaderColor(1f, 1f, 1, 1f);
-        }
-    }
-
-    public static void onKeyInput(KeyInputEvent event) {
-        Minecraft mc = Minecraft.getInstance();
-        // Suppress item drops and movement when knocked out
-        if (isKnockedOut()) {
-            //noinspection StatementWithEmptyBody
-            while (mc.options.keyDrop.consumeClick()) ;
         }
     }
 
