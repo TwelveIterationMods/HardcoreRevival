@@ -15,7 +15,7 @@ public class LocalPlayerMixin {
         final var player = (Player) (Object) this;
         if (all && MixinHooks.shouldCancelTossAll(player)) {
             cir.setReturnValue(false);
-        } else if (!all && MixinHooks.shouldCancelToss(player, player.getInventory().getSelected())) {
+        } else if (!all && MixinHooks.shouldCancelToss(player, player.getInventory().getSelectedItem())) {
             cir.setReturnValue(false);
         }
     }
