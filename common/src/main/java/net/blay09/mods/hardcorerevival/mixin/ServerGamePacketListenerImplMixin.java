@@ -31,7 +31,7 @@ public class ServerGamePacketListenerImplMixin {
                 }
                 break;
             case DROP_ITEM:
-                if (MixinHooks.shouldCancelToss(netHandler.player, netHandler.player.getInventory().getSelected())) {
+                if (MixinHooks.shouldCancelToss(netHandler.player, netHandler.player.getInventory().getSelectedItem())) {
                     ci.cancel();
                 }
                 break;
