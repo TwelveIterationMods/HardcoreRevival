@@ -9,7 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.blay09.mods.hardcorerevival.tag.ModBlockTags;
 import net.blay09.mods.hardcorerevival.tag.ModItemTags;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.server.players.NameAndId;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
@@ -37,12 +37,12 @@ public class KnockoutRestrictionHandler {
             return;
         }
 
-        final var server = player.getServer();
+        final var server = player.level().getServer();
         if (server != null && server.isSingleplayer()) {
             return;
         }
 
-        if (server != null && server.getPlayerList().isOp(player.getGameProfile())) {
+        if (server != null && server.getPlayerList().isOp(new NameAndId(player.getGameProfile()))) {
             return;
         }
 

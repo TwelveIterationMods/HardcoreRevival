@@ -65,7 +65,7 @@ public class HardcoreRevivalManager {
 
         // If enabled, show a death message
         if (player.level().getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES)) {
-            MinecraftServer server = player.getServer();
+            MinecraftServer server = player.level().getServer();
             if (server != null) {
                 Team team = player.getTeam();
                 if (team != null && team.getDeathMessageVisibility() != Team.Visibility.ALWAYS) {
@@ -133,7 +133,7 @@ public class HardcoreRevivalManager {
     public static void finishRescue(Player player) {
         Player rescueTarget = PlayerHardcoreRevivalManager.getRescueTarget(player);
         if (rescueTarget != null) {
-            MinecraftServer server = rescueTarget.getServer();
+            MinecraftServer server = rescueTarget.level().getServer();
             if (server != null) {
                 wakeup(rescueTarget);
 

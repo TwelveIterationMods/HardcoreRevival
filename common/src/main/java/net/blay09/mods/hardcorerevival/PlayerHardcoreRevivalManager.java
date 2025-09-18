@@ -10,7 +10,7 @@ public class PlayerHardcoreRevivalManager {
     private static final RevivalDataProvider inMemoryDataProvider = new InMemoryRevivalDataProvider();
 
     public static RevivalDataProvider getRevivalDataProvider(@Nullable Level world) {
-        return world == null || world.isClientSide ? inMemoryDataProvider : persistentDataProvider;
+        return world == null || world.isClientSide() ? inMemoryDataProvider : persistentDataProvider;
     }
 
     public static void setKnockedOut(Player player, boolean knockedOut) {

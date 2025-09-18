@@ -97,7 +97,7 @@ public class PersistentRevivalDataProvider implements RevivalDataProvider {
     @Override
     public void setRescueTarget(Player player, @Nullable Player rescueTarget) {
         if (rescueTarget != null) {
-            getRevivalData(player).store(RESCUE_TARGET, UUIDUtil.CODEC, rescueTarget.getGameProfile().getId());
+            getRevivalData(player).store(RESCUE_TARGET, UUIDUtil.CODEC, rescueTarget.getGameProfile().id());
         } else {
             getRevivalData(player).remove(RESCUE_TARGET);
         }
