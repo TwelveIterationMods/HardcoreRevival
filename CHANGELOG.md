@@ -1,1 +1,1 @@
-- Updated to Minecraft 1.21.10
+- Fixed Inventory Totem compatibility not loading due to typo
