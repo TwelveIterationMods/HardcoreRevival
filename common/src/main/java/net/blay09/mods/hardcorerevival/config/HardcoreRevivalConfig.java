@@ -81,6 +81,10 @@ public class HardcoreRevivalConfig {
     @NestedType(ResourceLocation.class)
     public Set<ResourceLocation> instantDeathSources = Set.of(ResourceLocation.withDefaultNamespace("lava"));
 
+    @Comment("The source entity types that kill a player instantly, without a K.O. period.")
+    @NestedType(ResourceLocation.class)
+    public Set<ResourceLocation> instantDeathEntityTypes = Set.of();
+
     public static HardcoreRevivalConfig getActive() {
         return Balm.getConfig().getActiveConfig(HardcoreRevivalConfig.class);
     }
