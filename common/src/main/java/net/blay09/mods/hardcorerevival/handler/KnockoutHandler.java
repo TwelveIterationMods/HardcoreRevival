@@ -8,6 +8,7 @@ import net.blay09.mods.hardcorerevival.PlayerHardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.api.PlayerAboutToKnockOutEvent;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
+import net.blay09.mods.hardcorerevival.tag.ModItemTags;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerPlayer;
@@ -63,7 +64,7 @@ public class KnockoutHandler {
     private static boolean holdsDeathProtectionItem(ServerPlayer player) {
         for (final var hand : InteractionHand.values()) {
             final var itemStack = player.getItemInHand(hand);
-            if (itemStack.is(Items.TOTEM_OF_UNDYING)) {
+            if (itemStack.is(ModItemTags.PASSTHROUGH_DEATH_WHEN_HELD)) {
                 return true;
             }
         }

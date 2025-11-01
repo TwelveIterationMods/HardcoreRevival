@@ -25,6 +25,9 @@
     "client": [
       "net.blay09.mods.hardcorerevival.fabric.client.FabricHardcoreRevivalClient"
     ],
+    "fabric-datagen": [
+      "net.blay09.mods.hardcorerevival.fabric.datagen.ModDataGenerator"
+    ],
     "modmenu": [
       "net.blay09.mods.hardcorerevival.fabric.compat.ModMenuIntegration"
     ]
