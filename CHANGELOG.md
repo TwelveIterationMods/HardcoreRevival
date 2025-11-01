@@ -1,6 +1,2 @@
-- Added some tags to allow specific items to be interacted with while knocked out
-  - Added `hardcorerevival:allow_use_while_knocked_out` item tag
-  - Added `hardcorerevival:allow_attack_while_knocked_out` item tag
-  - Added `hardcorerevival:allow_toss_while_knocked_out` item tag
-  - Added `hardcorerevival:allow_use_while_knocked_out` block tag (only applies if hand is empty)
-  - Added `hardcorerevival:allow_break_while_knocked_out` block tag
+- Added `instantDeathEntityTypes` option, similar to `instantDeathSources` but for entity types instead of damage types
+- Added `hardcorerevival:passthrough_death_when_held` item tag that can be applied to custom undying tokens until a proper fix for them is in place
