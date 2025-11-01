@@ -45,6 +45,8 @@
   "hardcorerevival.configuration.disableInLonelyMultiplayer.tooltip": "If true, Hardcore Revival will not be active when playing alone in multiplayer.",
   "hardcorerevival.configuration.instantDeathSources": "Instant Death Sources",
   "hardcorerevival.configuration.instantDeathSources.tooltip": "The damage sources that kill a player instantly, without a K.O. period.",
+  "hardcorerevival.configuration.instantDeathEntityTypes": "Instant Death Entity Types",
+  "hardcorerevival.configuration.instantDeathEntityTypes.tooltip": "The source entity types that kill a player instantly, without a K.O. period.",
   "hardcorerevival.configuration.disableInSingleplayer": "Disable in Singleplayer",
   "hardcorerevival.configuration.disableInSingleplayer.tooltip": "If true, Hardcore Revival will not be active in singleplayer.",
   "hardcorerevival.configuration.allowAcceptingFate": "Allow Accepting Fate",

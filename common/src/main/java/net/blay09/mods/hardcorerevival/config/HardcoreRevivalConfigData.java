@@ -50,7 +50,6 @@ public class HardcoreRevivalConfigData implements BalmConfigData {
     public boolean allowPistols = false;
 
     @Comment("Set to false to remove the Accept your Fate button and force players to wait out the timer.")
-    @Synced
     public boolean allowAcceptingFate = true;
 
     @Comment("If true, Hardcore Revival will not be active in singleplayer.")
@@ -62,4 +61,8 @@ public class HardcoreRevivalConfigData implements BalmConfigData {
     @Comment("The damage sources that kill a player instantly, without a K.O. period.")
     @ExpectedType(String.class)
     public List<String> instantDeathSources = Lists.newArrayList("minecraft:lava");
+
+    @Comment("The source entity types that kill a player instantly, without a K.O. period.")
+    @ExpectedType(String.class)
+    public List<String> instantDeathEntityTypes = Lists.newArrayList();
 }

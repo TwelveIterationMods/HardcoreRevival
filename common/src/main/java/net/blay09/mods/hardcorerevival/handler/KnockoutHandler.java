@@ -8,6 +8,7 @@ import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.mixin.LivingEntityAccessor;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
@@ -69,6 +70,14 @@ public class KnockoutHandler {
         final var damageSourceId = player.getServer().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getKey(damageSource.type());
         if (!canDamageSourceKnockout || HardcoreRevivalConfig.getActive().instantDeathSources.contains(Objects.toString(damageSourceId))) {
             return false;
+        }
+
+        final var attacker = damageSource.getEntity();
+        if (attacker != null) {
+            final var entityTypeId = BuiltInRegistries.ENTITY_TYPE.getKey(attacker.getType());
+            if (HardcoreRevivalConfig.getActive().instantDeathEntityTypes.contains(Objects.toString(entityTypeId))) {
+                return false;
+            }
         }
 
         if (HardcoreRevivalConfig.getActive().disableInSingleplayer && server.isSingleplayer() && server.getPlayerCount() == 1) {
