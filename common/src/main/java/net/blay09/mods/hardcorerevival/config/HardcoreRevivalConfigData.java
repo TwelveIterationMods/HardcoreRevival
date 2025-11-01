@@ -76,4 +76,8 @@ public class HardcoreRevivalConfigData implements BalmConfigData {
     @Comment("The damage sources that kill a player instantly, without a K.O. period.")
     @ExpectedType(ResourceLocation.class)
     public Set<ResourceLocation> instantDeathSources = Set.of(ResourceLocation.withDefaultNamespace("lava"));
+
+    @Comment("The source entity types that kill a player instantly, without a K.O. period.")
+    @ExpectedType(ResourceLocation.class)
+    public Set<ResourceLocation> instantDeathEntityTypes = Set.of();
 }
