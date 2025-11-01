@@ -1,1 +1,1 @@
-- Fixed Inventory Totem compatibility not loading due to typo
+- Added `instantDeathEntityTypes` option, similar to `instantDeathSources` but for entity types instead of damage types
