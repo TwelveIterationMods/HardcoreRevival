@@ -1,6 +1,6 @@
 package net.blay09.mods.hardcorerevival;
 
-import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.Balm;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
@@ -18,7 +18,7 @@ public class PersistentRevivalDataProvider implements RevivalDataProvider {
     private static final String RESCUE_TARGET = "RescueTarget";
 
     private static CompoundTag getRevivalData(Player player) {
-        CompoundTag persistedData = Balm.getHooks().getPersistentData(player);
+        CompoundTag persistedData = Balm.hooks().getPersistentData(player);
         CompoundTag compound = persistedData.getCompoundOrEmpty(TAG_NAME);
         persistedData.put(TAG_NAME, compound);
         return compound;

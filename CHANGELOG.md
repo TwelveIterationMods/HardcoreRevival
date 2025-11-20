@@ -1,1 +1,1 @@
-- Added `instantDeathEntityTypes` option, similar to `instantDeathSources` but for entity types instead of damage types
+- Updated to Minecraft 1.21.11

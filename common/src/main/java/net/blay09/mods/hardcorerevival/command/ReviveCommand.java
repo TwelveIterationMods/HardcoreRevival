@@ -3,20 +3,28 @@ package net.blay09.mods.hardcorerevival.command;
 import com.google.common.collect.ImmutableList;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
+import net.blay09.mods.balm.commands.BalmCommands;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.Collection;
 
 public class ReviveCommand {
+
+    private static final Identifier PERMISSION_REVIVE = Identifier.fromNamespaceAndPath("hardcorerevival", "command.hardcorerevival.revive");
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+        BalmCommands.registerPermission(PERMISSION_REVIVE, Permissions.COMMANDS_GAMEMASTER);
+
         dispatcher.register(Commands.literal("revive")
-                .requires((source) -> source.hasPermission(2))
+                .requires(BalmCommands.requirePermission(PERMISSION_REVIVE))
                 .executes((source) -> reviveEntities(source.getSource(), ImmutableList.of(source.getSource().getEntityOrException()), false))
                 .then(Commands.argument("targets", EntityArgument.entities())
                         .executes((source) -> reviveEntities(source.getSource(), EntityArgument.getEntities(source, "targets"), false))

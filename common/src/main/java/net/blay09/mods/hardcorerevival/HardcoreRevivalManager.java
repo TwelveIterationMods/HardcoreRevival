@@ -1,6 +1,6 @@
 package net.blay09.mods.hardcorerevival;
 
-import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.hardcorerevival.api.PlayerKnockedOutEvent;
 import net.blay09.mods.hardcorerevival.api.PlayerRescuedEvent;
 import net.blay09.mods.hardcorerevival.api.PlayerRevivedEvent;
@@ -12,7 +12,7 @@ import net.blay09.mods.hardcorerevival.stats.ModStats;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -21,13 +21,13 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.scores.Team;
 import org.jetbrains.annotations.Nullable;
 
 public class HardcoreRevivalManager {
     public static final ResourceKey<DamageType> NOT_RESCUED_IN_TIME = ResourceKey.create(Registries.DAMAGE_TYPE,
-            ResourceLocation.fromNamespaceAndPath(HardcoreRevival.MOD_ID, "not_rescued_in_time"));
+            Identifier.fromNamespaceAndPath(HardcoreRevival.MOD_ID, "not_rescued_in_time"));
 
     public static void knockout(ServerPlayer player, DamageSource source) {
         if (PlayerHardcoreRevivalManager.isKnockedOut(player)) {
@@ -61,10 +61,10 @@ public class HardcoreRevivalManager {
         }
 
         // Fire event for compatibility addons
-        Balm.getEvents().fireEvent(new PlayerKnockedOutEvent(player, source));
+        PlayerKnockedOutEvent.EVENT.invoker().accept(new PlayerKnockedOutEvent(player, source));
 
         // If enabled, show a death message
-        if (player.level().getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES)) {
+        if (player.level().getGameRules().get(GameRules.SHOW_DEATH_MESSAGES)) {
             MinecraftServer server = player.level().getServer();
             if (server != null) {
                 Team team = player.getTeam();
@@ -100,7 +100,7 @@ public class HardcoreRevivalManager {
 
             for (String effectString : config.rescueRespawnEffects) {
                 String[] parts = effectString.split("\\|");
-                ResourceLocation registryName = ResourceLocation.tryParse(parts[0]);
+                Identifier registryName = Identifier.tryParse(parts[0]);
                 if (registryName != null) {
                     final var holder = BuiltInRegistries.MOB_EFFECT.get(registryName);
                     if (holder.isPresent()) {
@@ -116,7 +116,7 @@ public class HardcoreRevivalManager {
             }
         }
 
-        Balm.getEvents().fireEvent(new PlayerRevivedEvent(player));
+        PlayerRevivedEvent.EVENT.invoker().accept(new PlayerRevivedEvent(player));
     }
 
     private static int tryParseInt(@Nullable String text, int defaultVal) {
@@ -137,17 +137,17 @@ public class HardcoreRevivalManager {
             if (server != null) {
                 wakeup(rescueTarget);
 
-                Balm.getNetworking().sendTo(player, new RevivalProgressMessage(rescueTarget.getId(), -1f));
-                Balm.getNetworking().sendTo(rescueTarget, new RevivalSuccessMessage(rescueTarget.getId()));
-                Balm.getNetworking().sendToTracking(rescueTarget, new RevivalSuccessMessage(rescueTarget.getId()));
+                Balm.networking().sendTo(player, new RevivalProgressMessage(rescueTarget.getId(), -1f));
+                Balm.networking().sendTo(rescueTarget, new RevivalSuccessMessage(rescueTarget.getId()));
+                Balm.networking().sendToTracking(rescueTarget, new RevivalSuccessMessage(rescueTarget.getId()));
 
                 PlayerHardcoreRevivalManager.setRescueTarget(player, null);
 
-                Balm.getEvents().fireEvent(new PlayerRescuedEvent(rescueTarget, player));
+                PlayerRescuedEvent.EVENT.invoker().accept(new PlayerRescuedEvent(rescueTarget, player));
             }
         }
 
-        Balm.getHooks().setForcedPose(player, null);
+        Balm.hooks().setForcedPose(player, null);
     }
 
     public static void abortRescue(Player player) {
@@ -155,10 +155,10 @@ public class HardcoreRevivalManager {
         if (rescueTarget != null) {
             PlayerHardcoreRevivalManager.setRescueTime(player, 0);
             PlayerHardcoreRevivalManager.setRescueTarget(player, null);
-            Balm.getNetworking().sendTo(player, new RevivalProgressMessage(-1, -1));
+            Balm.networking().sendTo(player, new RevivalProgressMessage(-1, -1));
             KnockoutSyncHandler.sendHardcoreRevivalData(rescueTarget, rescueTarget);
 
-            Balm.getHooks().setForcedPose(player, null);
+            Balm.hooks().setForcedPose(player, null);
         }
     }
 
@@ -182,7 +182,7 @@ public class HardcoreRevivalManager {
             player.setGlowingTag(PlayerHardcoreRevivalManager.isKnockedOut(player));
         }
 
-        Balm.getHooks().setForcedPose(player, PlayerHardcoreRevivalManager.isKnockedOut(player) ? Pose.FALL_FLYING : null);
+        Balm.hooks().setForcedPose(player, PlayerHardcoreRevivalManager.isKnockedOut(player) ? Pose.FALL_FLYING : null);
 
         KnockoutSyncHandler.sendHardcoreRevivalDataToWatching(player);
     }
@@ -190,10 +190,10 @@ public class HardcoreRevivalManager {
     public static void startRescue(Player player, Player target) {
         PlayerHardcoreRevivalManager.setRescueTarget(player, target);
         PlayerHardcoreRevivalManager.setRescueTime(player, 0);
-        Balm.getNetworking().sendTo(player, new RevivalProgressMessage(target.getId(), 0.1f));
+        Balm.networking().sendTo(player, new RevivalProgressMessage(target.getId(), 0.1f));
         KnockoutSyncHandler.sendHardcoreRevivalData(target, target, true);
 
-        Balm.getHooks().setForcedPose(player, Pose.CROUCHING);
+        Balm.hooks().setForcedPose(player, Pose.CROUCHING);
     }
 
     public static boolean isRescuing(Player player) {

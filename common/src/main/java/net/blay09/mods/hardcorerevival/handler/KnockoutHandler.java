@@ -1,8 +1,10 @@
 package net.blay09.mods.hardcorerevival.handler;
 
 
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.event.*;
+import net.blay09.mods.balm.Balm;
+import net.blay09.mods.balm.platform.event.callback.LivingEntityCallback;
+import net.blay09.mods.balm.platform.event.callback.ServerPlayerCallback;
+import net.blay09.mods.balm.platform.event.callback.ServerTickCallback;
 import net.blay09.mods.hardcorerevival.PlayerHardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.api.PlayerAboutToKnockOutEvent;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
@@ -16,6 +18,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
 
@@ -23,38 +26,36 @@ import net.minecraft.world.entity.Pose;
 public class KnockoutHandler {
 
     public static void initialize() {
-        Balm.getEvents().onEvent(LivingDamageEvent.class, KnockoutHandler::onPlayerDamage);
-        Balm.getEvents().onEvent(PlayerRespawnEvent.class, KnockoutHandler::onPlayerRespawn);
+        LivingEntityCallback.Damage.EVENT.register(KnockoutHandler::onPlayerDamage);
+        ServerPlayerCallback.Respawn.EVENT.register(KnockoutHandler::onPlayerRespawn);
 
-        Balm.getEvents().onTickEvent(TickType.ServerPlayer, TickPhase.Start, KnockoutHandler::onPlayerTick);
+        ServerTickCallback.ServerPlayerTick.BEFORE.register(KnockoutHandler::onPlayerTick);
     }
 
-    public static void onPlayerDamage(LivingDamageEvent event) {
-        if (event.getEntity() instanceof ServerPlayer player) {
-            DamageSource damageSource = event.getDamageSource();
-
+    public static float onPlayerDamage(LivingEntity entity, DamageSource damageSource, float damageAmount) {
+        if (entity instanceof ServerPlayer player) {
             if (PlayerHardcoreRevivalManager.isKnockedOut(player)) {
                 Entity attacker = damageSource.getEntity();
                 if (attacker instanceof Mob mob) {
                     mob.setTarget(null);
                 }
-                if (!damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && !damageSource.is(HardcoreRevivalManager.NOT_RESCUED_IN_TIME)) {
-                    event.setCanceled(true);
-                }
-                return;
+                return !damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)
+                        && !damageSource.is(HardcoreRevivalManager.NOT_RESCUED_IN_TIME) ? 0f : damageAmount;
             }
 
-            boolean wouldDie = player.getHealth() - event.getDamageAmount() <= 0f;
+            boolean wouldDie = player.getHealth() - damageAmount <= 0f;
             if (wouldDie && isKnockoutEnabledFor(player, damageSource)) {
                 final var aboutToKnockOutEvent = new PlayerAboutToKnockOutEvent(player, damageSource);
-                Balm.getEvents().fireEvent(aboutToKnockOutEvent);
+                PlayerAboutToKnockOutEvent.EVENT.invoker().accept(aboutToKnockOutEvent);
 
                 if (!aboutToKnockOutEvent.isCanceled()) {
-                    event.setDamageAmount(Math.min(event.getDamageAmount(), Math.max(0f, player.getHealth() - 1f)));
                     HardcoreRevivalManager.knockout(player, damageSource);
+                    return Math.min(damageAmount, Math.max(0f, player.getHealth() - 1f));
                 }
             }
         }
+
+        return damageAmount;
     }
 
     private static boolean holdsDeathProtectionItem(ServerPlayer player) {
@@ -111,7 +112,7 @@ public class KnockoutHandler {
             PlayerHardcoreRevivalManager.setKnockoutTicksPassed(player, PlayerHardcoreRevivalManager.getKnockoutTicksPassed(player) + 1);
 
             if (player.tickCount % 20 == 0) {
-                Balm.getHooks().setForcedPose(player, PlayerHardcoreRevivalManager.isKnockedOut(player) ? Pose.FALL_FLYING : null);
+                Balm.hooks().setForcedPose(player, PlayerHardcoreRevivalManager.isKnockedOut(player) ? Pose.FALL_FLYING : null);
             }
 
             int maxTicksUntilDeath = HardcoreRevivalConfig.getActive().secondsUntilDeath * 20;
@@ -121,8 +122,8 @@ public class KnockoutHandler {
         }
     }
 
-    public static void onPlayerRespawn(PlayerRespawnEvent event) {
-        HardcoreRevivalManager.reset(event.getNewPlayer());
+    public static void onPlayerRespawn(ServerPlayer oldPlayer, ServerPlayer newPlayer) {
+        HardcoreRevivalManager.reset(newPlayer);
     }
 
 

@@ -1,12 +1,12 @@
 package net.blay09.mods.hardcorerevival.config;
 
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.config.reflection.Comment;
-import net.blay09.mods.balm.api.config.reflection.Config;
-import net.blay09.mods.balm.api.config.reflection.NestedType;
-import net.blay09.mods.balm.api.config.reflection.Synced;
+import net.blay09.mods.balm.Balm;
+import net.blay09.mods.balm.platform.config.reflection.Comment;
+import net.blay09.mods.balm.platform.config.reflection.Config;
+import net.blay09.mods.balm.platform.config.reflection.NestedType;
+import net.blay09.mods.balm.platform.config.reflection.Synced;
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 import java.util.Set;
@@ -78,18 +78,18 @@ public class HardcoreRevivalConfig {
     public boolean disableInLonelyMultiplayer = false;
 
     @Comment("The damage sources that kill a player instantly, without a K.O. period.")
-    @NestedType(ResourceLocation.class)
-    public Set<ResourceLocation> instantDeathSources = Set.of(ResourceLocation.withDefaultNamespace("lava"));
+    @NestedType(Identifier.class)
+    public Set<Identifier> instantDeathSources = Set.of(Identifier.withDefaultNamespace("lava"));
 
     @Comment("The source entity types that kill a player instantly, without a K.O. period.")
-    @NestedType(ResourceLocation.class)
-    public Set<ResourceLocation> instantDeathEntityTypes = Set.of();
+    @NestedType(Identifier.class)
+    public Set<Identifier> instantDeathEntityTypes = Set.of();
 
     public static HardcoreRevivalConfig getActive() {
-        return Balm.getConfig().getActiveConfig(HardcoreRevivalConfig.class);
+        return Balm.config().getActiveConfig(HardcoreRevivalConfig.class);
     }
 
     public static void initialize() {
-        Balm.getConfig().registerConfig(HardcoreRevivalConfig.class);
+        Balm.config().registerConfig(HardcoreRevivalConfig.class);
     }
 }

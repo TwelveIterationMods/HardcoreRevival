@@ -1,23 +1,39 @@
 package net.blay09.mods.hardcorerevival.api;
 
-import net.blay09.mods.balm.api.event.BalmEvent;
+import net.blay09.mods.balm.platform.event.BidirectionalEventMapper;
+import net.blay09.mods.balm.platform.event.EventMapper;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 
-public class PlayerAboutToKnockOutEvent extends BalmEvent {
-	private final Player player;
-	private final DamageSource source;
+import java.util.function.Consumer;
 
-	public PlayerAboutToKnockOutEvent(Player player, DamageSource source) {
-		this.player = player;
-		this.source = source;
-	}
+public final class PlayerAboutToKnockOutEvent {
 
-	public Player getPlayer() {
-		return player;
-	}
+    public static final BidirectionalEventMapper<Consumer<PlayerAboutToKnockOutEvent>> EVENT = EventMapper.createBound(PlayerAboutToKnockOutEvent.class);
+    private final Player player;
+    private final DamageSource source;
 
-	public DamageSource getSource() {
-		return source;
-	}
+    public PlayerAboutToKnockOutEvent(Player player, DamageSource source) {
+        this.player = player;
+        this.source = source;
+    }
+
+    private boolean canceled;
+
+    public void setCanceled(boolean canceled) {
+        this.canceled = canceled;
+    }
+
+    public boolean isCanceled() {
+        return canceled;
+    }
+
+    public Player player() {
+        return player;
+    }
+
+    public DamageSource source() {
+        return source;
+    }
+
 }

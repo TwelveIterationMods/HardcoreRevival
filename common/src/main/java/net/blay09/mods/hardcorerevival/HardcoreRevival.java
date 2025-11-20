@@ -1,13 +1,14 @@
 package net.blay09.mods.hardcorerevival;
 
-import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.Balm;
+import net.blay09.mods.balm.core.BalmRegistrars;
 import net.blay09.mods.hardcorerevival.command.ReviveCommand;
 import net.blay09.mods.hardcorerevival.compat.Compat;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.handler.*;
 import net.blay09.mods.hardcorerevival.network.ModNetworking;
 import net.blay09.mods.hardcorerevival.stats.ModStats;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,13 +17,13 @@ public class HardcoreRevival {
 
     public static final Logger logger = LogManager.getLogger();
 
-    public static void initialize() {
+    public static void initialize(BalmRegistrars registrars) {
         HardcoreRevivalConfig.initialize();
 
-        ModNetworking.initialize(Balm.getNetworking());
-        ModStats.initialize(Balm.getStats());
+        ModNetworking.initialize(Balm.networking());
+        registrars.customStats(ModStats::initialize);
 
-        Balm.getCommands().register(ReviveCommand::register);
+        Balm.commands().register(ReviveCommand::register);
 
         KnockoutHandler.initialize();
         KnockoutSyncHandler.initialize();
@@ -34,7 +35,7 @@ public class HardcoreRevival {
         Balm.initializeIfLoaded(Compat.INVENTORY_TOTEM, "net.blay09.mods.hardcorerevival.compat.InventoryTotemAddon");
     }
 
-    public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
 }

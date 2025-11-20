@@ -1,25 +1,19 @@
 package net.blay09.mods.hardcorerevival.handler;
 
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.event.PlayerLoginEvent;
-import net.blay09.mods.balm.api.event.PlayerLogoutEvent;
+import net.blay09.mods.balm.platform.event.callback.ServerPlayerCallback;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.PlayerHardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
-
 
 public class LoginLogoutHandler {
 
     public static void initialize() {
-        Balm.getEvents().onEvent(PlayerLoginEvent.class, LoginLogoutHandler::onPlayerLogin);
-        Balm.getEvents().onEvent(PlayerLogoutEvent.class, LoginLogoutHandler::onPlayerLogout);
+        ServerPlayerCallback.Login.EVENT.register(LoginLogoutHandler::onPlayerLogin);
+        ServerPlayerCallback.Logout.EVENT.register(LoginLogoutHandler::onPlayerLogout);
     }
 
-    public static void onPlayerLogin(PlayerLoginEvent event) {
-        ServerPlayer player = event.getPlayer();
-
+    public static void onPlayerLogin(ServerPlayer player) {
         if (HardcoreRevivalConfig.getActive().continueTimerWhileOffline && PlayerHardcoreRevivalManager.isKnockedOut(player)) {
             final var now = System.currentTimeMillis();
             final var then = PlayerHardcoreRevivalManager.getLastLogoutAt(player);
@@ -32,8 +26,7 @@ public class LoginLogoutHandler {
         HardcoreRevivalManager.updateKnockoutEffects(player);
     }
 
-    public static void onPlayerLogout(PlayerLogoutEvent event) {
-        Player player = event.getPlayer();
+    public static void onPlayerLogout(ServerPlayer player) {
         PlayerHardcoreRevivalManager.setLastLogoutAt(player, System.currentTimeMillis());
     }
 
