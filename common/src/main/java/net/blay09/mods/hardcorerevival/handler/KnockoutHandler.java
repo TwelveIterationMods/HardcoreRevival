@@ -26,7 +26,7 @@ import net.minecraft.world.entity.Pose;
 public class KnockoutHandler {
 
     public static void initialize() {
-        LivingEntityCallback.Damage.EVENT.register(KnockoutHandler::onPlayerDamage);
+        LivingEntityCallback.Damage.Before.EVENT.register(KnockoutHandler::onPlayerDamage);
         ServerPlayerCallback.Respawn.EVENT.register(KnockoutHandler::onPlayerRespawn);
 
         ServerTickCallback.ServerPlayerTick.BEFORE.register(KnockoutHandler::onPlayerTick);
@@ -116,7 +116,7 @@ public class KnockoutHandler {
             }
 
             int maxTicksUntilDeath = HardcoreRevivalConfig.getActive().secondsUntilDeath * 20;
-            if (maxTicksUntilDeath > 0 && PlayerHardcoreRevivalManager.getKnockoutTicksPassed(player) >= maxTicksUntilDeath && player.hasClientLoaded()) {
+            if (maxTicksUntilDeath > 0 && PlayerHardcoreRevivalManager.getKnockoutTicksPassed(player) >= maxTicksUntilDeath) {
                 HardcoreRevivalManager.notRescuedInTime(player);
             }
         }

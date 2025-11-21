@@ -1,7 +1,6 @@
 package net.blay09.mods.hardcorerevival.handler;
 
 import com.mojang.brigadier.ParseResults;
-import net.blay09.mods.balm.platform.event.EventHandling;
 import net.blay09.mods.balm.platform.event.EventPhases;
 import net.blay09.mods.balm.platform.event.callback.*;
 import net.blay09.mods.hardcorerevival.PlayerHardcoreRevivalManager;
@@ -30,37 +29,37 @@ public class KnockoutRestrictionHandler {
     public static void initialize() {
         BlockCallback.Use.EVENT.register(EventPhases.HIGHEST, KnockoutRestrictionHandler::onUseBlock);
         ItemCallback.Use.EVENT.register(EventPhases.HIGHEST, KnockoutRestrictionHandler::onUseItem);
-        PlayerCallback.Attack.EVENT.register(EventPhases.HIGHEST, KnockoutRestrictionHandler::onAttack);
+        PlayerCallback.Attack.Before.EVENT.register(EventPhases.HIGHEST, KnockoutRestrictionHandler::onAttack);
         BlockCallback.DigSpeed.EVENT.register(EventPhases.HIGHEST, KnockoutRestrictionHandler::onDigSpeed);
-        LivingEntityCallback.Heal.EVENT.register(KnockoutRestrictionHandler::onHeal);
-        CommandCallback.EVENT.register(KnockoutRestrictionHandler::onCommand);
+        LivingEntityCallback.Heal.Before.EVENT.register(KnockoutRestrictionHandler::onHeal);
+        CommandCallback.Before.EVENT.register(KnockoutRestrictionHandler::onCommand);
     }
 
-    public static EventHandling onCommand(ParseResults<CommandSourceStack> parseResults) {
+    public static boolean onCommand(ParseResults<CommandSourceStack> parseResults) {
         if (HardcoreRevivalConfig.getActive().allowCommands) {
-            return EventHandling.RESUME;
+            return true;
         }
 
         final var player = parseResults.getContext().getSource().getPlayer();
         if (player == null) {
-            return EventHandling.RESUME;
+            return true;
         }
 
         final var server = player.level().getServer();
         if (server != null && server.isSingleplayer()) {
-            return EventHandling.RESUME;
+            return true;
         }
 
         if (server != null && server.getPlayerList().isOp(new NameAndId(player.getGameProfile()))) {
-            return EventHandling.RESUME;
+            return true;
         }
 
         if (PlayerHardcoreRevivalManager.isKnockedOut(player)) {
             player.sendSystemMessage(Component.translatable("commands.disabled_when_knocked_out").withStyle(ChatFormatting.RED));
-            return EventHandling.CANCEL;
+            return false;
         }
 
-        return EventHandling.RESUME;
+        return true;
     }
 
     public static float onHeal(LivingEntity entity, float amount) {
@@ -82,42 +81,42 @@ public class KnockoutRestrictionHandler {
         return speed;
     }
 
-    public static InteractionResult onUseBlock(Player player, Level level, InteractionHand hand, BlockHitResult hitResult) {
+    public static InteractionEventResult onUseBlock(Player player, Level level, InteractionHand hand, BlockHitResult hitResult) {
         if (PlayerHardcoreRevivalManager.isKnockedOut(player)) {
             ItemStack itemStack = player.getItemInHand(hand);
             final var pos = hitResult.getBlockPos();
             if (!mayUseItemKnockedOut(itemStack) && !mayUseBlockKnockedOut(level, pos, itemStack)) {
-                return InteractionResult.FAIL;
+                return InteractionEventResult.FAIL;
             }
         }
 
-        return InteractionResult.PASS;
+        return InteractionEventResult.DEFAULT;
     }
 
-    public static InteractionResult onUseItem(Player player, Level level, InteractionHand hand) {
+    public static InteractionEventResult onUseItem(Player player, Level level, InteractionHand hand) {
         if (PlayerHardcoreRevivalManager.isKnockedOut(player)) {
             ItemStack itemStack = player.getItemInHand(hand);
             if (!mayUseItemKnockedOut(itemStack)) {
-                return InteractionResult.FAIL;
+                return InteractionEventResult.FAIL;
             }
         }
 
-        return InteractionResult.PASS;
+        return InteractionEventResult.DEFAULT;
     }
 
-    public static EventHandling onAttack(Player player, Entity entity) {
+    public static boolean onAttack(Player player, Entity entity) {
         if (player != null && PlayerHardcoreRevivalManager.isKnockedOut(player)) {
             final var itemStack = player.getMainHandItem();
             if (HardcoreRevivalConfig.getActive().allowUnarmedMelee && itemStack.isEmpty()) {
-                return EventHandling.RESUME;
+                return true;
             }
 
             if (!mayAttackWithItemKnockedOut(itemStack)) {
-                return EventHandling.CANCEL;
+                return false;
             }
         }
 
-        return EventHandling.RESUME;
+        return true;
     }
 
     private static boolean mayUseItemKnockedOut(ItemStack itemStack) {

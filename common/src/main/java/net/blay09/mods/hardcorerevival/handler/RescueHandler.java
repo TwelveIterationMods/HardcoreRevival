@@ -1,7 +1,6 @@
 package net.blay09.mods.hardcorerevival.handler;
 
 import net.blay09.mods.balm.Balm;
-import net.blay09.mods.balm.platform.event.EventHandling;
 import net.blay09.mods.balm.platform.event.callback.*;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.PlayerHardcoreRevivalManager;
@@ -9,7 +8,6 @@ import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.network.RevivalProgressMessage;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -20,24 +18,24 @@ public class RescueHandler {
     public static void initialize() {
         ItemCallback.Use.EVENT.register(RescueHandler::onUseItem);
         BlockCallback.Use.EVENT.register(RescueHandler::onUseBlock);
-        PlayerCallback.Attack.EVENT.register(RescueHandler::onAttack);
+        PlayerCallback.Attack.Before.EVENT.register(RescueHandler::onAttack);
         ServerTickCallback.ServerPlayerTick.AFTER.register(RescueHandler::onPlayerTick);
     }
 
-    public static InteractionResult onUseItem(Player player, Level level, InteractionHand hand) {
+    public static InteractionEventResult onUseItem(Player player, Level level, InteractionHand hand) {
         // Prevent player from using items while they're rescuing
-        return HardcoreRevivalManager.isRescuing(player) ? InteractionResult.FAIL : InteractionResult.PASS;
+        return HardcoreRevivalManager.isRescuing(player) ? InteractionEventResult.FAIL : InteractionEventResult.DEFAULT;
     }
 
-    public static InteractionResult onUseBlock(Player player, Level level, InteractionHand hand, BlockHitResult hitResult) {
+    public static InteractionEventResult onUseBlock(Player player, Level level, InteractionHand hand, BlockHitResult hitResult) {
         // Prevent player from placing blocks while they're rescuing
-        return HardcoreRevivalManager.isRescuing(player) ? InteractionResult.FAIL : InteractionResult.PASS;
+        return HardcoreRevivalManager.isRescuing(player) ? InteractionEventResult.FAIL : InteractionEventResult.DEFAULT;
     }
 
-    public static EventHandling onAttack(Player player, Entity target) {
+    public static boolean onAttack(Player player, Entity target) {
         // Stop rescuing if the player does something other than rescuing
         HardcoreRevivalManager.abortRescue(player);
-        return EventHandling.RESUME;
+        return true;
     }
 
     public static void onPlayerTick(ServerPlayer player) {

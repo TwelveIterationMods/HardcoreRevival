@@ -5,7 +5,6 @@ import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.client.platform.event.callback.ClientTickCallback;
 import net.blay09.mods.balm.client.platform.event.callback.RenderCallback;
 import net.blay09.mods.balm.client.platform.event.callback.ScreenCallback;
-import net.blay09.mods.balm.platform.event.EventHandling;
 import net.blay09.mods.hardcorerevival.PlayerHardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.network.RescueMessage;
@@ -31,7 +30,7 @@ public class HardcoreRevivalClient {
     private static boolean beingRescued;
 
     public static void initialize() {
-        ScreenCallback.Open.EVENT.register(HardcoreRevivalClient::onOpenScreen);
+        ScreenCallback.Opening.EVENT.register(HardcoreRevivalClient::onOpenScreen);
         RenderCallback.UpdateFov.EVENT.register(HardcoreRevivalClient::onFovUpdate);
         RenderCallback.Gui.Health.BEFORE.register(HardcoreRevivalClient::onRenderGuiHealthBefore);
         RenderCallback.Gui.Health.AFTER.register(HardcoreRevivalClient::onRenderGuiHealthAfter);
@@ -53,14 +52,14 @@ public class HardcoreRevivalClient {
         return isKnockedOut() ? (float) Mth.lerp(Minecraft.getInstance().options.fovEffectScale().get(), 1f, 0.5f) : fov;
     }
 
-    public static EventHandling onRenderGuiHealthBefore(GuiGraphics guiGraphics, Window window) {
+    public static boolean onRenderGuiHealthBefore(GuiGraphics guiGraphics, Window window) {
         // Flash the health bar red if the player is knocked out
         if (isKnockedOut()) {
             int knockoutTicksPassed = PlayerHardcoreRevivalManager.getKnockoutTicksPassed(Minecraft.getInstance().player);
             float redness = (float) Math.sin(knockoutTicksPassed / 2f);
             // TODO 1.21.6: RenderSystem.setShaderColor(1f, 1f - redness, 1 - redness, 1f);
         }
-        return EventHandling.RESUME;
+        return true;
     }
 
     public static void onRenderGuiHealthAfter(GuiGraphics guiGraphics, Window window) {

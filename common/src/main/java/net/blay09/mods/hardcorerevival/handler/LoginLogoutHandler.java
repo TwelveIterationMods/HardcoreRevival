@@ -9,8 +9,8 @@ import net.minecraft.server.level.ServerPlayer;
 public class LoginLogoutHandler {
 
     public static void initialize() {
-        ServerPlayerCallback.Login.EVENT.register(LoginLogoutHandler::onPlayerLogin);
-        ServerPlayerCallback.Logout.EVENT.register(LoginLogoutHandler::onPlayerLogout);
+        ServerPlayerCallback.Join.EVENT.register(LoginLogoutHandler::onPlayerLogin);
+        ServerPlayerCallback.Leave.EVENT.register(LoginLogoutHandler::onPlayerLogout);
     }
 
     public static void onPlayerLogin(ServerPlayer player) {
