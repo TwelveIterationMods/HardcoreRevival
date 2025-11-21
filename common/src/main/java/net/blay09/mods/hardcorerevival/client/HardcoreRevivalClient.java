@@ -2,6 +2,7 @@ package net.blay09.mods.hardcorerevival.client;
 
 import com.mojang.blaze3d.platform.Window;
 import net.blay09.mods.balm.Balm;
+import net.blay09.mods.balm.client.BalmClientRegistrars;
 import net.blay09.mods.balm.client.platform.event.callback.ClientTickCallback;
 import net.blay09.mods.balm.client.platform.event.callback.RenderCallback;
 import net.blay09.mods.balm.client.platform.event.callback.ScreenCallback;
@@ -29,7 +30,7 @@ public class HardcoreRevivalClient {
     private static float targetProgress;
     private static boolean beingRescued;
 
-    public static void initialize() {
+    public static void initialize(BalmClientRegistrars registrars) {
         ScreenCallback.Opening.EVENT.register(HardcoreRevivalClient::onOpenScreen);
         RenderCallback.UpdateFov.EVENT.register(HardcoreRevivalClient::onFovUpdate);
         RenderCallback.Gui.Health.BEFORE.register(HardcoreRevivalClient::onRenderGuiHealthBefore);
