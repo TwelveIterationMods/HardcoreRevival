@@ -91,6 +91,7 @@ public class HardcoreRevivalManager {
         PlayerHardcoreRevivalManager.setLastRescuedAt(player, System.currentTimeMillis());
         PlayerHardcoreRevivalManager.setLastKnockoutTicksPassed(player, PlayerHardcoreRevivalManager.getKnockoutTicksPassed(player));
         reset(player);
+        player.awardStat(ModStats.timesRescued);
 
         if (applyEffects) {
             HardcoreRevivalConfig config = HardcoreRevivalConfig.getActive();
@@ -136,6 +137,7 @@ public class HardcoreRevivalManager {
             MinecraftServer server = rescueTarget.level().getServer();
             if (server != null) {
                 wakeup(rescueTarget);
+                player.awardStat(ModStats.playersRevived);
 
                 Balm.networking().sendTo(player, new RevivalProgressMessage(rescueTarget.getId(), -1f));
                 Balm.networking().sendTo(rescueTarget, new RevivalSuccessMessage(rescueTarget.getId()));
