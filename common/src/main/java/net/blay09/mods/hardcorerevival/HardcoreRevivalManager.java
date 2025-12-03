@@ -137,6 +137,7 @@ public class HardcoreRevivalManager {
             MinecraftServer server = rescueTarget.level().getServer();
             if (server != null) {
                 wakeup(rescueTarget);
+                player.awardStat(ModStats.playersRevived);
 
                 Balm.getNetworking().sendTo(player, new RevivalProgressMessage(rescueTarget.getId(), -1f));
                 Balm.getNetworking().sendTo(rescueTarget, new RevivalSuccessMessage(rescueTarget.getId()));
@@ -149,7 +150,7 @@ public class HardcoreRevivalManager {
         }
 
         Balm.getHooks().setForcedPose(player, null);
-        player.awardStat(ModStats.playersRevived);
+
     }
 
     public static void abortRescue(Player player) {
