@@ -91,6 +91,7 @@ public class HardcoreRevivalManager {
         PlayerHardcoreRevivalManager.setLastRescuedAt(player, System.currentTimeMillis());
         PlayerHardcoreRevivalManager.setLastKnockoutTicksPassed(player, PlayerHardcoreRevivalManager.getKnockoutTicksPassed(player));
         reset(player);
+        player.awardStat(ModStats.timesRescued);
 
         if (applyEffects) {
             HardcoreRevivalConfig config = HardcoreRevivalConfig.getActive();
@@ -148,6 +149,7 @@ public class HardcoreRevivalManager {
         }
 
         Balm.getHooks().setForcedPose(player, null);
+        player.awardStat(ModStats.playersRevived);
     }
 
     public static void abortRescue(Player player) {

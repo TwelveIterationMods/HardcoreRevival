@@ -10,6 +10,8 @@
   "death.attack.not_rescued_in_time": "%1$s was not rescued in time",
   "death.attack.not_rescued_in_time.player": "%1$s was not rescued in time",
   "stat.hardcorerevival.knockouts": "Knockouts",
+  "stat.hardcorerevival.times_rescued": "Times Rescued",
+  "stat.hardcorerevival.players_revived": "Players Revived",
   "hardcorerevival.configuration.title": "Hardcore Revival",
   "hardcorerevival.configuration.secondsUntilDeath": "Seconds until Death",
   "hardcorerevival.configuration.secondsUntilDeath.tooltip": "The time in seconds in which a player can still be rescued from death. Set to 0 to disable the timer.",
