@@ -1,1 +1,1 @@
-- Added `instantDeathEntityTypes` option, similar to `instantDeathSources` but for entity types instead of damage types
+- Added stats for Players Revived and Times Revived
