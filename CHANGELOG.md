@@ -1,2 +1,1 @@
-- Added `instantDeathEntityTypes` option, similar to `instantDeathSources` but for entity types instead of damage types
-- Added `hardcorerevival:passthrough_death_when_held` item tag that can be applied to custom undying tokens until a proper fix for them is in place
+- Added stats for Players Revived and Times Revived
