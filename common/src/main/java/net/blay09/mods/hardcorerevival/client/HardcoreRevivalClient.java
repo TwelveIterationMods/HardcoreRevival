@@ -50,7 +50,7 @@ public class HardcoreRevivalClient {
     }
 
     public static float onFovUpdate(LivingEntity entity, float fov) {
-        return isKnockedOut() ? (float) Mth.lerp(Minecraft.getInstance().options.fovEffectScale().get(), 1f, 0.5f) : fov;
+        return isKnockedOut() ? 0.5f : fov;
     }
 
     public static boolean onRenderGuiHealthBefore(GuiGraphics guiGraphics, Window window) {
