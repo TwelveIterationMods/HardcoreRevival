@@ -1,6 +1,1 @@
-- Added some tags to allow specific items to be interacted with while knocked out
-  - Added `hardcorerevival:allow_use_while_knocked_out` item tag
-  - Added `hardcorerevival:allow_attack_while_knocked_out` item tag
-  - Added `hardcorerevival:allow_toss_while_knocked_out` item tag
-  - Added `hardcorerevival:allow_use_while_knocked_out` block tag (only applies if hand is empty)
-  - Added `hardcorerevival:allow_break_while_knocked_out` block tag
+- Fixed deadlock due to some code incorrectly running on the network thread
