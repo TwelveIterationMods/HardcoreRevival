@@ -1,1 +1,1 @@
-- Added `instantDeathEntityTypes` option, similar to `instantDeathSources` but for entity types instead of damage types
+- Fixed deadlock due to some code incorrectly running on the network thread
