@@ -1,1 +1,1 @@
-- Fixed FOV effects not having the correct strength when using latest Balm
+- Fixed deadlock due to some code incorrectly running on the network thread
