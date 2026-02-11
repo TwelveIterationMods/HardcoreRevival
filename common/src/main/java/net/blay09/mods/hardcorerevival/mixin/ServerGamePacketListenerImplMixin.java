@@ -9,10 +9,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import static org.spongepowered.asm.mixin.injection.At.Shift;
+
 @Mixin(ServerGamePacketListenerImpl.class)
 public class ServerGamePacketListenerImplMixin {
 
-    @Inject(method = "handleMovePlayer(Lnet/minecraft/network/protocol/game/ServerboundMovePlayerPacket;)V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "handleMovePlayer(Lnet/minecraft/network/protocol/game/ServerboundMovePlayerPacket;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/protocol/PacketUtils;ensureRunningOnSameThread(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketListener;Lnet/minecraft/server/level/ServerLevel;)V", shift = Shift.AFTER), cancellable = true)
     public void handleMovePlayer(ServerboundMovePlayerPacket packet, CallbackInfo ci) {
         ServerGamePacketListenerImpl netHandler = (ServerGamePacketListenerImpl) (Object) this;
         if (MixinHooks.shouldCancelMovement(netHandler.player)) {
@@ -21,7 +23,7 @@ public class ServerGamePacketListenerImplMixin {
         }
     }
 
-    @Inject(method = "handlePlayerAction(Lnet/minecraft/network/protocol/game/ServerboundPlayerActionPacket;)V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "handlePlayerAction(Lnet/minecraft/network/protocol/game/ServerboundPlayerActionPacket;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/protocol/PacketUtils;ensureRunningOnSameThread(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketListener;Lnet/minecraft/server/level/ServerLevel;)V", shift = Shift.AFTER), cancellable = true)
     public void handlePlayerAction(ServerboundPlayerActionPacket packet, CallbackInfo ci) {
         final var netHandler = (ServerGamePacketListenerImpl) (Object) this;
         switch (packet.getAction()) {
