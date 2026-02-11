@@ -1,1 +1,1 @@
-- Added stats for Players Revived and Times Revived
+- Fixed deadlock due to some code incorrectly running on the network thread
