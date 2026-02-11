@@ -1,1 +1,1 @@
-- Fixed Inventory Totem compatibility not loading due to typo
+- Fixed deadlock due to some code incorrectly running on the network thread
