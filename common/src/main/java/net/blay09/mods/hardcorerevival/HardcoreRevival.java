@@ -1,6 +1,7 @@
 package net.blay09.mods.hardcorerevival;
 
 import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.common.config.ConfigLocalization;
 import net.blay09.mods.hardcorerevival.command.ReviveCommand;
 import net.blay09.mods.hardcorerevival.compat.Compat;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
@@ -16,6 +17,7 @@ public class HardcoreRevival {
     public static final Logger logger = LogManager.getLogger();
 
     public static void initialize() {
+        ConfigLocalization.enableModernTranslationKeys(MOD_ID);
         HardcoreRevivalConfig.initialize();
 
         ModNetworking.initialize(Balm.getNetworking());
