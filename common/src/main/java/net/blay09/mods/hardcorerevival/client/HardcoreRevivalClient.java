@@ -49,7 +49,7 @@ public class HardcoreRevivalClient {
     }
 
     private static boolean canRescueOthers(Player player) {
-        return player != null && player.isAlive() && !player.isSpectator() && !HardcoreRevival.getClientRevivalData().isKnockedOut();
+        return player != null && player.isAlive() && !player.isSpectator() && !PlayerHardcoreRevivalManager.isKnockedOut(player);
     }
 
     private static Player getRescueTarget(Player player) {
@@ -63,7 +63,7 @@ public class HardcoreRevivalClient {
 
     private static Player getCrosshairRescueTarget(Player player) {
         Entity pointedEntity = Minecraft.getInstance().crosshairPickEntity;
-        if (!(pointedEntity instanceof Player target) || !HardcoreRevival.getRevivalData(target).isKnockedOut()) {
+        if (!(pointedEntity instanceof Player target) || !PlayerHardcoreRevivalManager.isKnockedOut(target)) {
             return null;
         }
 
@@ -85,7 +85,7 @@ public class HardcoreRevivalClient {
         double bestDistanceSqr = Double.MAX_VALUE;
 
         for (Player candidate : player.level().getEntitiesOfClass(Player.class, searchBounds, entity -> entity != player && entity.isAlive())) {
-            if (!HardcoreRevival.getRevivalData(candidate).isKnockedOut()) {
+            if (!PlayerHardcoreRevivalManager.isKnockedOut(candidate)) {
                 continue;
             }
 
