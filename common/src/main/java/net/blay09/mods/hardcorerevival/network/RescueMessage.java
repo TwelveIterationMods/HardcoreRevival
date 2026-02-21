@@ -18,31 +18,19 @@ public class RescueMessage implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<RescueMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(HardcoreRevival.MOD_ID,
             "rescue"));
 
-    private final boolean active;
+    private final int targetEntityId;
 
-    public RescueMessage(boolean active) {
-        this.active = active;
+    public RescueMessage(int targetEntityId) {
+        this.targetEntityId = targetEntityId;
     }
 
     public static void encode(FriendlyByteBuf buf, RescueMessage message) {
-        buf.writeBoolean(message.active);
+        buf.writeInt(message.targetEntityId);
     }
 
     public static RescueMessage decode(FriendlyByteBuf buf) {
-        boolean active = buf.readBoolean();
-        return new RescueMessage(active);
-    }
-
-    private static boolean isLookingTowards(Player player, Entity candidate) {
-        double dx = candidate.getX() - player.getX();
-        double dy = candidate.getY() - 1 - player.getY();
-        double dz = candidate.getZ() - player.getZ();
-
-        // Calculate the dot product of the view vector and the vector to the candidate
-        double dotProduct = player.getLookAngle().x * dx + player.getLookAngle().y * dy + player.getLookAngle().z * dz;
-
-        // Check if the candidate is within a 60-degree cone in front of the player
-        return dotProduct > 0 && Math.abs(Math.acos(dotProduct / Math.sqrt(dx * dx + dy * dy + dz * dz))) < Math.PI / 3;
+        int targetEntityId = buf.readInt();
+        return new RescueMessage(targetEntityId);
     }
 
     public static void handle(ServerPlayer player, RescueMessage message) {
@@ -50,36 +38,23 @@ public class RescueMessage implements CustomPacketPayload {
             return;
         }
 
-        if (message.active) {
-            final double range = HardcoreRevivalConfig.getActive().rescueDistance;
-            List<Player> candidates = player.level().getEntitiesOfClass(Player.class, player.getBoundingBox().inflate(range), p -> {
-                if (p == null || !PlayerHardcoreRevivalManager.isKnockedOut(p)) {
-                    return false;
-                }
-
-                if (!player.hasLineOfSight(p)) {
-                    return false;
-                }
-
-                return isLookingTowards(player, p);
-            });
-
-            float minDist = Float.MAX_VALUE;
-            Player target = null;
-            for (Player candidate : candidates) {
-                float dist = candidate.distanceTo(player);
-                if (dist < minDist) {
-                    target = candidate;
-                    minDist = dist;
-                }
-            }
-            if (target != null) {
-                HardcoreRevivalManager.startRescue(player, target);
-
-            }
-        } else {
+        if (message.targetEntityId < 0) {
             HardcoreRevivalManager.abortRescue(player);
+            return;
         }
+
+        Entity targetEntity = player.level().getEntity(message.targetEntityId);
+        if (!(targetEntity instanceof Player target) || !PlayerHardcoreRevivalManager.isKnockedOut(target)) {
+            HardcoreRevivalManager.abortRescue(player);
+            return;
+        }
+
+        if (target.distanceTo(player) > HardcoreRevivalConfig.getActive().rescueDistance + 0.5f) {
+            HardcoreRevivalManager.abortRescue(player);
+            return;
+        }
+
+        HardcoreRevivalManager.startRescue(player, target);
     }
 
     @Override

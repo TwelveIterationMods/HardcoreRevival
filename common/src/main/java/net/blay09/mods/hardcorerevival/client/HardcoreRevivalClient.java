@@ -43,6 +43,31 @@ public class HardcoreRevivalClient {
         return player != null && PlayerHardcoreRevivalManager.isKnockedOut(player) && player.isAlive();
     }
 
+    private static boolean canRescueOthers(Player player) {
+        return player != null && player.isAlive() && !player.isSpectator() && !HardcoreRevival.getClientRevivalData().isKnockedOut();
+    }
+
+    private static Player getRescueTarget(Player player) {
+        Entity pointedEntity = Minecraft.getInstance().crosshairPickEntity;
+        if (!(pointedEntity instanceof Player target) || !HardcoreRevival.getRevivalData(target).isKnockedOut()) {
+            return null;
+        }
+
+        if (player.distanceTo(target) > HardcoreRevivalConfig.getActive().rescueDistance) {
+            return null;
+        }
+
+        return target;
+    }
+
+    private static void stopRescuing() {
+        if (isRescuing) {
+            Balm.getNetworking().sendToServer(new RescueMessage(-1));
+            isRescuing = false;
+            targetEntity = -1;
+        }
+    }
+
     public static void onOpenScreen(OpenScreenEvent event) {
         if (isKnockedOut() && event.getScreen() instanceof InventoryScreen) {
             event.setScreen(new KnockoutScreen());
@@ -110,19 +135,15 @@ public class HardcoreRevivalClient {
                     }
                 }
 
-                if (!PlayerHardcoreRevivalManager.isKnockedOut(mc.player) && mc.player != null && !mc.player.isSpectator() && mc.player.isAlive() && !isRescuing) {
-                    Entity pointedEntity = Minecraft.getInstance().crosshairPickEntity;
-                    if (pointedEntity instanceof Player pointedPlayer && PlayerHardcoreRevivalManager.isKnockedOut(pointedPlayer) && mc.player.distanceTo(
-                            pointedEntity) <= HardcoreRevivalConfig.getActive().rescueDistance) {
-                        Component rescueKeyText = mc.options.keyUse.getTranslatedKeyMessage();
-                        var textComponent = Component.translatable("gui.hardcorerevival.hold_to_rescue", rescueKeyText);
-                        guiGraphics.drawString(mc.font,
-                                textComponent,
-                                mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(textComponent) / 2,
-                                mc.getWindow().getGuiScaledHeight() / 2 + 30,
-                                0xFFFFFFFF,
-                                true);
-                    }
+                if (mc.player != null && canRescueOthers(mc.player) && !isRescuing && getRescueTarget(mc.player) != null) {
+                    Component rescueKeyText = mc.options.keyUse.getTranslatedKeyMessage();
+                    var textComponent = Component.translatable("gui.hardcorerevival.hold_to_rescue", rescueKeyText);
+                    guiGraphics.drawString(mc.font,
+                            textComponent,
+                            mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(textComponent) / 2,
+                            mc.getWindow().getGuiScaledHeight() / 2 + 30,
+                            0xFFFFFFFF,
+                            true);
                 }
             }
 
@@ -134,6 +155,7 @@ public class HardcoreRevivalClient {
     public static void onClientTick(Minecraft client) {
         if (client.player != null) {
             if (isKnockedOut()) {
+                stopRescuing();
                 if (!wasKnockedOut) {
                     Balm.getHooks().setForcedPose(client.player, Pose.FALL_FLYING);
                     client.setScreen(new KnockoutScreen());
@@ -152,23 +174,17 @@ public class HardcoreRevivalClient {
                     client.setScreen(null);
                 }
 
-                // If right mouse is held down, and player is not in spectator mode, send rescue packet
-                if (client.options.keyUse.isDown() && !client.player.isSpectator() && client.player.isAlive() && !PlayerHardcoreRevivalManager.isKnockedOut(client.player)) {
-                    Entity pointedEntity = client.crosshairPickEntity;
-                    if (pointedEntity != null) {
-                        float distance = client.player.distanceTo(pointedEntity);
-                        if (distance <= HardcoreRevivalConfig.getActive().rescueDistance) {
-                            if (!isRescuing) {
-                                Balm.getNetworking().sendToServer(new RescueMessage(true));
-                                isRescuing = true;
-                            }
+                if (client.options.keyUse.isDown() && canRescueOthers(client.player)) {
+                    if (!isRescuing) {
+                        Player target = getRescueTarget(client.player);
+                        if (target != null) {
+                            targetEntity = target.getId();
+                            Balm.getNetworking().sendToServer(new RescueMessage(targetEntity));
+                            isRescuing = true;
                         }
                     }
                 } else {
-                    if (isRescuing) {
-                        Balm.getNetworking().sendToServer(new RescueMessage(false));
-                        isRescuing = false;
-                    }
+                    stopRescuing();
                 }
             }
         }
