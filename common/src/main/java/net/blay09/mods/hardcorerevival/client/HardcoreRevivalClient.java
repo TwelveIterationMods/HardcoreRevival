@@ -153,11 +153,16 @@ public class HardcoreRevivalClient {
                 }
 
                 // If right mouse is held down, and player is not in spectator mode, send rescue packet
-                if (client.options.keyUse.isDown() && !client.player.isSpectator() && client.player.isAlive() && !PlayerHardcoreRevivalManager.isKnockedOut(
-                        client.player)) {
-                    if (!isRescuing) {
-                        Balm.getNetworking().sendToServer(new RescueMessage(true));
-                        isRescuing = true;
+                if (client.options.keyUse.isDown() && !client.player.isSpectator() && client.player.isAlive() && !PlayerHardcoreRevivalManager.isKnockedOut(client.player)) {
+                    Entity pointedEntity = client.crosshairPickEntity;
+                    if (pointedEntity != null) {
+                        float distance = client.player.distanceTo(pointedEntity);
+                        if (distance <= HardcoreRevivalConfig.getActive().rescueDistance) {
+                            if (!isRescuing) {
+                                Balm.getNetworking().sendToServer(new RescueMessage(true));
+                                isRescuing = true;
+                            }
+                        }
                     }
                 } else {
                     if (isRescuing) {
