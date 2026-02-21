@@ -21,6 +21,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 public class HardcoreRevivalClient {
 
@@ -29,6 +31,8 @@ public class HardcoreRevivalClient {
     private static int targetEntity = -1;
     private static float targetProgress;
     private static boolean beingRescued;
+    private static final double FALLBACK_MIN_DOT = 0.85;
+    private static final double FALLBACK_EPSILON = 1.0E-6;
 
     public static void initialize() {
         Balm.getEvents().onEvent(OpenScreenEvent.class, HardcoreRevivalClient::onOpenScreen);
@@ -49,6 +53,15 @@ public class HardcoreRevivalClient {
     }
 
     private static Player getRescueTarget(Player player) {
+        Player crosshairTarget = getCrosshairRescueTarget(player);
+        if (crosshairTarget != null) {
+            return crosshairTarget;
+        }
+
+        return getFallbackFrontRescueTarget(player);
+    }
+
+    private static Player getCrosshairRescueTarget(Player player) {
         Entity pointedEntity = Minecraft.getInstance().crosshairPickEntity;
         if (!(pointedEntity instanceof Player target) || !HardcoreRevival.getRevivalData(target).isKnockedOut()) {
             return null;
@@ -59,6 +72,52 @@ public class HardcoreRevivalClient {
         }
 
         return target;
+    }
+
+    private static Player getFallbackFrontRescueTarget(Player player) {
+        double rescueDistance = HardcoreRevivalConfig.getActive().rescueDistance;
+        AABB searchBounds = player.getBoundingBox().inflate(rescueDistance);
+        Vec3 eyePosition = player.getEyePosition();
+        Vec3 lookVector = player.getLookAngle().normalize();
+
+        Player bestTarget = null;
+        double bestDot = FALLBACK_MIN_DOT;
+        double bestDistanceSqr = Double.MAX_VALUE;
+
+        for (Player candidate : player.level().getEntitiesOfClass(Player.class, searchBounds, entity -> entity != player && entity.isAlive())) {
+            if (!HardcoreRevival.getRevivalData(candidate).isKnockedOut()) {
+                continue;
+            }
+
+            double distanceSqr = player.distanceToSqr(candidate);
+            if (distanceSqr > rescueDistance * rescueDistance) {
+                continue;
+            }
+
+            if (!player.hasLineOfSight(candidate)) {
+                continue;
+            }
+
+            Vec3 toTarget = candidate.getBoundingBox().getCenter().subtract(eyePosition);
+            if (toTarget.lengthSqr() < 1.0E-6) {
+                continue;
+            }
+
+            double dot = lookVector.dot(toTarget.normalize());
+            if (dot < FALLBACK_MIN_DOT) {
+                continue;
+            }
+
+            if (dot > bestDot + FALLBACK_EPSILON
+                    || (Math.abs(dot - bestDot) <= FALLBACK_EPSILON && (distanceSqr < bestDistanceSqr - FALLBACK_EPSILON
+                    || (Math.abs(distanceSqr - bestDistanceSqr) <= FALLBACK_EPSILON && (bestTarget == null || candidate.getId() < bestTarget.getId()))))) {
+                bestTarget = candidate;
+                bestDot = dot;
+                bestDistanceSqr = distanceSqr;
+            }
+        }
+
+        return bestTarget;
     }
 
     private static void stopRescuing() {
