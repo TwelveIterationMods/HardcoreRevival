@@ -1,1 +1,1 @@
-- Fixed deadlock due to some code incorrectly running on the network thread
+- Improved rescue target selection logic to be more stable on client and server
