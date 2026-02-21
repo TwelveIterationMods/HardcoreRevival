@@ -48,9 +48,10 @@ public class RescueHandler {
             if (!rescueTarget.isAlive() || (maxTicksUntilDeath > 0 && knockoutTicksPassed >= maxTicksUntilDeath)) {
                 HardcoreRevivalManager.abortRescue(player);
             } else {
-                // Stop rescuing if the player is out of range
+                // Stop rescuing if the player is out of range.
+                // We allow a drift of 0.5f on the server because of floating point precision issues.
                 float dist = player.distanceTo(rescueTarget);
-                if (dist > HardcoreRevivalConfig.getActive().rescueDistance) {
+                if (dist > HardcoreRevivalConfig.getActive().rescueDistance + 0.5f) {
                     HardcoreRevivalManager.abortRescue(player);
                 } else {
                     int rescueTime = PlayerHardcoreRevivalManager.getRescueTime(player) + 1;
