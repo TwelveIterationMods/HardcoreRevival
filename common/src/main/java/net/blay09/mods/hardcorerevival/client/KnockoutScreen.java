@@ -4,7 +4,7 @@ import net.blay09.mods.balm.Balm;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.network.AcceptFateMessage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -30,7 +30,7 @@ public class KnockoutScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         Minecraft mc = Minecraft.getInstance();

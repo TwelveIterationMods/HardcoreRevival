@@ -10,7 +10,7 @@ import net.blay09.mods.hardcorerevival.PlayerHardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.network.RescueMessage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -136,7 +136,7 @@ public class HardcoreRevivalClient {
         return isKnockedOut() ? 0.5f : fov;
     }
 
-    public static boolean onRenderGuiHealthBefore(GuiGraphics guiGraphics, Window window) {
+    public static boolean onRenderGuiHealthBefore(GuiGraphicsExtractor guiGraphics, Window window) {
         // Flash the health bar red if the player is knocked out
         if (isKnockedOut()) {
             int knockoutTicksPassed = PlayerHardcoreRevivalManager.getKnockoutTicksPassed(Minecraft.getInstance().player);
@@ -146,13 +146,13 @@ public class HardcoreRevivalClient {
         return true;
     }
 
-    public static void onRenderGuiHealthAfter(GuiGraphics guiGraphics, Window window) {
+    public static void onRenderGuiHealthAfter(GuiGraphicsExtractor guiGraphics, Window window) {
         if (isKnockedOut()) {
             // TODO 1.21.6: RenderSystem.setShaderColor(1f, 1f, 1, 1f);
         }
     }
 
-    public static void onGuiDrawPost(GuiGraphics guiGraphics, Window window) {
+    public static void onGuiDrawPost(GuiGraphicsExtractor guiGraphics, Window window) {
         Minecraft mc = Minecraft.getInstance();
         if (isKnockedOut()) {
             var poseStack = guiGraphics.pose();
