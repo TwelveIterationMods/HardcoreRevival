@@ -171,7 +171,7 @@ public class HardcoreRevivalClient {
                 if (HardcoreRevivalConfig.getActive().allowAcceptingFate) {
                     Component openDeathScreenKey = mc.options.keyInventory.getTranslatedKeyMessage();
                     final var openDeathScreenText = Component.translatable("gui.hardcorerevival.open_death_screen", openDeathScreenKey);
-                    guiGraphics.drawCenteredString(mc.font, openDeathScreenText, width / 2, height / 2 + 25, 0xFFFFFFFF);
+                    guiGraphics.centeredText(mc.font, openDeathScreenText, width / 2, height / 2 + 25, 0xFFFFFFFF);
                 }
             }
         } else {
@@ -187,7 +187,7 @@ public class HardcoreRevivalClient {
                         textComponent.append(" .");
                     }
                     // TODO 1.21.6: RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-                    guiGraphics.drawString(mc.font,
+                    guiGraphics.text(mc.font,
                             textComponent,
                             mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(textComponent) / 2,
                             mc.getWindow().getGuiScaledHeight() / 2 + 30,
@@ -199,7 +199,7 @@ public class HardcoreRevivalClient {
             if (mc.player != null && canRescueOthers(mc.player) && !isRescuing && getRescueTarget(mc.player) != null) {
                 Component rescueKeyText = mc.options.keyUse.getTranslatedKeyMessage();
                 var textComponent = Component.translatable("gui.hardcorerevival.hold_to_rescue", rescueKeyText);
-                guiGraphics.drawString(mc.font,
+                guiGraphics.text(mc.font,
                         textComponent,
                         mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(textComponent) / 2,
                         mc.getWindow().getGuiScaledHeight() / 2 + 30,
