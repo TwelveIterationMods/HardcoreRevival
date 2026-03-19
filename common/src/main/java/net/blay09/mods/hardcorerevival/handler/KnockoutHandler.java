@@ -2,13 +2,14 @@ package net.blay09.mods.hardcorerevival.handler;
 
 
 import net.blay09.mods.balm.Balm;
+import net.blay09.mods.balm.platform.event.EventPhases;
 import net.blay09.mods.balm.platform.event.callback.LivingEntityCallback;
 import net.blay09.mods.balm.platform.event.callback.ServerPlayerCallback;
 import net.blay09.mods.balm.platform.event.callback.ServerTickCallback;
+import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.PlayerHardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.api.PlayerAboutToKnockOutEvent;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
-import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -26,36 +27,35 @@ import net.minecraft.world.entity.Pose;
 public class KnockoutHandler {
 
     public static void initialize() {
-        LivingEntityCallback.Damage.Before.EVENT.register(KnockoutHandler::onPlayerDamage);
+        LivingEntityCallback.Death.Before.EVENT.register(EventPhases.HIGH, KnockoutHandler::allowPlayerDeath);
         ServerPlayerCallback.Respawn.EVENT.register(KnockoutHandler::onPlayerRespawn);
 
         ServerTickCallback.ServerPlayerTick.BEFORE.register(KnockoutHandler::onPlayerTick);
     }
 
-    public static float onPlayerDamage(LivingEntity entity, DamageSource damageSource, float damageAmount) {
+    public static boolean allowPlayerDeath(LivingEntity entity, DamageSource damageSource) {
         if (entity instanceof ServerPlayer player) {
             if (PlayerHardcoreRevivalManager.isKnockedOut(player)) {
                 Entity attacker = damageSource.getEntity();
                 if (attacker instanceof Mob mob) {
                     mob.setTarget(null);
                 }
-                return !damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)
-                        && !damageSource.is(HardcoreRevivalManager.NOT_RESCUED_IN_TIME) ? 0f : damageAmount;
+                return damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) || damageSource.is(HardcoreRevivalManager.NOT_RESCUED_IN_TIME);
             }
 
-            boolean wouldDie = player.getHealth() - damageAmount <= 0f;
-            if (wouldDie && isKnockoutEnabledFor(player, damageSource)) {
+            if (isKnockoutEnabledFor(player, damageSource)) {
                 final var aboutToKnockOutEvent = new PlayerAboutToKnockOutEvent(player, damageSource);
                 PlayerAboutToKnockOutEvent.EVENT.invoker().accept(aboutToKnockOutEvent);
 
                 if (!aboutToKnockOutEvent.isCanceled()) {
                     HardcoreRevivalManager.knockout(player, damageSource);
-                    return Math.min(damageAmount, Math.max(0f, player.getHealth() - 1f));
+                    player.setHealth(0.5f);
+                    return false;
                 }
             }
         }
 
-        return damageAmount;
+        return true;
     }
 
     private static boolean holdsDeathProtectionItem(ServerPlayer player) {
