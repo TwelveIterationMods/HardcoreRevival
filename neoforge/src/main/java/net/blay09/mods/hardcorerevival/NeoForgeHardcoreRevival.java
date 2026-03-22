@@ -4,6 +4,7 @@ import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.neoforge.platform.runtime.NeoForgeLoadContext;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 
 @Mod(HardcoreRevival.MOD_ID)
