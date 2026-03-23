@@ -36,8 +36,6 @@ public class HardcoreRevivalClient {
     public static void initialize(BalmClientRegistrars registrars) {
         ScreenCallback.Opening.EVENT.register(HardcoreRevivalClient::onOpenScreen);
         RenderCallback.UpdateFov.EVENT.register(HardcoreRevivalClient::onFovUpdate);
-        RenderCallback.Gui.Health.BEFORE.register(HardcoreRevivalClient::onRenderGuiHealthBefore);
-        RenderCallback.Gui.Health.AFTER.register(HardcoreRevivalClient::onRenderGuiHealthAfter);
         RenderCallback.Gui.AFTER.register(HardcoreRevivalClient::onGuiDrawPost);
 
         ClientTickCallback.BEFORE.register(HardcoreRevivalClient::onClientTick);
@@ -134,22 +132,6 @@ public class HardcoreRevivalClient {
 
     public static float onFovUpdate(LivingEntity entity, float fov) {
         return isKnockedOut() ? 0.5f : fov;
-    }
-
-    public static boolean onRenderGuiHealthBefore(GuiGraphicsExtractor guiGraphics, Window window) {
-        // Flash the health bar red if the player is knocked out
-        if (isKnockedOut()) {
-            int knockoutTicksPassed = PlayerHardcoreRevivalManager.getKnockoutTicksPassed(Minecraft.getInstance().player);
-            float redness = (float) Math.sin(knockoutTicksPassed / 2f);
-            // TODO 1.21.6: RenderSystem.setShaderColor(1f, 1f - redness, 1 - redness, 1f);
-        }
-        return true;
-    }
-
-    public static void onRenderGuiHealthAfter(GuiGraphicsExtractor guiGraphics, Window window) {
-        if (isKnockedOut()) {
-            // TODO 1.21.6: RenderSystem.setShaderColor(1f, 1f, 1, 1f);
-        }
     }
 
     public static void onGuiDrawPost(GuiGraphicsExtractor guiGraphics, Window window) {
