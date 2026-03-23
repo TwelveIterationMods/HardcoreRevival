@@ -157,8 +157,6 @@ public class HardcoreRevivalClient {
         if (isKnockedOut()) {
             var poseStack = guiGraphics.pose();
             poseStack.pushMatrix();
-            // TODO 1.21.6: poseStack.translate(0, 0, -300);
-            // TODO 1.21.6: RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             GuiHelper.drawGradientRectW(guiGraphics, 0, 0, mc.getWindow().getWidth(), mc.getWindow().getHeight(), 0x60500000, 0x90FF0000);
             poseStack.popMatrix();
 
@@ -186,7 +184,6 @@ public class HardcoreRevivalClient {
                     } else if (targetProgress >= 0.25f) {
                         textComponent.append(" .");
                     }
-                    // TODO 1.21.6: RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
                     guiGraphics.text(mc.font,
                             textComponent,
                             mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(textComponent) / 2,
