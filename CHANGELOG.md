@@ -1,1 +1,1 @@
-- Improved rescue target selection logic to be more stable on client and server
+- Updated to Minecraft 26.1
