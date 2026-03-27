@@ -22,6 +22,7 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
 public class HardcoreRevivalClient {
 
@@ -46,11 +47,11 @@ public class HardcoreRevivalClient {
         return player != null && PlayerHardcoreRevivalManager.isKnockedOut(player) && player.isAlive();
     }
 
-    private static boolean canRescueOthers(Player player) {
+    private static boolean canRescueOthers(@Nullable Player player) {
         return player != null && player.isAlive() && !player.isSpectator() && !PlayerHardcoreRevivalManager.isKnockedOut(player);
     }
 
-    private static Player getRescueTarget(Player player) {
+    private static @Nullable Player getRescueTarget(Player player) {
         Player crosshairTarget = getCrosshairRescueTarget(player);
         if (crosshairTarget != null) {
             return crosshairTarget;
@@ -59,7 +60,7 @@ public class HardcoreRevivalClient {
         return getFallbackFrontRescueTarget(player);
     }
 
-    private static Player getCrosshairRescueTarget(Player player) {
+    private static @Nullable Player getCrosshairRescueTarget(Player player) {
         Entity pointedEntity = Minecraft.getInstance().crosshairPickEntity;
         if (!(pointedEntity instanceof Player target) || !PlayerHardcoreRevivalManager.isKnockedOut(target)) {
             return null;
@@ -72,7 +73,7 @@ public class HardcoreRevivalClient {
         return target;
     }
 
-    private static Player getFallbackFrontRescueTarget(Player player) {
+    private static @Nullable Player getFallbackFrontRescueTarget(Player player) {
         double rescueDistance = HardcoreRevivalConfig.getActive().rescueDistance;
         AABB searchBounds = player.getBoundingBox().inflate(rescueDistance);
         Vec3 eyePosition = player.getEyePosition();
@@ -212,7 +213,7 @@ public class HardcoreRevivalClient {
 
                 if (client.options.keyUse.isDown() && canRescueOthers(client.player)) {
                     if (!isRescuing) {
-                        Player target = getRescueTarget(client.player);
+                        final var target = getRescueTarget(client.player);
                         if (target != null) {
                             targetEntity = target.getId();
                             Balm.networking().sendToServer(new RescueMessage(targetEntity));
@@ -227,16 +228,21 @@ public class HardcoreRevivalClient {
     }
 
     public static void setRevivalProgress(int entityId, float progress) {
+        final var player = Minecraft.getInstance().player;
+        if (player == null) {
+            return;
+        }
+
         if (progress < 0) {
             targetEntity = -1;
             targetProgress = 0f;
 
-            Balm.hooks().setForcedPose(Minecraft.getInstance().player, null);
+            Balm.hooks().setForcedPose(player, null);
         } else {
             targetEntity = entityId;
             targetProgress = progress;
 
-            Balm.hooks().setForcedPose(Minecraft.getInstance().player, Pose.CROUCHING);
+            Balm.hooks().setForcedPose(player, Pose.CROUCHING);
         }
     }
 

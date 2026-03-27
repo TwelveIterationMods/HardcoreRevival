@@ -65,18 +65,16 @@ public class HardcoreRevivalManager {
 
         // If enabled, show a death message
         if (player.level().getGameRules().get(GameRules.SHOW_DEATH_MESSAGES)) {
-            MinecraftServer server = player.level().getServer();
-            if (server != null) {
-                Team team = player.getTeam();
-                if (team != null && team.getDeathMessageVisibility() != Team.Visibility.ALWAYS) {
-                    if (team.getDeathMessageVisibility() == Team.Visibility.HIDE_FOR_OTHER_TEAMS) {
-                        server.getPlayerList().broadcastSystemToTeam(player, player.getCombatTracker().getDeathMessage());
-                    } else if (team.getDeathMessageVisibility() == Team.Visibility.HIDE_FOR_OWN_TEAM) {
-                        server.getPlayerList().broadcastSystemToAllExceptTeam(player, player.getCombatTracker().getDeathMessage());
-                    }
-                } else {
-                    server.getPlayerList().broadcastSystemMessage(player.getCombatTracker().getDeathMessage(), false);
+            final var server = player.level().getServer();
+            final var team = player.getTeam();
+            if (team != null && team.getDeathMessageVisibility() != Team.Visibility.ALWAYS) {
+                if (team.getDeathMessageVisibility() == Team.Visibility.HIDE_FOR_OTHER_TEAMS) {
+                    server.getPlayerList().broadcastSystemToTeam(player, player.getCombatTracker().getDeathMessage());
+                } else if (team.getDeathMessageVisibility() == Team.Visibility.HIDE_FOR_OWN_TEAM) {
+                    server.getPlayerList().broadcastSystemToAllExceptTeam(player, player.getCombatTracker().getDeathMessage());
                 }
+            } else {
+                server.getPlayerList().broadcastSystemMessage(player.getCombatTracker().getDeathMessage(), false);
             }
         }
 

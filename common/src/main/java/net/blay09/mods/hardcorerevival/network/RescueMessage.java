@@ -23,7 +23,7 @@ public record RescueMessage(int targetEntityId) implements CustomPacketPayload {
     );
 
     public static void handle(ServerPlayer player, RescueMessage message) {
-        if (player == null || !player.isAlive() || player.isSpectator() || PlayerHardcoreRevivalManager.isKnockedOut(player)) {
+        if (!player.isAlive() || player.isSpectator() || PlayerHardcoreRevivalManager.isKnockedOut(player)) {
             return;
         }
 

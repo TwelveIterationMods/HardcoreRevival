@@ -1,7 +1,6 @@
 package net.blay09.mods.hardcorerevival.network;
 
 import net.blay09.mods.hardcorerevival.client.HardcoreRevivalClient;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;

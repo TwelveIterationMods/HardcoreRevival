@@ -11,7 +11,7 @@ class InMemoryPlayerRevivalData {
     private long lastKnockoutAt;
     private long lastLogoutAt;
     private int rescueTime;
-    private Player rescueTarget;
+    private @Nullable Player rescueTarget;
 
     public boolean isKnockedOut() {
         return knockedOut;
@@ -69,8 +69,7 @@ class InMemoryPlayerRevivalData {
         this.rescueTime = rescueTime;
     }
 
-    @Nullable
-    public Player getRescueTarget() {
+    public @Nullable Player getRescueTarget() {
         return rescueTarget;
     }
 

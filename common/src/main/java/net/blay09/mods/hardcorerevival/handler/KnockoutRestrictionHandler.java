@@ -13,7 +13,6 @@ import net.blay09.mods.hardcorerevival.tag.ModItemTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.players.NameAndId;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -23,6 +22,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jspecify.annotations.Nullable;
 
 public class KnockoutRestrictionHandler {
 
@@ -46,11 +46,11 @@ public class KnockoutRestrictionHandler {
         }
 
         final var server = player.level().getServer();
-        if (server != null && server.isSingleplayer()) {
+        if (server.isSingleplayer()) {
             return true;
         }
 
-        if (server != null && server.getPlayerList().isOp(new NameAndId(player.getGameProfile()))) {
+        if (server.getPlayerList().isOp(new NameAndId(player.getGameProfile()))) {
             return true;
         }
 
@@ -72,7 +72,7 @@ public class KnockoutRestrictionHandler {
         return amount;
     }
 
-    public static float onDigSpeed(BlockGetter blockGetter, BlockPos pos, BlockState state, Player player, float speed) {
+    public static float onDigSpeed(BlockGetter blockGetter, BlockPos pos, BlockState state, @Nullable Player player, float speed) {
         if (player != null && PlayerHardcoreRevivalManager.isKnockedOut(player)) {
             if (!mayBreakBlockKnockedOut(state)) {
                 return 0f;
@@ -104,16 +104,14 @@ public class KnockoutRestrictionHandler {
         return InteractionEventResult.DEFAULT;
     }
 
-    public static boolean onAttack(Player player, Entity entity) {
+    public static boolean onAttack(@Nullable Player player, Entity entity) {
         if (player != null && PlayerHardcoreRevivalManager.isKnockedOut(player)) {
             final var itemStack = player.getMainHandItem();
             if (HardcoreRevivalConfig.getActive().allowUnarmedMelee && itemStack.isEmpty()) {
                 return true;
             }
 
-            if (!mayAttackWithItemKnockedOut(itemStack)) {
-                return false;
-            }
+            return mayAttackWithItemKnockedOut(itemStack);
         }
 
         return true;

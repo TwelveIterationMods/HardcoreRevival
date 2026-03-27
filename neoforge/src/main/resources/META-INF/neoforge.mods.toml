@@ -3,31 +3,31 @@ loaderVersion="[1,)"
 license="${license}"
 issueTrackerURL="${issues}"
 [[mods]]
-modId="${mod_id}"
+modId="hardcorerevival"
 version="${version}"
 displayName="${mod_name}"
 displayURL="${homepage}"
-logoFile="${mod_id}.png"
+logoFile="hardcorerevival.png"
 credits="BlayTheNinth"
 authors="BlayTheNinth"
 description='''${description}'''
 [[mixins]]
-config = "${mod_id}.mixins.json"
+config = "hardcorerevival.mixins.json"
 [[mixins]]
-config = "${mod_id}.neoforge.mixins.json"
-[[dependencies.${mod_id}]]
+config = "hardcorerevival.neoforge.mixins.json"
+[[dependencies.hardcorerevival]]
 modId="neoforge"
 type="required"
 versionRange="[${neoforge_version},)"
 ordering="NONE"
 side="BOTH"
-[[dependencies.${mod_id}]]
+[[dependencies.hardcorerevival]]
 modId="minecraft"
 type="required"
 versionRange="[${minecraft_version},)"
 ordering="NONE"
 side="BOTH"
-[[dependencies.${mod_id}]]
+[[dependencies.hardcorerevival]]
 modId="balm"
 type="required"
 versionRange="[${balm_version},)"

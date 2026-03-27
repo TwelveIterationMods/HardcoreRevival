@@ -72,9 +72,6 @@ public class KnockoutHandler {
 
     private static boolean isKnockoutEnabledFor(ServerPlayer player, DamageSource damageSource) {
         final var server = player.level().getServer();
-        if (server == null) {
-            return false;
-        }
 
         boolean canDamageSourceKnockout = !damageSource.is(DamageTypes.FELL_OUT_OF_WORLD) && !damageSource.is(HardcoreRevivalManager.NOT_RESCUED_IN_TIME);
         final var damageSourceId = player.level().getServer().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getKey(damageSource.type());
@@ -96,11 +93,7 @@ public class KnockoutHandler {
             return false;
         }
 
-        if (holdsDeathProtectionItem(player)) {
-            return false;
-        }
-
-        return true;
+        return !holdsDeathProtectionItem(player);
     }
 
     public static void onPlayerTick(ServerPlayer player) {
