@@ -1,7 +1,7 @@
 package net.blay09.mods.hardcorerevival;
 
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;

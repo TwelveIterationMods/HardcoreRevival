@@ -4,7 +4,7 @@ import net.blay09.mods.balm.Balm;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class PersistentRevivalDataProvider implements RevivalDataProvider {
 
