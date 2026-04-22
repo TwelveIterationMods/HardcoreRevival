@@ -1,2 +1,2 @@
-- Improved rescue target selection logic to be more stable on client and server
-- Fixed translation keys in config screen
+- Fixed Inventory Totem compatibility not loading correctly
+- Fixed containers not being closed properly on knockout
