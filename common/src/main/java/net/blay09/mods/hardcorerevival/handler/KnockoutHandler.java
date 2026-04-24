@@ -40,6 +40,7 @@ public class KnockoutHandler {
                 if (attacker instanceof Mob mob) {
                     mob.setTarget(null);
                 }
+                player.setHealth(0.5f);
                 return damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) || damageSource.is(HardcoreRevivalManager.NOT_RESCUED_IN_TIME);
             }
 
