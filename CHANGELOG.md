@@ -1,1 +1,1 @@
-- Updated to Minecraft 26.1
+- Fixed damage still being applied while knocked out, which leads to an inconsistent death state that may result in the player dying without triggering graves or other death-related events
