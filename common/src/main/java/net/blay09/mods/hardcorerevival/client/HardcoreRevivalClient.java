@@ -143,7 +143,7 @@ public class HardcoreRevivalClient {
             GuiHelper.drawGradientRectW(guiGraphics, 0, 0, mc.getWindow().getWidth(), mc.getWindow().getHeight(), 0x60500000, 0x90FF0000);
             poseStack.popMatrix();
 
-            if (mc.screen == null || mc.screen instanceof ChatScreen) {
+            if (mc.gui.screen() == null || mc.gui.screen() instanceof ChatScreen) {
                 int width = window.getGuiScaledWidth();
                 int height = window.getGuiScaledHeight();
                 GuiHelper.renderKnockedOutTitle(guiGraphics, width);
@@ -195,7 +195,7 @@ public class HardcoreRevivalClient {
                 stopRescuing();
                 if (!wasKnockedOut) {
                     Balm.hooks().setForcedPose(client.player, Pose.FALL_FLYING);
-                    client.setScreen(new KnockoutScreen());
+                    client.gui.setScreen(new KnockoutScreen());
                     wasKnockedOut = true;
                 }
 
@@ -207,8 +207,8 @@ public class HardcoreRevivalClient {
                 }
 
                 // If knockout screen is still shown, close it
-                if (client.screen instanceof KnockoutScreen) {
-                    client.setScreen(null);
+                if (client.gui.screen() instanceof KnockoutScreen) {
+                    client.gui.setScreen(null);
                 }
 
                 if (client.options.keyUse.isDown() && canRescueOthers(client.player)) {

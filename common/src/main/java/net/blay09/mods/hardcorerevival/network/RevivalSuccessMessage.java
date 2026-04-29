@@ -28,7 +28,7 @@ public record RevivalSuccessMessage(int entityId) implements CustomPacketPayload
         }
 
         if (message.entityId == mc.player.getId()) {
-            mc.setScreen(null);
+            mc.gui.setScreen(null);
         }
 
         Entity entity = mc.level.getEntity(message.entityId);
