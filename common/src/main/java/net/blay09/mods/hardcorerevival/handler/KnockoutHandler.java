@@ -10,12 +10,11 @@ import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.PlayerHardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.api.PlayerAboutToKnockOutEvent;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
-import net.minecraft.core.component.DataComponents;
+import net.blay09.mods.hardcorerevival.mixin.LivingEntityAccessor;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
@@ -45,6 +44,10 @@ public class KnockoutHandler {
             }
 
             if (isKnockoutEnabledFor(player, damageSource)) {
+                if (((LivingEntityAccessor) player).callCheckTotemDeathProtection(damageSource)) {
+                    return false;
+                }
+
                 final var aboutToKnockOutEvent = new PlayerAboutToKnockOutEvent(player, damageSource);
                 PlayerAboutToKnockOutEvent.EVENT.invoker().accept(aboutToKnockOutEvent);
 
@@ -57,18 +60,6 @@ public class KnockoutHandler {
         }
 
         return true;
-    }
-
-    private static boolean holdsDeathProtectionItem(ServerPlayer player) {
-        for (final var hand : InteractionHand.values()) {
-            final var itemStack = player.getItemInHand(hand);
-            final var deathProtection = itemStack.get(DataComponents.DEATH_PROTECTION);
-            if (deathProtection != null) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private static boolean isKnockoutEnabledFor(ServerPlayer player, DamageSource damageSource) {
@@ -94,7 +85,7 @@ public class KnockoutHandler {
             return false;
         }
 
-        return !holdsDeathProtectionItem(player);
+        return true;
     }
 
     public static void onPlayerTick(ServerPlayer player) {
