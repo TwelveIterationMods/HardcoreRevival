@@ -14,14 +14,13 @@ import static org.spongepowered.asm.mixin.injection.At.Shift;
 @Mixin(ServerGamePacketListenerImpl.class)
 public class ServerGamePacketListenerImplMixin {
 
-    @Inject(method = "handleMovePlayer(Lnet/minecraft/network/protocol/game/ServerboundMovePlayerPacket;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/protocol/PacketUtils;ensureRunningOnSameThread(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketListener;Lnet/minecraft/server/level/ServerLevel;)V", shift = Shift.AFTER), cancellable = true)
-    public void handleMovePlayer(ServerboundMovePlayerPacket packet, CallbackInfo ci) {
-        ServerGamePacketListenerImpl netHandler = (ServerGamePacketListenerImpl) (Object) this;
-        if (MixinHooks.shouldCancelMovement(netHandler.player)) {
-            MixinHooks.handleProcessPlayerRotation(netHandler.player, packet);
-            ci.cancel();
-        }
-    }
+//    @Inject(method = "handleMovePlayer(Lnet/minecraft/network/protocol/game/ServerboundMovePlayerPacket;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/protocol/PacketUtils;ensureRunningOnSameThread(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketListener;Lnet/minecraft/server/level/ServerLevel;)V", shift = Shift.AFTER), cancellable = true)
+//    public void handleMovePlayer(ServerboundMovePlayerPacket packet, CallbackInfo ci) {
+//        ServerGamePacketListenerImpl netHandler = (ServerGamePacketListenerImpl) (Object) this;
+//        if (MixinHooks.shouldCancelMovement(netHandler.player)) {
+//            MixinHooks.handleProcessPlayerRotation(netHandler.player, packet);
+//        }
+//    }
 
     @Inject(method = "handlePlayerAction(Lnet/minecraft/network/protocol/game/ServerboundPlayerActionPacket;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/protocol/PacketUtils;ensureRunningOnSameThread(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketListener;Lnet/minecraft/server/level/ServerLevel;)V", shift = Shift.AFTER), cancellable = true)
     public void handlePlayerAction(ServerboundPlayerActionPacket packet, CallbackInfo ci) {
