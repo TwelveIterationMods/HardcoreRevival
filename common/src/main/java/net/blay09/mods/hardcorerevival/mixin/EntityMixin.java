@@ -15,20 +15,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Entity.class)
 public class EntityMixin {
 
-//    @ModifyVariable(
-//            method = "move(Lnet/minecraft/world/entity/MoverType;Lnet/minecraft/world/phys/Vec3;)V",
-//            at = @At("HEAD"),
-//            argsOnly = true,
-//            index = 2 // 0 = this, 1 = MoverType, 2 = Vec3
-//    )
-//    private Vec3 cancelMovement(Vec3 pos) {
-//        Entity entity = (Entity) (Object) this;
-//        if (MixinHooks.shouldCancelMovement(entity)) {
-//            return Vec3.ZERO;
-//        }
-//        return pos;
-//    }
-
     @Inject(method = "fireImmune()Z", at = @At("HEAD"), cancellable = true)
     private void fireImmune(CallbackInfoReturnable<Boolean> cir) {
         Entity entity = (Entity) (Object) this;
