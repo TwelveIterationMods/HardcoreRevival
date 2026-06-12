@@ -14,16 +14,20 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.scores.Team;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.UUID;
 
 public class HardcoreRevivalManager {
     public static final ResourceKey<DamageType> NOT_RESCUED_IN_TIME = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(HardcoreRevival.MOD_ID, "not_rescued_in_time"));
@@ -45,6 +49,8 @@ public class HardcoreRevivalManager {
 
         revivalData.setKnockedOut(true);
         revivalData.setKnockoutTicksPassed(0);
+        Entity attacker = source.getEntity();
+        revivalData.setKnockoutAttackerId(attacker != null ? attacker.getUUID() : null);
         // Fire event for compatibility addons
         Balm.getEvents().fireEvent(new PlayerKnockedOutEvent(player, source));
 
@@ -150,7 +156,12 @@ public class HardcoreRevivalManager {
         }
 
         final var damageTypes = player.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
-        final var damageSource = new DamageSource(damageTypes.getHolderOrThrow(NOT_RESCUED_IN_TIME));
+        final var damageType = damageTypes.getHolderOrThrow(NOT_RESCUED_IN_TIME);
+        final var knockoutAttackerId = getRevivalData(player).getKnockoutAttackerId();
+        final var knockoutAttacker = knockoutAttackerId != null ? findLoadedEntity(player.getServer(), knockoutAttackerId) : null;
+        final var damageSource = knockoutAttacker != null
+                ? new DamageSource(damageType, knockoutAttacker)
+                : new DamageSource(damageType);
         player.hurt(damageSource, Float.MAX_VALUE);
         reset(player);
     }
@@ -159,8 +170,22 @@ public class HardcoreRevivalManager {
         HardcoreRevivalData revivalData = getRevivalData(player);
         revivalData.setKnockedOut(false);
         revivalData.setKnockoutTicksPassed(0);
+        revivalData.setKnockoutAttackerId(null);
 
         updateKnockoutEffects(player);
+    }
+
+    @Nullable
+    private Entity findLoadedEntity(@Nullable MinecraftServer server, UUID entityId) {
+        if (server != null) {
+            for (ServerLevel level : server.getAllLevels()) {
+                Entity entity = level.getEntity(entityId);
+                if (entity != null) {
+                    return entity;
+                }
+            }
+        }
+        return null;
     }
 
     public void updateKnockoutEffects(Player player) {

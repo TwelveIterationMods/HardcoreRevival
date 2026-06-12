@@ -4,6 +4,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.UUID;
+
 public class InvalidHardcoreRevivalData implements HardcoreRevivalData {
 
     public static final HardcoreRevivalData INSTANCE = new InvalidHardcoreRevivalData();
@@ -24,6 +26,16 @@ public class InvalidHardcoreRevivalData implements HardcoreRevivalData {
     @Override
     public int getKnockoutTicksPassed() {
         return 0;
+    }
+
+    @Override
+    public void setKnockoutAttackerId(@Nullable UUID knockoutAttackerId) {
+    }
+
+    @Nullable
+    @Override
+    public UUID getKnockoutAttackerId() {
+        return null;
     }
 
     @Override

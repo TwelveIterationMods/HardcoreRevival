@@ -2,14 +2,19 @@ package net.blay09.mods.hardcorerevival.capability;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.UUID;
 
 public class HardcoreRevivalDataImpl implements HardcoreRevivalData {
 	private static final String KNOCKED_OUT = "KnockedOut";
 	private static final String KNOCKOUT_TICKS_PASSED = "KnockoutTicksPassed";
+	private static final String KNOCKOUT_ATTACKER = "KnockoutAttacker";
 	private static final String LOGOUT_WORLD_TIME = "LogoutWorldTime";
 
 	private boolean knockedOut;
 	private int knockoutTicksPassed;
+	private UUID knockoutAttackerId;
 	private long logoutWorldTime;
 	private int rescueTime;
 	private Player rescueTarget;
@@ -32,6 +37,17 @@ public class HardcoreRevivalDataImpl implements HardcoreRevivalData {
 	@Override
 	public int getKnockoutTicksPassed() {
 		return knockoutTicksPassed;
+	}
+
+	@Override
+	public void setKnockoutAttackerId(@Nullable UUID knockoutAttackerId) {
+		this.knockoutAttackerId = knockoutAttackerId;
+	}
+
+	@Nullable
+	@Override
+	public UUID getKnockoutAttackerId() {
+		return knockoutAttackerId;
 	}
 
 	@Override
@@ -69,6 +85,9 @@ public class HardcoreRevivalDataImpl implements HardcoreRevivalData {
 		CompoundTag tagCompound = new CompoundTag();
 		tagCompound.putBoolean(KNOCKED_OUT, isKnockedOut());
 		tagCompound.putInt(KNOCKOUT_TICKS_PASSED, getKnockoutTicksPassed());
+		if (knockoutAttackerId != null) {
+			tagCompound.putUUID(KNOCKOUT_ATTACKER, knockoutAttackerId);
+		}
 		tagCompound.putLong(LOGOUT_WORLD_TIME, getLogoutWorldTime());
 		return tagCompound;
 	}
@@ -77,6 +96,7 @@ public class HardcoreRevivalDataImpl implements HardcoreRevivalData {
 	public void deserialize(CompoundTag tag) {
 		setKnockedOut(tag.getBoolean(KNOCKED_OUT));
 		setKnockoutTicksPassed(tag.getInt(KNOCKOUT_TICKS_PASSED));
+		setKnockoutAttackerId(tag.hasUUID(KNOCKOUT_ATTACKER) ? tag.getUUID(KNOCKOUT_ATTACKER) : null);
 		setLogoutWorldTime(tag.getLong(LOGOUT_WORLD_TIME));
 	}
 }
