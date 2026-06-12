@@ -1,6 +1,9 @@
 package net.blay09.mods.hardcorerevival;
 
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.UUID;
 
 public interface RevivalDataProvider {
     void setKnockedOut(Player player, boolean knockedOut);
@@ -10,6 +13,11 @@ public interface RevivalDataProvider {
     void setKnockoutTicksPassed(Player player, int knockoutTicksPassed);
 
     int getKnockoutTicksPassed(Player player);
+
+    void setKnockoutAttackerId(Player player, @Nullable UUID knockoutAttackerId);
+
+    @Nullable
+    UUID getKnockoutAttackerId(Player player);
 
     void setLastKnockoutTicksPassed(Player player, int lastKnockoutTicksPassed);
 

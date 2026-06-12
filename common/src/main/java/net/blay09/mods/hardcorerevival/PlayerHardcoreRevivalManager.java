@@ -4,6 +4,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.UUID;
+
 public class PlayerHardcoreRevivalManager {
 
     private static final RevivalDataProvider persistentDataProvider = new PersistentRevivalDataProvider();
@@ -27,6 +29,15 @@ public class PlayerHardcoreRevivalManager {
 
     public static int getKnockoutTicksPassed(Player player) {
         return getRevivalDataProvider(player.level()).getKnockoutTicksPassed(player);
+    }
+
+    public static void setKnockoutAttackerId(Player player, @Nullable UUID knockoutAttackerId) {
+        getRevivalDataProvider(player.level()).setKnockoutAttackerId(player, knockoutAttackerId);
+    }
+
+    @Nullable
+    public static UUID getKnockoutAttackerId(Player player) {
+        return getRevivalDataProvider(player.level()).getKnockoutAttackerId(player);
     }
 
     public static void setLastKnockoutTicksPassed(Player player, int lastKnockoutTicksPassed) {

@@ -5,11 +5,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.UUID;
+
 public class PersistentRevivalDataProvider implements RevivalDataProvider {
 
     private static final String TAG_NAME = "HardcoreRevivalData";
     private static final String KNOCKED_OUT = "KnockedOut";
     private static final String KNOCKOUT_TICKS_PASSED = "KnockoutTicksPassed";
+    private static final String KNOCKOUT_ATTACKER = "KnockoutAttacker";
     private static final String LAST_KNOCKOUT_TICKS_PASSED = "LastKnockoutTicksPassed";
     private static final String LAST_RESCUED_AT = "LastRescuedAt";
     private static final String LAST_KNOCKOUT_AT = "LastKnockoutAt";
@@ -41,6 +44,22 @@ public class PersistentRevivalDataProvider implements RevivalDataProvider {
     @Override
     public int getKnockoutTicksPassed(Player player) {
         return getRevivalData(player).getInt(KNOCKOUT_TICKS_PASSED);
+    }
+
+    @Override
+    public void setKnockoutAttackerId(Player player, @Nullable UUID knockoutAttackerId) {
+        if (knockoutAttackerId != null) {
+            getRevivalData(player).putUUID(KNOCKOUT_ATTACKER, knockoutAttackerId);
+        } else {
+            getRevivalData(player).remove(KNOCKOUT_ATTACKER);
+        }
+    }
+
+    @Nullable
+    @Override
+    public UUID getKnockoutAttackerId(Player player) {
+        final var tag = getRevivalData(player);
+        return tag.hasUUID(KNOCKOUT_ATTACKER) ? tag.getUUID(KNOCKOUT_ATTACKER) : null;
     }
 
     @Override

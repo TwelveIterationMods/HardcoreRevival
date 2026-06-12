@@ -36,6 +36,17 @@ public class InMemoryRevivalDataProvider implements RevivalDataProvider {
     }
 
     @Override
+    public void setKnockoutAttackerId(Player player, @Nullable UUID knockoutAttackerId) {
+        getPlayerData(player).setKnockoutAttackerId(knockoutAttackerId);
+    }
+
+    @Nullable
+    @Override
+    public UUID getKnockoutAttackerId(Player player) {
+        return getPlayerData(player).getKnockoutAttackerId();
+    }
+
+    @Override
     public void setLastKnockoutTicksPassed(Player player, int lastKnockoutTicksPassed) {
         getPlayerData(player).setLastKnockoutTicksPassed(lastKnockoutTicksPassed);
     }
