@@ -3,9 +3,12 @@ package net.blay09.mods.hardcorerevival;
 import net.minecraft.world.entity.player.Player;
 import org.jspecify.annotations.Nullable;
 
+import java.util.UUID;
+
 class InMemoryPlayerRevivalData {
     private boolean knockedOut;
     private int knockoutTicksPassed;
+    private UUID knockoutAttackerId;
     private int lastKnockoutTicksPassed;
     private long lastRescuedAt;
     private long lastKnockoutAt;
@@ -27,6 +30,15 @@ class InMemoryPlayerRevivalData {
 
     public void setKnockoutTicksPassed(int knockoutTicksPassed) {
         this.knockoutTicksPassed = knockoutTicksPassed;
+    }
+
+    @Nullable
+    public UUID getKnockoutAttackerId() {
+        return knockoutAttackerId;
+    }
+
+    public void setKnockoutAttackerId(@Nullable UUID knockoutAttackerId) {
+        this.knockoutAttackerId = knockoutAttackerId;
     }
 
     public int getLastKnockoutTicksPassed() {
