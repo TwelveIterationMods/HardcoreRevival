@@ -1,2 +1,2 @@
-- Fixed Inventory Totem compatibility not loading correctly
-- Fixed containers not being closed properly on knockout
+- Fixed movement issues when used with Sable
+- Fixed deaths not being attributed to the attacker entity when time runs out
