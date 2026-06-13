@@ -21,6 +21,12 @@ public class MixinHooks {
         return entity instanceof Player player && PlayerHardcoreRevivalManager.isKnockedOut(player);
     }
 
+    public static void handleProcessPlayerRotation(ServerPlayer player, ServerboundMovePlayerPacket packet) {
+        float yaw = packet.getYRot(player.getYRot());
+        float pitch = packet.getXRot(player.getXRot());
+        player.absRotateTo(yaw, pitch);
+    }
+
     public static boolean shouldCancelToss(Player player, ItemStack itemStack) {
         return PlayerHardcoreRevivalManager.isKnockedOut(player) && !KnockoutRestrictionHandler.mayTossItemKnockedOut(itemStack);
     }
