@@ -24,7 +24,7 @@ public class MixinHooks {
     public static void handleProcessPlayerRotation(ServerPlayer player, ServerboundMovePlayerPacket packet) {
         float yaw = packet.getYRot(player.getYRot());
         float pitch = packet.getXRot(player.getXRot());
-        player.absSnapTo(player.getX(), player.getY(), player.getZ(), yaw, pitch);
+        player.absSnapRotationTo(yaw, pitch);
     }
 
     public static boolean shouldCancelToss(Player player, ItemStack itemStack) {
