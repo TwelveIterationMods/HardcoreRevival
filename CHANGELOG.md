@@ -1,1 +1,1 @@
-- Improved rescue target selection logic to be more stable on client and server
+- Fixed deaths not being attributed to the attacker entity when time runs out
