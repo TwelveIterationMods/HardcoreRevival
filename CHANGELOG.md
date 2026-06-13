@@ -1,1 +1,2 @@
-- Fixed damage still being applied while knocked out, which leads to an inconsistent death state that may result in the player dying without triggering graves or other death-related events
+- Fixed brittle mod compatibility for Totem checks on Fabric
+- Fixed deaths not being attributed to the attacker entity when time runs out
