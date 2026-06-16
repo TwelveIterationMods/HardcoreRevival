@@ -33,7 +33,7 @@ public class KnockoutHandler {
         ServerTickCallback.ServerPlayerTick.BEFORE.register(KnockoutHandler::onPlayerTick);
     }
 
-    public static boolean allowPlayerDeath(LivingEntity entity, DamageSource damageSource) {
+    public static boolean allowPlayerDeath(LivingEntity entity, DamageSource damageSource, float damage) {
         if (entity instanceof ServerPlayer player) {
             if (PlayerHardcoreRevivalManager.isKnockedOut(player)) {
                 Entity attacker = damageSource.getEntity();
