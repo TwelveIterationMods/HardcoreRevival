@@ -1,2 +1,1 @@
-- Fixed brittle mod compatibility for Totem checks on Fabric
-- Fixed deaths not being attributed to the attacker entity when time runs out
+- Updated to Minecraft 26.2
