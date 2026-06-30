@@ -2,12 +2,15 @@ package net.blay09.mods.hardcorerevival.handler;
 
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.event.*;
-import net.blay09.mods.hardcorerevival.HardcoreRevival;
+import net.blay09.mods.balm.api.event.LivingDamageEvent;
+import net.blay09.mods.balm.api.event.PlayerRespawnEvent;
+import net.blay09.mods.balm.api.event.TickPhase;
+import net.blay09.mods.balm.api.event.TickType;
+import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.PlayerHardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.api.PlayerAboutToKnockOutEvent;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
-import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
+import net.blay09.mods.hardcorerevival.tag.ModDamageTypeTags;
 import net.blay09.mods.hardcorerevival.tag.ModItemTags;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -15,14 +18,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.item.Items;
-
-import java.util.Objects;
-
 
 public class KnockoutHandler {
 
@@ -42,7 +40,7 @@ public class KnockoutHandler {
                 if (attacker instanceof Mob mob) {
                     mob.setTarget(null);
                 }
-                if (!damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && !damageSource.is(HardcoreRevivalManager.NOT_RESCUED_IN_TIME)) {
+                if (!damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && !bypassesKnockout(player, damageSource)) {
                     event.setCanceled(true);
                 }
                 return;
@@ -78,9 +76,7 @@ public class KnockoutHandler {
             return false;
         }
 
-        boolean canDamageSourceKnockout = !damageSource.is(DamageTypes.FELL_OUT_OF_WORLD) && !damageSource.is(HardcoreRevivalManager.NOT_RESCUED_IN_TIME);
-        final var damageSourceId = player.getServer().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getKey(damageSource.type());
-        if (!canDamageSourceKnockout || HardcoreRevivalConfig.getActive().instantDeathSources.contains(damageSourceId)) {
+        if (bypassesKnockout(player, damageSource)) {
             return false;
         }
 
@@ -103,6 +99,20 @@ public class KnockoutHandler {
         }
 
         return true;
+    }
+
+    private static boolean bypassesKnockout(ServerPlayer player, DamageSource damageSource) {
+        if (damageSource.is(HardcoreRevivalManager.NOT_RESCUED_IN_TIME) || damageSource.is(ModDamageTypeTags.BYPASSES_KNOCKOUT)) {
+            return true;
+        }
+
+        final var server = player.getServer();
+        if (server == null) {
+            return false;
+        }
+
+        final var damageSourceId = server.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getKey(damageSource.type());
+        return HardcoreRevivalConfig.getActive().instantDeathSources.contains(damageSourceId);
     }
 
     public static void onPlayerTick(ServerPlayer player) {
