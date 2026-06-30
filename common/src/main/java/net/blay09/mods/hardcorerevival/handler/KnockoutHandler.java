@@ -8,12 +8,12 @@ import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.mixin.LivingEntityAccessor;
+import net.blay09.mods.hardcorerevival.tag.ModDamageTypeTags;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
@@ -39,14 +39,13 @@ public class KnockoutHandler {
                 if (attacker instanceof Mob mob) {
                     mob.setTarget(null);
                 }
-                if (!damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && !damageSource.is(HardcoreRevivalManager.NOT_RESCUED_IN_TIME)) {
+                if (!damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && !bypassesKnockout(player, damageSource)) {
                     event.setCanceled(true);
                 }
                 return;
             }
 
-            boolean canDamageSourceKnockout = !damageSource.is(DamageTypes.FELL_OUT_OF_WORLD) && !damageSource.is(HardcoreRevivalManager.NOT_RESCUED_IN_TIME);
-            if (canDamageSourceKnockout && isKnockoutEnabledFor(player, damageSource) && player.getHealth() - event.getDamageAmount() <= 0f) {
+            if (!bypassesKnockout(player, damageSource) && isKnockoutEnabledFor(player, damageSource) && player.getHealth() - event.getDamageAmount() <= 0f) {
                 // Reduce damage to prevent the player from dying
                 event.setDamageAmount(Math.min(event.getDamageAmount(), Math.max(0f, player.getHealth() - 1f)));
 
@@ -66,12 +65,6 @@ public class KnockoutHandler {
             return false;
         }
 
-        boolean canDamageSourceKnockout = !damageSource.is(DamageTypes.FELL_OUT_OF_WORLD) && !damageSource.is(HardcoreRevivalManager.NOT_RESCUED_IN_TIME);
-        final var damageSourceId = player.getServer().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getKey(damageSource.type());
-        if (!canDamageSourceKnockout || HardcoreRevivalConfig.getActive().instantDeathSources.contains(Objects.toString(damageSourceId))) {
-            return false;
-        }
-
         final var attacker = damageSource.getEntity();
         if (attacker != null) {
             final var entityTypeId = BuiltInRegistries.ENTITY_TYPE.getKey(attacker.getType());
@@ -87,6 +80,20 @@ public class KnockoutHandler {
         }
 
         return true;
+    }
+
+    private static boolean bypassesKnockout(ServerPlayer player, DamageSource damageSource) {
+        if (damageSource.is(HardcoreRevivalManager.NOT_RESCUED_IN_TIME) || damageSource.is(ModDamageTypeTags.BYPASSES_KNOCKOUT)) {
+            return true;
+        }
+
+        final var server = player.getServer();
+        if (server == null) {
+            return false;
+        }
+
+        final var damageSourceId = server.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getKey(damageSource.type());
+        return HardcoreRevivalConfig.getActive().instantDeathSources.contains(Objects.toString(damageSourceId));
     }
 
     public static void onPlayerTick(ServerPlayer player) {

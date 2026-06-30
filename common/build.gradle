@@ -10,6 +10,14 @@ minecraft {
     version(minecraft_version)
 }
 
+sourceSets {
+    main {
+        resources {
+            srcDirs 'src/main/generated'
+        }
+    }
+}
+
 dependencies {
     compileOnly "org.spongepowered:mixin:$mixin_version"
 
