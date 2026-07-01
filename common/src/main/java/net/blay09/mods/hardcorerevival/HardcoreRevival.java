@@ -5,6 +5,7 @@ import net.blay09.mods.balm.core.BalmRegistrars;
 import net.blay09.mods.hardcorerevival.command.ReviveCommand;
 import net.blay09.mods.hardcorerevival.compat.Compat;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
+import net.blay09.mods.hardcorerevival.config.HardcoreRevivalRules;
 import net.blay09.mods.hardcorerevival.handler.*;
 import net.blay09.mods.hardcorerevival.network.ModNetworking;
 import net.blay09.mods.hardcorerevival.stats.ModStats;
@@ -19,6 +20,7 @@ public class HardcoreRevival {
 
     public static void initialize(BalmRegistrars registrars) {
         HardcoreRevivalConfig.initialize();
+        HardcoreRevivalRules.initialize();
 
         ModNetworking.initialize(Balm.networking());
         registrars.customStats(ModStats::initialize);
