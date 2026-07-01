@@ -28,7 +28,7 @@
   "hardcorerevival.configuration.rescueRespawnHealth": "Rescue Respawn Health",
   "hardcorerevival.configuration.rescueRespawnHealth.tooltip": "The amount of health to respawn with when a player was rescued, out of 20.",
   "hardcorerevival.configuration.rescueRespawnFoodLevel": "Rescue Respawn Food Level",
-  "hardcorerevival.configuration.rescueRespawnFoodLevel.tooltip": "The food level to respawn with when a player was rescued, out of 20.",
+  "hardcorerevival.configuration.rescueRespawnFoodLevel.tooltip": "The maximum food level to respawn with when a player was rescued, out of 20.",
   "hardcorerevival.configuration.rescueRespawnEffects": "Rescue Respawn Effects",
   "hardcorerevival.configuration.rescueRespawnEffects.tooltip": "Effects applied to a player when rescued, in the format \"effect|duration|amplifier\"",
   "hardcorerevival.configuration.glowOnKnockout": "Glow on Knockout",
