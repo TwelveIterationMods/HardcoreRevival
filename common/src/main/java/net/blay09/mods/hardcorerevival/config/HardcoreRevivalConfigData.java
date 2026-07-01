@@ -33,7 +33,7 @@ public class HardcoreRevivalConfigData implements BalmConfigData {
     @Comment("The amount of health to respawn with when a player was rescued, out of 20.")
     public int rescueRespawnHealth = 1;
 
-    @Comment("The food level to respawn with when a player was rescued, out of 20.")
+    @Comment("The maximum food level to respawn with when a player was rescued, out of 20.")
     public int rescueRespawnFoodLevel = 5;
 
     @ExpectedType(String.class)
