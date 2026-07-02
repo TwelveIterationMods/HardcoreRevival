@@ -17,6 +17,9 @@ balmNeoForge = { module = "net.blay09.mods:balm-neoforge", version.ref = "balm" 
 balmForge = { module = "net.blay09.mods:balm-forge", version.ref = "balm" }
 balmFabric = { module = "net.blay09.mods:balm-fabric", version.ref = "balm" }
 shogiApi = { module = "net.blay09.mods:shogi-api", version.ref = "shogi" }
+shogiCommon = { module = "net.blay09.mods:shogi-common", version.ref = "shogi" }
+shogiNeoForge = { module = "net.blay09.mods:shogi-neoforge", version.ref = "shogi" }
+shogiFabric = { module = "net.blay09.mods:shogi-fabric", version.ref = "shogi" }
 
 neoForm = { module = "net.neoforged:neoform", version.ref = "neoForm" }
 neoForge = { module = "net.neoforged:neoforge", version.ref = "neoForge" }
