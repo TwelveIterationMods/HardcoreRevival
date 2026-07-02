@@ -2,7 +2,5 @@ dependencies {
     implementation("net.blay09.mods:balm-forge:${balm_version}") {
         changing = balm_version.contains("SNAPSHOT")
     }
-    api("net.blay09.mods:shogi-api:${shogi_version}")
-    jarJar("net.blay09.mods:shogi-api:${shogi_version}")
     compileOnly("curse.maven:mrcrayfishs-gun-mod-289479:3224957")
 }

@@ -6,14 +6,6 @@ plugins {
     id "com.modrinth.minotaur"
 }
 
-jarJar.enable()
-tasks.named('jar') {
-    archiveClassifier = 'slim'
-}
-tasks.named('jarJar') {
-    archiveClassifier = null
-}
-
 mixin {
     add(sourceSets.main, "${mod_id}.refmap.json")
 

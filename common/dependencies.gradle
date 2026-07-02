@@ -2,7 +2,4 @@ dependencies {
     implementation("net.blay09.mods:balm-common:${balm_version}") {
         changing = balm_version.endsWith("SNAPSHOT")
     }
-    implementation("net.blay09.mods:shogi-api:${shogi_version}") {
-        changing = shogi_version.contains("SNAPSHOT")
-    }
 }
