@@ -43,6 +43,8 @@
   "hardcorerevival.configuration.allowPistols.tooltip": "If true, knocked out players are still able to fire pistols from Mr Crayfish's Gun Mod.",
   "hardcorerevival.configuration.disableInLonelyMultiplayer": "Disable in Lonely Multiplayer",
   "hardcorerevival.configuration.disableInLonelyMultiplayer.tooltip": "If true, Hardcore Revival will not be active when playing alone in multiplayer.",
+  "hardcorerevival.configuration.disableInNonHardcore": "Disable in Non-Hardcore Worlds",
+  "hardcorerevival.configuration.disableInNonHardcore.tooltip": "If true, Hardcore Revival will only be active in hardcore worlds.",
   "hardcorerevival.configuration.instantDeathSources": "Instant Death Sources",
   "hardcorerevival.configuration.instantDeathSources.tooltip": "The damage sources that kill a player instantly, without a K.O. period.",
   "hardcorerevival.configuration.instantDeathEntityTypes": "Instant Death Entity Types",

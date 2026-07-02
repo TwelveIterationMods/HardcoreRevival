@@ -73,7 +73,9 @@ public class KnockoutHandler {
             }
         }
 
-        if (HardcoreRevivalConfig.getActive().disableInSingleplayer && server.isSingleplayer() && server.getPlayerCount() == 1) {
+        if (HardcoreRevivalConfig.getActive().disableInNonHardcore && !server.isHardcore()) {
+            return false;
+        } else if (HardcoreRevivalConfig.getActive().disableInSingleplayer && server.isSingleplayer() && server.getPlayerCount() == 1) {
             return false;
         } else if (HardcoreRevivalConfig.getActive().disableInLonelyMultiplayer && !server.isSingleplayer() && server.getPlayerCount() == 1) {
             return false;

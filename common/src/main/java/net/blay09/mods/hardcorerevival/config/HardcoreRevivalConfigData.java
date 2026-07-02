@@ -58,6 +58,9 @@ public class HardcoreRevivalConfigData implements BalmConfigData {
     @Comment("If true, Hardcore Revival will not be active when playing alone in multiplayer.")
     public boolean disableInLonelyMultiplayer = false;
 
+    @Comment("If true, Hardcore Revival will only be active in hardcore worlds.")
+    public boolean disableInNonHardcore = false;
+
     @Comment("The damage sources that kill a player instantly, without a K.O. period.")
     @ExpectedType(String.class)
     public List<String> instantDeathSources = Lists.newArrayList("minecraft:lava");
