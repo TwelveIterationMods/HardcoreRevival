@@ -36,6 +36,9 @@ public class HardcoreRevivalConfigData implements BalmConfigData {
     @Comment("The maximum food level to respawn with when a player was rescued, out of 20.")
     public int rescueRespawnFoodLevel = 5;
 
+    @Comment("The penalty to apply to the player's food level when they were rescued, out of 20.")
+    public int rescueRespawnFoodLevelDecrease = 0;
+
     @ExpectedType(String.class)
     @Comment("Effects applied to a player when rescued, in the format \"effect|duration|amplifier\"")
     public List<String> rescueRespawnEffects = List.of("minecraft:hunger|600|0", "minecraft:weakness|1200|0");

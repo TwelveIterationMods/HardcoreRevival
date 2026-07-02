@@ -105,7 +105,7 @@ public class HardcoreRevivalManager {
             HardcoreRevivalConfigData config = HardcoreRevivalConfig.getActive();
             player.setHealth(config.rescueRespawnHealth);
             final var foodData = player.getFoodData();
-            foodData.setFoodLevel(Math.min(foodData.getFoodLevel(), config.rescueRespawnFoodLevel));
+            foodData.setFoodLevel(Math.min(foodData.getFoodLevel() - config.rescueRespawnFoodLevelDecrease, config.rescueRespawnFoodLevel));
             // client only, won't bother: player.getFoodStats().setFoodSaturationLevel((float) config.getRescueRespawnFoodSaturation());
 
             for (String effectString : config.rescueRespawnEffects) {
