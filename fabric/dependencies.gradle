@@ -2,6 +2,8 @@ dependencies {
     modImplementation("net.blay09.mods:balm-fabric:${balm_version}") {
         changing = balm_version.contains("SNAPSHOT")
     }
+    modApi("net.blay09.mods:shogi-api:${shogi_version}")
+    include("net.blay09.mods:shogi-api:${shogi_version}")
     modCompileOnly "com.terraformersmc:modmenu:$modmenu_version"
     modCompileOnly "dev.emi:trinkets:3.10.0"
 }
