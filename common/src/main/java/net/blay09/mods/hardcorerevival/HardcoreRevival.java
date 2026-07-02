@@ -5,6 +5,7 @@ import net.blay09.mods.balm.common.config.ConfigLocalization;
 import net.blay09.mods.hardcorerevival.command.ReviveCommand;
 import net.blay09.mods.hardcorerevival.compat.Compat;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
+import net.blay09.mods.hardcorerevival.config.HardcoreRevivalRules;
 import net.blay09.mods.hardcorerevival.handler.*;
 import net.blay09.mods.hardcorerevival.network.ModNetworking;
 import net.blay09.mods.hardcorerevival.stats.ModStats;
@@ -19,6 +20,7 @@ public class HardcoreRevival {
     public static void initialize() {
         ConfigLocalization.enableModernTranslationKeys(MOD_ID);
         HardcoreRevivalConfig.initialize();
+        HardcoreRevivalRules.initialize();
 
         ModNetworking.initialize(Balm.getNetworking());
         ModStats.initialize(Balm.getStats());

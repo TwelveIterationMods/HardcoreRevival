@@ -5,14 +5,14 @@ import net.blay09.mods.hardcorerevival.api.PlayerKnockedOutEvent;
 import net.blay09.mods.hardcorerevival.api.PlayerRescuedEvent;
 import net.blay09.mods.hardcorerevival.api.PlayerRevivedEvent;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
-import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfigData;
+import net.blay09.mods.hardcorerevival.config.HardcoreRevivalRules;
 import net.blay09.mods.hardcorerevival.handler.KnockoutSyncHandler;
 import net.blay09.mods.hardcorerevival.mixin.PlayerAccessor;
 import net.blay09.mods.hardcorerevival.mixin.ServerPlayerAccessor;
 import net.blay09.mods.hardcorerevival.network.RevivalProgressMessage;
 import net.blay09.mods.hardcorerevival.network.RevivalSuccessMessage;
 import net.blay09.mods.hardcorerevival.stats.ModStats;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.blay09.mods.shogi.context.MutableShogiContext;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -20,7 +20,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Pose;
@@ -102,42 +101,11 @@ public class HardcoreRevivalManager {
         player.awardStat(ModStats.timesRescued);
 
         if (applyEffects) {
-            HardcoreRevivalConfigData config = HardcoreRevivalConfig.getActive();
-            player.setHealth(config.rescueRespawnHealth);
-            final var foodData = player.getFoodData();
-            foodData.setFoodLevel(Math.min(foodData.getFoodLevel(), config.rescueRespawnFoodLevel));
-            // client only, won't bother: player.getFoodStats().setFoodSaturationLevel((float) config.getRescueRespawnFoodSaturation());
-
-            for (String effectString : config.rescueRespawnEffects) {
-                String[] parts = effectString.split("\\|");
-                ResourceLocation registryName = ResourceLocation.tryParse(parts[0]);
-                if (registryName != null) {
-                    final var holder = BuiltInRegistries.MOB_EFFECT.getHolder(registryName);
-                    if (holder.isPresent()) {
-                        int duration = tryParseInt(parts.length >= 2 ? parts[1] : null, 600);
-                        int amplifier = tryParseInt(parts.length >= 3 ? parts[2] : null, 0);
-                        player.addEffect(new MobEffectInstance(holder.get(), duration, amplifier));
-                    } else {
-                        HardcoreRevival.logger.info("Invalid rescue potion effect '{}'", parts[0]);
-                    }
-                } else {
-                    HardcoreRevival.logger.info("Invalid rescue potion effect '{}'", parts[0]);
-                }
-            }
+            final var context = MutableShogiContext.of(player);
+            HardcoreRevivalRules.revived.getOrDefault(context);
         }
 
         Balm.getEvents().fireEvent(new PlayerRevivedEvent(player));
-    }
-
-    private static int tryParseInt(@Nullable String text, int defaultVal) {
-        if (text != null) {
-            try {
-                return Integer.parseInt(text);
-            } catch (NumberFormatException e) {
-                return defaultVal;
-            }
-        }
-        return defaultVal;
     }
 
     public static void finishRescue(Player player) {
