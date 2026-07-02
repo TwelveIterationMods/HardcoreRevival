@@ -8,4 +8,8 @@ dependencies {
             prefer libs.shogiApi.get().version
         }
     }
+    compileOnly(libs.shogiCommon)
+    implementation(libs.shogiNeoForge) {
+        changing = libs.versions.shogi.get().contains("SNAPSHOT")
+    }
 }

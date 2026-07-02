@@ -3,6 +3,7 @@ dependencies {
         changing = libs.versions.balm.get().endsWith("SNAPSHOT")
     }
     api(libs.shogiApi)
+    compileOnly(libs.shogiCommon)
     jarJar("net.blay09.mods:shogi-api:${libs.shogiApi.get().version}")
     compileOnly("curse.maven:mrcrayfishs-gun-mod-289479:3224957")
 }
