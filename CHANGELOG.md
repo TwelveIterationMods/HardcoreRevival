@@ -1,2 +1,5 @@
-- Fixed movement issues when used with Sable
-- Fixed deaths not being attributed to the attacker entity when time runs out
+- Added `rescueRespawnFoodLevelDecrease` option which decreases food level by an exact amount instead of only maxing it out
+- Added `disableInNonHardcore` option which disables knockouts outside of hardcore worlds
+- Added `hardcorerevival:bypasses_knockout` damage type tag as an alternative to the `instantDeathSources` config option
+- Fixed instant death sources not bypassing damage damage protection while knocked out
+- Fixed `rescueRespawnFoodLevel` increasing food above what it was before instead of only maxing food out at that level
