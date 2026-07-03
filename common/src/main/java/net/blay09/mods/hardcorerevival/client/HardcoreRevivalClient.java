@@ -129,7 +129,11 @@ public class HardcoreRevivalClient {
 
     public static void onOpenScreen(OpenScreenEvent event) {
         if (isKnockedOut() && event.getScreen() instanceof InventoryScreen) {
-            event.setScreen(new KnockoutScreen());
+            if (shouldUseKnockoutScreen()) {
+                event.setScreen(new KnockoutScreen());
+            } else {
+                event.setCanceled(true);
+            }
         }
     }
 
@@ -217,7 +221,9 @@ public class HardcoreRevivalClient {
                 stopRescuing();
                 if (!wasKnockedOut) {
                     Balm.getHooks().setForcedPose(client.player, Pose.FALL_FLYING);
-                    client.setScreen(new KnockoutScreen());
+                    if (shouldUseKnockoutScreen()) {
+                        client.setScreen(new KnockoutScreen());
+                    }
                     wasKnockedOut = true;
                 }
 
@@ -247,6 +253,10 @@ public class HardcoreRevivalClient {
                 }
             }
         }
+    }
+
+    private static boolean shouldUseKnockoutScreen() {
+        return HardcoreRevivalConfig.getActive().allowAcceptingFate;
     }
 
     public static void setRevivalProgress(int entityId, float progress) {
