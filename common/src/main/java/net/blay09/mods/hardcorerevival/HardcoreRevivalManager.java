@@ -2,6 +2,8 @@ package net.blay09.mods.hardcorerevival;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.hardcorerevival.api.PlayerKnockedOutEvent;
+import net.blay09.mods.hardcorerevival.api.PlayerRescuedEvent;
+import net.blay09.mods.hardcorerevival.api.PlayerRevivedEvent;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.capability.InvalidHardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
@@ -105,6 +107,8 @@ public class HardcoreRevivalManager {
                 }
             }
         }
+
+        Balm.getEvents().fireEvent(new PlayerRevivedEvent(player));
     }
 
     private int tryParseInt(@Nullable String text, int defaultVal) {
@@ -131,6 +135,8 @@ public class HardcoreRevivalManager {
                 Balm.getNetworking().sendToTracking(rescueTarget, new RevivalSuccessMessage(rescueTarget.getId()));
 
                 revivalData.setRescueTarget(null);
+
+                Balm.getEvents().fireEvent(new PlayerRescuedEvent(rescueTarget, player));
             }
         }
 
