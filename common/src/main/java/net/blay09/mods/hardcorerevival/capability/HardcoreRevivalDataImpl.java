@@ -1,7 +1,6 @@
 package net.blay09.mods.hardcorerevival.capability;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -17,7 +16,7 @@ public class HardcoreRevivalDataImpl implements HardcoreRevivalData {
 	private UUID knockoutAttackerId;
 	private long logoutWorldTime;
 	private int rescueTime;
-	private Player rescueTarget;
+	private @Nullable UUID rescueTargetId;
 
 	@Override
 	public void setKnockedOut(boolean knockedOut) {
@@ -71,13 +70,13 @@ public class HardcoreRevivalDataImpl implements HardcoreRevivalData {
 	}
 
 	@Override
-	public void setRescueTarget(Player rescueTarget) {
-		this.rescueTarget = rescueTarget;
+	public void setRescueTargetId(@Nullable UUID rescueTargetId) {
+		this.rescueTargetId = rescueTargetId;
 	}
 
 	@Override
-	public Player getRescueTarget() {
-		return rescueTarget;
+	public @Nullable UUID getRescueTargetId() {
+		return rescueTargetId;
 	}
 
 	@Override
@@ -98,5 +97,7 @@ public class HardcoreRevivalDataImpl implements HardcoreRevivalData {
 		setKnockoutTicksPassed(tag.getInt(KNOCKOUT_TICKS_PASSED));
 		setKnockoutAttackerId(tag.hasUUID(KNOCKOUT_ATTACKER) ? tag.getUUID(KNOCKOUT_ATTACKER) : null);
 		setLogoutWorldTime(tag.getLong(LOGOUT_WORLD_TIME));
+		setRescueTime(0);
+		setRescueTargetId(null);
 	}
 }

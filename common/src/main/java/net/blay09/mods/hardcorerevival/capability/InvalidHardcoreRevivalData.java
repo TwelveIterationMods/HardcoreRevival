@@ -1,7 +1,6 @@
 package net.blay09.mods.hardcorerevival.capability;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -57,12 +56,12 @@ public class InvalidHardcoreRevivalData implements HardcoreRevivalData {
     }
 
     @Override
-    public void setRescueTarget(@Nullable Player rescueTarget) {
+    public void setRescueTargetId(@Nullable UUID rescueTargetId) {
     }
 
     @Nullable
     @Override
-    public Player getRescueTarget() {
+    public UUID getRescueTargetId() {
         return null;
     }
 

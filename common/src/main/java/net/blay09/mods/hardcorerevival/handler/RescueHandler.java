@@ -41,7 +41,7 @@ public class RescueHandler {
     public static void onPlayerTick(ServerPlayer player) {
         // if (event.side == LogicalSide.SERVER && event.phase == TickEvent.Phase.END) {
         HardcoreRevivalData revivalData = HardcoreRevival.getRevivalData(player);
-        Player rescueTarget = revivalData.getRescueTarget();
+        Player rescueTarget = HardcoreRevival.getManager().getRescueTarget(player, revivalData);
         if (rescueTarget != null) {
             // Stop rescuing if the target logged out
             HardcoreRevivalData rescueTargetData = HardcoreRevival.getRevivalData(rescueTarget);
@@ -73,6 +73,8 @@ public class RescueHandler {
                     }
                 }
             }
+        } else if (revivalData.getRescueTargetId() != null) {
+            HardcoreRevival.getManager().abortRescue(player);
         }
     }
 

@@ -124,7 +124,7 @@ public class HardcoreRevivalManager {
 
     public void finishRescue(Player player) {
         HardcoreRevivalData revivalData = getRevivalData(player);
-        Player rescueTarget = revivalData.getRescueTarget();
+        Player rescueTarget = getRescueTarget(player, revivalData);
         if (rescueTarget != null) {
             MinecraftServer server = rescueTarget.getServer();
             if (server != null) {
@@ -134,7 +134,7 @@ public class HardcoreRevivalManager {
                 Balm.getNetworking().sendTo(rescueTarget, new RevivalSuccessMessage(rescueTarget.getId()));
                 Balm.getNetworking().sendToTracking(rescueTarget, new RevivalSuccessMessage(rescueTarget.getId()));
 
-                revivalData.setRescueTarget(null);
+                revivalData.setRescueTargetId(null);
 
                 Balm.getEvents().fireEvent(new PlayerRescuedEvent(rescueTarget, player));
             }
@@ -145,12 +145,15 @@ public class HardcoreRevivalManager {
 
     public void abortRescue(Player player) {
         HardcoreRevivalData revivalData = getRevivalData(player);
-        Player rescueTarget = revivalData.getRescueTarget();
-        if (rescueTarget != null) {
+        UUID rescueTargetId = revivalData.getRescueTargetId();
+        if (rescueTargetId != null) {
+            Player rescueTarget = getRescueTarget(player, revivalData);
             revivalData.setRescueTime(0);
-            revivalData.setRescueTarget(null);
+            revivalData.setRescueTargetId(null);
             Balm.getNetworking().sendTo(player, new RevivalProgressMessage(-1, -1));
-            KnockoutSyncHandler.sendHardcoreRevivalData(rescueTarget, rescueTarget, getRevivalData(rescueTarget));
+            if (rescueTarget != null) {
+                KnockoutSyncHandler.sendHardcoreRevivalData(rescueTarget, rescueTarget, getRevivalData(rescueTarget));
+            }
 
             Balm.getHooks().setForcedPose(player, null);
         }
@@ -208,7 +211,7 @@ public class HardcoreRevivalManager {
 
     public void startRescue(Player player, Player target) {
         HardcoreRevivalData revivalData = getRevivalData(player);
-        revivalData.setRescueTarget(target);
+        revivalData.setRescueTargetId(target.getUUID());
         revivalData.setRescueTime(0);
         Balm.getNetworking().sendTo(player, new RevivalProgressMessage(target.getId(), 0.1f));
         KnockoutSyncHandler.sendHardcoreRevivalData(target, target, getRevivalData(target), true);
@@ -218,11 +221,21 @@ public class HardcoreRevivalManager {
 
     public boolean isRescuing(Player player) {
         HardcoreRevivalData revivalData = getRevivalData(player);
-        Player rescueTarget = revivalData.getRescueTarget();
-        return rescueTarget != null;
+        return revivalData.getRescueTargetId() != null;
     }
 
     boolean isKnockedOut(Player player) {
         return getRevivalData(player).isKnockedOut();
+    }
+
+    @Nullable
+    public Player getRescueTarget(Player player, HardcoreRevivalData revivalData) {
+        UUID rescueTargetId = revivalData.getRescueTargetId();
+        MinecraftServer server = player.getServer();
+        if (rescueTargetId == null || server == null) {
+            return null;
+        }
+
+        return server.getPlayerList().getPlayer(rescueTargetId);
     }
 }

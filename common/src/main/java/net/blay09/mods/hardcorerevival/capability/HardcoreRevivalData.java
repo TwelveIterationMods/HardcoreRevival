@@ -1,7 +1,6 @@
 package net.blay09.mods.hardcorerevival.capability;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -28,9 +27,10 @@ public interface HardcoreRevivalData {
 
     int getRescueTime();
 
-    void setRescueTarget(Player rescueTarget);
+    void setRescueTargetId(@Nullable UUID rescueTargetId);
 
-    Player getRescueTarget();
+    @Nullable
+    UUID getRescueTargetId();
 
     CompoundTag serialize();
 
