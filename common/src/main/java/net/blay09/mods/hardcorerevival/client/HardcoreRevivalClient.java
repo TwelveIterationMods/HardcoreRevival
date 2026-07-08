@@ -7,6 +7,8 @@ import net.blay09.mods.balm.client.platform.event.callback.ClientTickCallback;
 import net.blay09.mods.balm.client.platform.event.callback.RenderCallback;
 import net.blay09.mods.balm.client.platform.event.callback.ScreenCallback;
 import net.blay09.mods.hardcorerevival.PlayerHardcoreRevivalManager;
+import net.blay09.mods.hardcorerevival.client.hint.HintOverlay;
+import net.blay09.mods.hardcorerevival.compat.Compat;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.network.RescueMessage;
 import net.minecraft.client.Minecraft;
@@ -35,6 +37,8 @@ public class HardcoreRevivalClient {
     private static final double FALLBACK_EPSILON = 1.0E-6;
 
     public static void initialize(BalmClientRegistrars registrars) {
+        Balm.initializeIfLoaded(Compat.SHOGI, "net.blay09.mods.hardcorerevival.compat.ShogiRuleHintRenderers");
+
         ScreenCallback.Opening.EVENT.register(HardcoreRevivalClient::onOpenScreen);
         RenderCallback.UpdateFov.EVENT.register(HardcoreRevivalClient::onFovUpdate);
         RenderCallback.Gui.AFTER.register(HardcoreRevivalClient::onGuiDrawPost);
@@ -156,7 +160,7 @@ public class HardcoreRevivalClient {
                 }
             }
         } else {
-            if (targetEntity != -1 && targetProgress > 0) {
+            if (targetEntity != -1 && targetProgress > 0 && mc.level != null) {
                 Entity entity = mc.level.getEntity(targetEntity);
                 if (entity instanceof Player) {
                     var textComponent = Component.translatable("gui.hardcorerevival.rescuing", entity.getDisplayName());
@@ -176,21 +180,17 @@ public class HardcoreRevivalClient {
                 }
             }
 
-            if (mc.player != null && canRescueOthers(mc.player) && !isRescuing && getRescueTarget(mc.player) != null) {
-                Component rescueKeyText = mc.options.keyUse.getTranslatedKeyMessage();
-                var textComponent = Component.translatable("gui.hardcorerevival.hold_to_rescue", rescueKeyText);
-                guiGraphics.text(mc.font,
-                        textComponent,
-                        mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(textComponent) / 2,
-                        mc.getWindow().getGuiScaledHeight() / 2 + 30,
-                        0xFFFFFFFF,
-                        true);
+            final var rescueTarget = mc.player != null && canRescueOthers(mc.player) ? getRescueTarget(mc.player) : null;
+            if (rescueTarget != null) {
+                HintOverlay.render(guiGraphics);
             }
         }
     }
 
     public static void onClientTick(Minecraft client) {
         if (client.player != null) {
+            HintOverlay.tick();
+
             if (isKnockedOut()) {
                 stopRescuing();
                 if (!wasKnockedOut) {
@@ -252,5 +252,11 @@ public class HardcoreRevivalClient {
 
     public static boolean isBeingRescued() {
         return beingRescued;
+    }
+
+    public static void clearRescueProgress() {
+        isRescuing = false;
+        targetEntity = -1;
+        targetProgress = 0f;
     }
 }

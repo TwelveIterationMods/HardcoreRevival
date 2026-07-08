@@ -4,19 +4,87 @@ import com.mojang.datafixers.util.Either;
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.shogi.Shogi;
 import net.blay09.mods.shogi.ShogiValue;
+import net.blay09.mods.shogi.context.MutableShogiContext;
 import net.blay09.mods.shogi.context.ShogiContext;
+import net.blay09.mods.shogi.context.executor.EffectExecutor;
+import net.blay09.mods.shogi.network.ShogiStreamCodecs;
+import net.blay09.mods.shogi.scope.ShogiScope;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.player.Player;
 import org.jspecify.annotations.Nullable;
+
+import java.util.List;
 
 import static net.blay09.mods.hardcorerevival.HardcoreRevival.id;
 
 public class HardcoreRevivalRules {
 
-    public static final ShogiValue<ShogiContext, ?> revived = Shogi.maybe(id("revived"), HardcoreRevivalRules::applyDefaultRevivedEffects);
+    private static final ShogiScope scope = Shogi.scope(id("rules"), it -> it.setDefaultNamespaces(List.of("hardcorerevival", "shogi")));
+
+    public static final ShogiValue<ShogiContext, ?> revived = scope.maybe(id("revived"), HardcoreRevivalRules::applyDefaultRevivedEffects);
+    public static final ShogiValue<MutableShogiContext, ?> canRevive = scope.maybe(id("can_revive"), HardcoreRevivalRules::allowByDefault);
+    public static final ShogiValue<MutableShogiContext, ?> canBeRevived = scope.maybe(id("can_be_revived"), HardcoreRevivalRules::allowByDefault);
 
     public static void initialize() {
+    }
+
+    public static void applyRevivedEffects(Player player) {
+        final var context = MutableShogiContext.of(player);
+        revived.getOrDefault(context);
+    }
+
+    public static Either<?, ?> simulateRescueRules(Player player, Player target) {
+        return evaluateRescueRules(player, target, EffectExecutor.simulated());
+    }
+
+    public static Either<?, ?> executeRescueRules(Player player, Player target) {
+        return evaluateRescueRules(player, target, EffectExecutor.immediate());
+    }
+
+    private static Either<?, ?> evaluateRescueRules(Player player, Player target, EffectExecutor executor) {
+        final var canReviveContext = createRuleContext(player, target, player, executor);
+        final var canReviveResult = evaluateRule(canRevive, canReviveContext);
+        if (canReviveResult.right().isPresent()) {
+            return canReviveResult;
+        }
+
+        final var canBeRevivedContext = createRuleContext(target, player, target, executor);
+        final var canBeRevivedResult = evaluateRule(canBeRevived, canBeRevivedContext);
+        if (canBeRevivedResult.right().isPresent()) {
+            return canBeRevivedResult;
+        }
+
+        return Either.left(combinePayloads(canReviveResult, canBeRevivedResult));
+    }
+
+    private static MutableShogiContext createRuleContext(Player entity, Player reviver, Player target, EffectExecutor executor) {
+        return MutableShogiContext.create(executor)
+                .withEntity(entity)
+                .withLevel(entity.level())
+                .withBlockPos(entity.blockPosition())
+                .withItemStack(entity.getMainHandItem())
+                .withVariable("reviver", reviver)
+                .withVariable("target", target);
+    }
+
+    private static Either<?, ?> evaluateRule(ShogiValue<MutableShogiContext, ?> rule, MutableShogiContext context) {
+        final var result = rule.get(context);
+        final var payload = Either.unwrap(result);
+        if (result.right().isPresent() && payload instanceof Throwable throwable) {
+            HardcoreRevival.logger.error("Unhandled exception while evaluating revival rules", throwable);
+        }
+        if (!ShogiStreamCodecs.canEncodeEither(result)) {
+            final var message = "Revival rule result cannot be synced: " + payload.getClass().getName();
+            HardcoreRevival.logger.warn(message);
+            return Either.right(new IllegalStateException(message));
+        }
+        return result;
+    }
+
+    private static List<?> combinePayloads(Either<?, ?> first, Either<?, ?> second) {
+        return List.of(Either.unwrap(first), Either.unwrap(second));
     }
 
     private static Either<Boolean, ?> applyDefaultRevivedEffects(ShogiContext context) {
@@ -44,6 +112,10 @@ public class HardcoreRevivalRules {
             }
         }
 
+        return Either.left(true);
+    }
+
+    private static Either<Boolean, ?> allowByDefault(MutableShogiContext context) {
         return Either.left(true);
     }
 

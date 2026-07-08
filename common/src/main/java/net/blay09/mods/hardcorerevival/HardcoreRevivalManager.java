@@ -1,5 +1,6 @@
 package net.blay09.mods.hardcorerevival;
 
+import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.hardcorerevival.api.PlayerKnockedOutEvent;
 import net.blay09.mods.hardcorerevival.api.PlayerRescuedEvent;
@@ -10,7 +11,6 @@ import net.blay09.mods.hardcorerevival.handler.KnockoutSyncHandler;
 import net.blay09.mods.hardcorerevival.network.RevivalProgressMessage;
 import net.blay09.mods.hardcorerevival.network.RevivalSuccessMessage;
 import net.blay09.mods.hardcorerevival.stats.ModStats;
-import net.blay09.mods.shogi.context.MutableShogiContext;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
@@ -98,8 +98,7 @@ public class HardcoreRevivalManager {
         player.awardStat(ModStats.timesRescued);
 
         if (applyEffects) {
-            final var context = MutableShogiContext.of(player);
-            HardcoreRevivalRules.revived.getOrDefault(context);
+            HardcoreRevivalRules.applyRevivedEffects(player);
         }
 
         PlayerRevivedEvent.EVENT.invoker().accept(new PlayerRevivedEvent(player));
@@ -110,6 +109,15 @@ public class HardcoreRevivalManager {
         if (rescueTarget != null) {
             MinecraftServer server = rescueTarget.level().getServer();
             if (server != null) {
+                final var ruleResult = HardcoreRevivalRules.executeRescueRules(player, rescueTarget);
+                if (ruleResult.right().isPresent()) {
+                    abortRescue(player);
+                    if (player instanceof ServerPlayer serverPlayer) {
+                        Balm.networking().sendTo(serverPlayer, new RevivalProgressMessage(-1, -1, ruleResult));
+                    }
+                    return;
+                }
+
                 wakeup(rescueTarget);
                 player.awardStat(ModStats.playersRevived);
 
@@ -131,7 +139,9 @@ public class HardcoreRevivalManager {
         if (rescueTarget != null) {
             PlayerHardcoreRevivalManager.setRescueTime(player, 0);
             PlayerHardcoreRevivalManager.setRescueTarget(player, null);
-            Balm.networking().sendTo(player, new RevivalProgressMessage(-1, -1));
+            if (player instanceof ServerPlayer serverPlayer) {
+                Balm.networking().sendTo(serverPlayer, new RevivalProgressMessage(-1, -1, Either.left(true)));
+            }
             KnockoutSyncHandler.sendHardcoreRevivalData(rescueTarget, rescueTarget);
 
             Balm.hooks().setForcedPose(player, null);
@@ -183,9 +193,19 @@ public class HardcoreRevivalManager {
     }
 
     public static void startRescue(Player player, Player target) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            final var ruleResult = HardcoreRevivalRules.simulateRescueRules(player, target);
+            final var canRevive = ruleResult.left().isPresent();
+            if (canRevive) {
+                Balm.networking().sendTo(serverPlayer, new RevivalProgressMessage(target.getId(), 0.1f, ruleResult));
+            } else {
+                Balm.networking().sendTo(serverPlayer, new RevivalProgressMessage(-1, -1, ruleResult));
+                return;
+            }
+        }
+
         PlayerHardcoreRevivalManager.setRescueTarget(player, target);
         PlayerHardcoreRevivalManager.setRescueTime(player, 0);
-        Balm.networking().sendTo(player, new RevivalProgressMessage(target.getId(), 0.1f));
         KnockoutSyncHandler.sendHardcoreRevivalData(target, target, true);
 
         Balm.hooks().setForcedPose(player, Pose.CROUCHING);
