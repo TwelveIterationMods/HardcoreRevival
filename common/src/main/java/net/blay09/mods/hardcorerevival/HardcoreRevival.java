@@ -5,6 +5,7 @@ import net.blay09.mods.balm.api.proxy.SidedProxy;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalDataImpl;
 import net.blay09.mods.hardcorerevival.capability.InvalidHardcoreRevivalData;
+import net.blay09.mods.hardcorerevival.command.KnockoutCommand;
 import net.blay09.mods.hardcorerevival.command.ReviveCommand;
 import net.blay09.mods.hardcorerevival.compat.Compat;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
@@ -28,6 +29,7 @@ public class HardcoreRevival {
 
         ModNetworking.initialize(Balm.getNetworking());
 
+        Balm.getCommands().register(KnockoutCommand::register);
         Balm.getCommands().register(ReviveCommand::register);
 
         KnockoutHandler.initialize();
