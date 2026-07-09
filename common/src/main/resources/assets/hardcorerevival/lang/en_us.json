@@ -59,6 +59,8 @@
   "hardcorerevival.configuration.disableInSingleplayer.tooltip": "If true, Hardcore Revival will not be active in singleplayer.",
   "hardcorerevival.configuration.allowAcceptingFate": "Allow Accepting Fate",
   "hardcorerevival.configuration.allowAcceptingFate.tooltip": "Set to false to remove the Accept your Fate button and force players to wait out the timer.",
+  "commands.knockout.success.single": "Knocked out %s",
+  "commands.knockout.success.multiple": "Knocked out %s players",
   "commands.revive.success.single": "Revived %s",
   "commands.revive.success.multiple": "Revived %s players",
   "commands.disabled_when_knocked_out": "You cannot use commands while knocked out."

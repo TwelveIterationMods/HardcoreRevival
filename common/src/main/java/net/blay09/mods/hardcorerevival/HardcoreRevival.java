@@ -2,6 +2,7 @@ package net.blay09.mods.hardcorerevival;
 
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.core.BalmRegistrars;
+import net.blay09.mods.hardcorerevival.command.KnockoutCommand;
 import net.blay09.mods.hardcorerevival.command.ReviveCommand;
 import net.blay09.mods.hardcorerevival.compat.Compat;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
@@ -25,6 +26,7 @@ public class HardcoreRevival {
         ModNetworking.initialize(Balm.networking());
         registrars.customStats(ModStats::initialize);
 
+        Balm.commands().register(KnockoutCommand::register);
         Balm.commands().register(ReviveCommand::register);
 
         KnockoutHandler.initialize();
