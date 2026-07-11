@@ -75,11 +75,6 @@ public class HardcoreRevivalRules {
         if (result.right().isPresent() && payload instanceof Throwable throwable) {
             HardcoreRevival.logger.error("Unhandled exception while evaluating revival rules", throwable);
         }
-        if (!ShogiStreamCodecs.canEncodeEither(result)) {
-            final var message = "Revival rule result cannot be synced: " + payload.getClass().getName();
-            HardcoreRevival.logger.warn(message);
-            return Either.right(new IllegalStateException(message));
-        }
         return result;
     }
 

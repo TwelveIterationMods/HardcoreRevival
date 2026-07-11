@@ -1,6 +1,7 @@
 package net.blay09.mods.hardcorerevival.network;
 
 import com.mojang.datafixers.util.Either;
+import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.client.HardcoreRevivalClient;
 import net.blay09.mods.hardcorerevival.client.hint.HintOverlay;
 import net.blay09.mods.shogi.network.ShogiStreamCodecs;
@@ -30,8 +31,12 @@ public record RevivalProgressMessage(int entityId, float progress, @Nullable Eit
     public static void encode(RegistryFriendlyByteBuf buf, RevivalProgressMessage message) {
         ByteBufCodecs.INT.encode(buf, message.entityId);
         ByteBufCodecs.FLOAT.encode(buf, message.progress);
-        buf.writeBoolean(message.ruleHint != null);
-        if (message.ruleHint != null) {
+        final var canEncodeHint = message.ruleHint == null || ShogiStreamCodecs.canEncodeEither(message.ruleHint);
+        if (message.ruleHint != null && !canEncodeHint) {
+            HardcoreRevival.logger.warn("Dropping unsyncable revival rule hint: {}", Either.unwrap(message.ruleHint));
+        }
+        buf.writeBoolean(message.ruleHint != null && canEncodeHint);
+        if (message.ruleHint != null && canEncodeHint) {
             ByteBufCodecs.either(ShogiStreamCodecs.dynamicObjectCodec(), ShogiStreamCodecs.dynamicObjectCodec())
                     .encode(buf, (Either<Object, Object>) message.ruleHint);
         }
