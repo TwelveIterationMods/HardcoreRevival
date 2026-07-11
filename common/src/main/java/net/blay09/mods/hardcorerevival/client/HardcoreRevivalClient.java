@@ -182,7 +182,10 @@ public class HardcoreRevivalClient {
 
             final var rescueTarget = mc.player != null && canRescueOthers(mc.player) ? getRescueTarget(mc.player) : null;
             if (rescueTarget != null) {
-                HintOverlay.render(guiGraphics);
+                if (!isRescuing) {
+                    HintOverlay.renderHoldToRescue(guiGraphics);
+                }
+                HintOverlay.renderHint(guiGraphics);
             }
         }
     }

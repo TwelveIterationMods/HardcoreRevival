@@ -38,15 +38,10 @@ public class HintOverlay {
         }
     }
 
-    public static void render(GuiGraphicsExtractor guiGraphics) {
+    public static void renderHint(GuiGraphicsExtractor guiGraphics) {
         if (hasActiveHint()) {
-            final var nextLine = renderHint(guiGraphics, activeHint);
-            if (nextLine > 0) {
-                return;
-            }
+            renderHint(guiGraphics, activeHint);
         }
-
-        renderHoldToRescue(guiGraphics);
     }
 
     private static boolean hasActiveHint() {
@@ -84,7 +79,7 @@ public class HintOverlay {
         return null;
     }
 
-    private static void renderHoldToRescue(GuiGraphicsExtractor guiGraphics) {
+    public static void renderHoldToRescue(GuiGraphicsExtractor guiGraphics) {
         final var mc = Minecraft.getInstance();
         final var rescueKeyText = mc.options.keyUse.getTranslatedKeyMessage();
         final var textComponent = Component.translatable("gui.hardcorerevival.hold_to_rescue", rescueKeyText);
