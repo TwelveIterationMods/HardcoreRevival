@@ -9,7 +9,4 @@ dependencies {
         }
     }
     compileOnly(libs.shogiCommon)
-    implementation(libs.shogiNeoForge) {
-        changing = libs.versions.shogi.get().contains("SNAPSHOT")
-    }
 }

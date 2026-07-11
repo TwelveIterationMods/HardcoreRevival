@@ -5,7 +5,4 @@ dependencies {
     api(libs.shogiApi)
     include(libs.shogiApi)
     compileOnly(libs.shogiCommon)
-    implementation(libs.shogiFabric) {
-        changing = libs.versions.shogi.get().contains("SNAPSHOT")
-    }
 }
