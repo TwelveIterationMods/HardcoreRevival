@@ -1,3 +1,6 @@
+- Hotfixed crash on revive when Shogi isn't installed
+- Hotfixed "Hold to Rescue" overlapping with the rescue progress message
+
 - Added `/knockout` command to instantly knockout a player
 - Fixed knockout screen opening even if `allowAcceptingFate` is `false`
 - Shogi Support: Added `hardcorerevival:can_revive` rule (and `hardcorerevival:can_be_revived` rule)
