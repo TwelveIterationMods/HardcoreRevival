@@ -48,6 +48,9 @@ public class KnockoutScreen extends Screen {
 
             GuiHelper.renderKnockedOutTitle(guiGraphics, width);
             GuiHelper.renderDeathTimer(guiGraphics, width, height, HardcoreRevivalClient.isBeingRescued());
+
+            final var closeDeathScreenText = Component.translatable("gui.hardcorerevival.close_death_screen");
+            guiGraphics.drawCenteredString(mc.font, closeDeathScreenText, width / 2, height / 2 + 25, 0xFFFFFFFF);
         } else if (buttonDie != null) {
             buttonDie.visible = false;
         }
