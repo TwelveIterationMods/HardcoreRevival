@@ -4,7 +4,11 @@ plugins {
     id 'maven-publish'
 }
 
-archivesBaseName = "${mod_id}-common-${minecraft_version}"
+group = mod_group
+
+base {
+    archivesName = "${mod_id}-common-${minecraft_version}"
+}
 
 minecraft {
     version(minecraft_version)
@@ -72,7 +76,7 @@ publishing {
             var releasesRepoUrl = "https://maven.twelveiterations.com/repository/maven-releases/"
             var snapshotsRepoUrl = "https://maven.twelveiterations.com/repository/maven-snapshots/"
             url = uri(version.toString().endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl)
-            name = "maven"
+            name = "twelveIterationsNexus"
             credentials(PasswordCredentials)
         }
     }
