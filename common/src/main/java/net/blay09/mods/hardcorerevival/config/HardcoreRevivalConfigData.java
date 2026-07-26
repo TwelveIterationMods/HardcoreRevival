@@ -54,6 +54,10 @@ public class HardcoreRevivalConfigData implements BalmConfigData {
     @Synced
     public boolean allowCommands = true;
 
+    @Comment("If true, knocked out players are still able to be teleported.")
+    @Synced
+    public boolean allowTeleports = true;
+
     @Comment("If true, knocked out players are still able to punch nearby enemies.")
     @Synced
     public boolean allowUnarmedMelee = false;
