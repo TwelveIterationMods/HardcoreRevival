@@ -6,6 +6,7 @@
   "mixins": [
     "EntityMixin",
     "PlayerMixin",
+    "ServerPlayerMixin",
     "ServerGamePacketListenerImplMixin",
     "ThrownEnderpearlMixin",
     "LivingEntityMixin",
