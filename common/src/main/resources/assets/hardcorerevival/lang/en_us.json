@@ -45,6 +45,8 @@
   "hardcorerevival.configuration.allowBows.tooltip": "If true, knocked out players are still able to fire bows.",
   "hardcorerevival.configuration.allowPistols": "Allow Pistols",
   "hardcorerevival.configuration.allowPistols.tooltip": "If true, knocked out players are still able to fire pistols from Mr Crayfish's Gun Mod.",
+  "hardcorerevival.configuration.enderPearlsVanishOnKnockout": "Ender Pearls Vanish on Knockout",
+  "hardcorerevival.configuration.enderPearlsVanishOnKnockout.tooltip": "If true, ender pearls will vanish when their owner is knocked out.",
   "hardcorerevival.configuration.disableInLonelyMultiplayer": "Disable in Lonely Multiplayer",
   "hardcorerevival.configuration.disableInLonelyMultiplayer.tooltip": "If true, Hardcore Revival will not be active when playing alone in multiplayer.",
   "hardcorerevival.configuration.disableInNonHardcore": "Disable in Non-Hardcore Worlds",

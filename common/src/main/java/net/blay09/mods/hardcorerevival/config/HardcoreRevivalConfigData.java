@@ -66,6 +66,9 @@ public class HardcoreRevivalConfigData implements BalmConfigData {
     @Synced
     public boolean allowPistols = false;
 
+    @Comment("If true, ender pearls will vanish when their owner is knocked out.")
+    public boolean enderPearlsVanishOnKnockout = true;
+
     @Comment("Set to false to remove the Accept your Fate button and force players to wait out the timer.")
     @Synced
     public boolean allowAcceptingFate = true;

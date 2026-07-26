@@ -11,7 +11,8 @@
     "PlayerAccessor",
     "PlayerMixin",
     "ServerGamePacketListenerImplMixin",
-    "ServerPlayerAccessor"
+    "ServerPlayerAccessor",
+    "ThrownEnderpearlMixin"
   ],
   "client": [
     "LocalPlayerMixin"
