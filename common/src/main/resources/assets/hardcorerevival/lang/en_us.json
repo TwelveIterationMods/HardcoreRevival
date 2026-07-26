@@ -44,6 +44,8 @@
   "hardcorerevival.configuration.glowOnKnockout.tooltip": "If true, knocked out players will glow, making them visible through blocks.",
   "hardcorerevival.configuration.allowCommands": "Allow Commands",
   "hardcorerevival.configuration.allowCommands.tooltip": "If true, knocked out players are still able to run commands. OPs are always able to run commands.",
+  "hardcorerevival.configuration.allowTeleports": "Allow Teleports",
+  "hardcorerevival.configuration.allowTeleports.tooltip": "If true, knocked out players are still able to be teleported.",
   "hardcorerevival.configuration.allowUnarmedMelee": "Allow Unarmed Melee",
   "hardcorerevival.configuration.allowUnarmedMelee.tooltip": "If true, knocked out players are still able to punch nearby enemies.",
   "hardcorerevival.configuration.allowBows": "Allow Bows",
