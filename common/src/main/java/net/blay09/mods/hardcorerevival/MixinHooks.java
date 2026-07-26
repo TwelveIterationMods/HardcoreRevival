@@ -19,6 +19,10 @@ public class MixinHooks {
         return HardcoreRevival.getRevivalData(entity).isKnockedOut();
     }
 
+    public static boolean shouldCancelTeleport(Player player) {
+        return !HardcoreRevivalConfig.getActive().allowTeleports && HardcoreRevival.getRevivalData(player).isKnockedOut();
+    }
+
     public static void handleProcessPlayerRotation(ServerPlayer player, ServerboundMovePlayerPacket packet) {
         float yaw = packet.getYRot(player.getYRot());
         float pitch = packet.getXRot(player.getXRot());

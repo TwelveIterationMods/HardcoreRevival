@@ -8,6 +8,7 @@
     "PlayerMixin",
     "ServerGamePacketListenerImplMixin",
     "ServerPlayerAccessor",
+    "ServerPlayerMixin",
     "LivingEntityAccessor",
     "LivingEntityMixin",
     "FabricPlayerMixin",

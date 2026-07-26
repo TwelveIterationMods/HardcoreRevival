@@ -40,6 +40,10 @@ public class HardcoreRevivalConfigData implements BalmConfigData {
     @Comment("If true, knocked out players will glow, making them visible through blocks.")
     public boolean glowOnKnockout = true;
 
+    @Comment("If true, knocked out players are still able to be teleported.")
+    @Synced
+    public boolean allowTeleports = true;
+
     @Comment("If true, knocked out players are still able to punch nearby enemies.")
     @Synced
     public boolean allowUnarmedMelee = false;
