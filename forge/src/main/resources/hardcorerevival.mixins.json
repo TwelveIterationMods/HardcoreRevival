@@ -10,7 +10,8 @@
     "ServerGamePacketListenerImplMixin",
     "ServerPlayerAccessor",
     "LivingEntityMixin",
-    "LivingEntityAccessor"
+    "LivingEntityAccessor",
+    "ThrownEnderpearlMixin"
   ],
   "client": [
     "LocalPlayerMixin"

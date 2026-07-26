@@ -10,7 +10,8 @@
     "ServerPlayerAccessor",
     "LivingEntityAccessor",
     "LivingEntityMixin",
-    "FabricPlayerMixin"
+    "FabricPlayerMixin",
+    "ThrownEnderpearlMixin"
   ],
   "client": [
     "LocalPlayerMixin"

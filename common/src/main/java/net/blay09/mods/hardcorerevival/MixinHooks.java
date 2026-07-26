@@ -1,11 +1,13 @@
 package net.blay09.mods.hardcorerevival;
 
+import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.handler.KnockoutRestrictionHandler;
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public class MixinHooks {
 
@@ -29,5 +31,12 @@ public class MixinHooks {
 
     public static boolean shouldCancelTossAll(Player player) {
         return HardcoreRevival.getRevivalData(player).isKnockedOut();
+    }
+
+    public static boolean shouldDiscardEnderPearl(Entity enderPearl, @Nullable Entity owner) {
+        return !enderPearl.level().isClientSide()
+                && HardcoreRevivalConfig.getActive().enderPearlsVanishOnKnockout
+                && owner instanceof Player player
+                && HardcoreRevival.getManager().isKnockedOut(player);
     }
 }
