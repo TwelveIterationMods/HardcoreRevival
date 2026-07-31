@@ -1,18 +1,3 @@
-- Hotfixed crash on revive when Shogi isn't installed
-- Hotfixed "Hold to Rescue" overlapping with the rescue progress message
-
-- Added `/knockout` command to instantly knockout a player
-- Fixed knockout screen opening even if `allowAcceptingFate` is `false`
-- Shogi Support: Added `hardcorerevival:can_revive` rule (and `hardcorerevival:can_be_revived` rule)
-  - This feature requires [Shogi](https://www.curseforge.com/minecraft/mc-mods/shogi) to be installed. It will be ignored if Shogi is not present.
-  - For example, a rule like `{ "hardcorerevival:can_revive": "item_cost('minecraft:golden_apple')" }` in `config/hardcorerevival.rules.json` can be used to make revival cost a Golden Apple.
-  - The complete [Shogi effect catalog](https://shogi.twelveiterations.com/guides/effects) can be used.
-- Shogi Support: Added `hardcorerevival:revived` rule
-  - This feature requires [Shogi](https://www.curseforge.com/minecraft/mc-mods/shogi) to be installed. It will be ignored if Shogi is not present.
-  - You can use this rule to fully customize what happens after a player is revived.
-  - This rule overrides default behavior (like the configured hunger values and status effects) if specified.
-- Added `rescueRespawnFoodLevelDecrease` option which decreases food level by an exact amount instead of only maxing it out
-- Added `disableInNonHardcore` option which disables knockouts outside of hardcore worlds
-- Added `hardcorerevival:bypasses_knockout` damage type tag as an alternative to the `instantDeathSources` config option
-- Fixed instant death sources not bypassing damage damage protection while knocked out
-- Fixed `rescueRespawnFoodLevel` increasing food above what it was before instead of only maxing food out at that level
+- Added `allowTeleports` option (default: true)
+- Added `enderPearlsVanishOnKnockout` option (default: true)
+- Added "Press Escape to look around" help text
