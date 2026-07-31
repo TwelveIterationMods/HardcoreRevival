@@ -1,2 +1,3 @@
-- Added `/knockout` command to instantly knockout a player
-- Fixed knockout screen opening even if `allowAcceptingFate` is `false`
+- Added "Press Escape to look around" help text
+- Added `allowTeleports` option (default: true)
+- Added `enderPearlsVanishOnKnockout` option (default: true)
