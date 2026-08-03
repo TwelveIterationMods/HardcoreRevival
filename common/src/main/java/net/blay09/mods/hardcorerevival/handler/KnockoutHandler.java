@@ -18,6 +18,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Objects;
 
@@ -111,6 +112,8 @@ public class KnockoutHandler {
         if (revivalData.isKnockedOut() && player.isAlive()) {
             // Make sure health stays locked at half a heart
             player.setHealth(1f);
+
+            player.travel(Vec3.ZERO);
 
             revivalData.setKnockoutTicksPassed(revivalData.getKnockoutTicksPassed() + 1);
 

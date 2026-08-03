@@ -15,6 +15,10 @@ public class MixinHooks {
         return entity instanceof Player && HardcoreRevival.getRevivalData(entity).isKnockedOut();
     }
 
+    public static boolean shouldCancelClientMovement(Entity entity) {
+        return entity.level().isClientSide() && shouldCancelMovement(entity);
+    }
+
     public static boolean shouldCancelHealing(Player entity) {
         return HardcoreRevival.getRevivalData(entity).isKnockedOut();
     }
