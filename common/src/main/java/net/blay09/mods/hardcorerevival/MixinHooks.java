@@ -15,6 +15,10 @@ public class MixinHooks {
         return entity instanceof Player player && PlayerHardcoreRevivalManager.isKnockedOut(player);
     }
 
+    public static boolean shouldCancelClientMovement(Entity entity) {
+        return entity.level().isClientSide() && shouldCancelMovement(entity);
+    }
+
     public static boolean shouldCancelTeleport(Player player) {
         return !HardcoreRevivalConfig.getActive().allowTeleports && PlayerHardcoreRevivalManager.isKnockedOut(player);
     }

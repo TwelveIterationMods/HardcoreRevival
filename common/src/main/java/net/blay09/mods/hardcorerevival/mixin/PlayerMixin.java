@@ -15,19 +15,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class PlayerMixin {
 
     @ModifyVariable(
-            method = "Lnet/minecraft/world/entity/player/Player;travel(Lnet/minecraft/world/phys/Vec3;)V",
+            method = "travel(Lnet/minecraft/world/phys/Vec3;)V",
             at = @At("HEAD"),
             argsOnly = true,
             index = 1
     )
     private Vec3 cancelMovement(Vec3 pTravelVector) {
-        if (MixinHooks.shouldCancelMovement((Entity) (Object) this)) {
+        if (MixinHooks.shouldCancelClientMovement((Entity) (Object) this)) {
             return Vec3.ZERO;
         }
         return pTravelVector;
     }
 
-    @Inject(method = "Lnet/minecraft/world/entity/player/Player;jumpFromGround()V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "jumpFromGround()V", at = @At("HEAD"), cancellable = true)
     private void cancelJump(CallbackInfo ci) {
         if (MixinHooks.shouldCancelMovement((Entity) (Object) this)) {
             ci.cancel();
