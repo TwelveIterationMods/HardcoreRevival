@@ -112,6 +112,7 @@ public class KnockoutHandler {
         if (revivalData.isKnockedOut() && player.isAlive()) {
             // Make sure health stays locked at half a heart
             player.setHealth(1f);
+            player.setAirSupply(Math.max(90, player.getAirSupply()));
 
             player.travel(Vec3.ZERO);
 
