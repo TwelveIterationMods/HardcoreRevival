@@ -22,6 +22,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.phys.Vec3;
 
 
 public class KnockoutHandler {
@@ -116,6 +117,8 @@ public class KnockoutHandler {
         if (PlayerHardcoreRevivalManager.isKnockedOut(player) && player.isAlive()) {
             // Make sure health stays locked at half a heart
             player.setHealth(1f);
+
+            player.travel(Vec3.ZERO);
 
             PlayerHardcoreRevivalManager.setKnockoutTicksPassed(player, PlayerHardcoreRevivalManager.getKnockoutTicksPassed(player) + 1);
 
