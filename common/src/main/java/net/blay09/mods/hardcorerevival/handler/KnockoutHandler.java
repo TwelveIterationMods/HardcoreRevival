@@ -2,7 +2,8 @@ package net.blay09.mods.hardcorerevival.handler;
 
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.event.LivingDamageEvent;
+import net.blay09.mods.balm.api.event.EventPriority;
+import net.blay09.mods.balm.api.event.LivingDeathEvent;
 import net.blay09.mods.balm.api.event.PlayerRespawnEvent;
 import net.blay09.mods.balm.api.event.TickPhase;
 import net.blay09.mods.balm.api.event.TickType;
@@ -19,6 +20,7 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.phys.Vec3;
@@ -26,15 +28,16 @@ import net.minecraft.world.phys.Vec3;
 public class KnockoutHandler {
 
     public static void initialize() {
-        Balm.getEvents().onEvent(LivingDamageEvent.class, KnockoutHandler::onPlayerDamage);
+        Balm.getEvents().onEvent(LivingDeathEvent.class, KnockoutHandler::onPlayerDeath, EventPriority.High);
         Balm.getEvents().onEvent(PlayerRespawnEvent.class, KnockoutHandler::onPlayerRespawn);
 
         Balm.getEvents().onTickEvent(TickType.ServerPlayer, TickPhase.Start, KnockoutHandler::onPlayerTick);
     }
 
-    public static void onPlayerDamage(LivingDamageEvent event) {
-        if (event.getEntity() instanceof ServerPlayer player) {
-            DamageSource damageSource = event.getDamageSource();
+    public static void onPlayerDeath(LivingDeathEvent event) {
+        LivingEntity entity = event.getEntity();
+        if (entity instanceof ServerPlayer player) {
+            final var damageSource = event.getDamageSource();
 
             if (PlayerHardcoreRevivalManager.isKnockedOut(player)) {
                 Entity attacker = damageSource.getEntity();
@@ -43,18 +46,19 @@ public class KnockoutHandler {
                 }
                 if (!damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && !bypassesKnockout(player, damageSource)) {
                     event.setCanceled(true);
+                    player.setHealth(0.5f);
                 }
                 return;
             }
 
-            boolean wouldDie = player.getHealth() - event.getDamageAmount() <= 0f;
-            if (wouldDie && isKnockoutEnabledFor(player, damageSource)) {
+            if (isKnockoutEnabledFor(player, damageSource)) {
                 final var aboutToKnockOutEvent = new PlayerAboutToKnockOutEvent(player, damageSource);
                 Balm.getEvents().fireEvent(aboutToKnockOutEvent);
 
                 if (!aboutToKnockOutEvent.isCanceled()) {
-                    event.setDamageAmount(Math.min(event.getDamageAmount(), Math.max(0f, player.getHealth() - 1f)));
                     HardcoreRevivalManager.knockout(player, damageSource);
+                    player.setHealth(0.5f);
+                    event.setCanceled(true);
                 }
             }
         }
