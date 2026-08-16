@@ -8,7 +8,6 @@ import net.blay09.mods.hardcorerevival.api.PlayerAboutToKnockOutEvent;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
-import net.blay09.mods.hardcorerevival.mixin.LivingEntityAccessor;
 import net.blay09.mods.hardcorerevival.tag.ModDamageTypeTags;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -16,6 +15,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.phys.Vec3;
@@ -26,43 +26,39 @@ import java.util.Objects;
 public class KnockoutHandler {
 
     public static void initialize() {
-        Balm.getEvents().onEvent(LivingDamageEvent.class, KnockoutHandler::onPlayerDamage);
+        Balm.getEvents().onEvent(LivingDeathEvent.class, KnockoutHandler::onPlayerDeath, EventPriority.High);
         Balm.getEvents().onEvent(PlayerRespawnEvent.class, KnockoutHandler::onPlayerRespawn);
 
         Balm.getEvents().onTickEvent(TickType.ServerPlayer, TickPhase.Start, KnockoutHandler::onPlayerTick);
     }
 
-    public static void onPlayerDamage(LivingDamageEvent event) {
-        if (event.getEntity() instanceof ServerPlayer player) {
-            DamageSource damageSource = event.getDamageSource();
+    public static void onPlayerDeath(LivingDeathEvent event) {
+        LivingEntity entity = event.getEntity();
+        if (entity instanceof ServerPlayer player) {
+            final var damageSource = event.getDamageSource();
 
-            if (HardcoreRevival.getRevivalData(event.getEntity()).isKnockedOut()) {
+            if (HardcoreRevival.getRevivalData(entity).isKnockedOut()) {
                 Entity attacker = damageSource.getEntity();
                 if (attacker instanceof Mob mob) {
                     mob.setTarget(null);
                 }
                 if (!damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && !bypassesKnockout(player, damageSource)) {
                     event.setCanceled(true);
+                    player.setHealth(0.5f);
                 }
                 return;
             }
 
-            if (!bypassesKnockout(player, damageSource) && isKnockoutEnabledFor(player, damageSource) && player.getHealth() - event.getDamageAmount() <= 0f) {
+            if (!bypassesKnockout(player, damageSource) && isKnockoutEnabledFor(player, damageSource)) {
                 final var aboutToKnockOutEvent = new PlayerAboutToKnockOutEvent(player, damageSource);
                 Balm.getEvents().fireEvent(aboutToKnockOutEvent);
                 if (aboutToKnockOutEvent.isCanceled()) {
                     return;
                 }
 
-                // Reduce damage to prevent the player from dying
-                event.setDamageAmount(Math.min(event.getDamageAmount(), Math.max(0f, player.getHealth() - 1f)));
-
-                // Trigger knockout for this player, if totem does not protect player
-                if (((LivingEntityAccessor) player).callCheckTotemDeathProtection(damageSource)) {
-                    event.setCanceled(true);
-                } else {
-                    HardcoreRevival.getManager().knockout(player, damageSource);
-                }
+                HardcoreRevival.getManager().knockout(player, damageSource);
+                player.setHealth(0.5f);
+                event.setCanceled(true);
             }
         }
     }
