@@ -2,6 +2,6 @@ package net.blay09.mods.hardcorerevival;
 
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
 
-public interface FabricPlayer {
-    HardcoreRevivalData getHardcoreRevivalData();
+public interface HardcoreRevivalPlayer {
+    HardcoreRevivalData hardcorerevival$getRevivalData();
 }

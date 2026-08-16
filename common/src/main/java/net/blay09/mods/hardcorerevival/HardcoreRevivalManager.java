@@ -5,7 +5,6 @@ import net.blay09.mods.hardcorerevival.api.PlayerKnockedOutEvent;
 import net.blay09.mods.hardcorerevival.api.PlayerRescuedEvent;
 import net.blay09.mods.hardcorerevival.api.PlayerRevivedEvent;
 import net.blay09.mods.hardcorerevival.capability.HardcoreRevivalData;
-import net.blay09.mods.hardcorerevival.capability.InvalidHardcoreRevivalData;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfigData;
 import net.blay09.mods.hardcorerevival.handler.KnockoutSyncHandler;
@@ -35,8 +34,7 @@ public class HardcoreRevivalManager {
     public static final ResourceKey<DamageType> NOT_RESCUED_IN_TIME = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(HardcoreRevival.MOD_ID, "not_rescued_in_time"));
 
     public HardcoreRevivalData getRevivalData(Player player) {
-        HardcoreRevivalData provider = Balm.getProviders().getProvider(player, HardcoreRevivalData.class);
-        return provider != null ? provider : InvalidHardcoreRevivalData.INSTANCE;
+        return ((HardcoreRevivalPlayer) player).hardcorerevival$getRevivalData();
     }
 
     public void knockout(Player player, DamageSource source) {
