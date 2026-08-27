@@ -157,8 +157,11 @@ public class HardcoreRevivalManager {
                 ? new DamageSource(damageType, knockoutAttacker)
                 : new DamageSource(damageType);
         PlayerHardcoreRevivalManager.setLastKnockoutTicksPassed(player, 0);
+        final var damageApplied = player.hurt(damageSource, Float.MAX_VALUE);
+        if (!damageApplied) {
+            HardcoreRevival.logger.error("Failed to apply knockout timeout damage to player {} ({})", player.getName().getString(), player.getUUID());
+        }
         reset(player);
-        player.hurt(damageSource, Float.MAX_VALUE);
     }
 
     public static void reset(Player player) {
