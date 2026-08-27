@@ -7,6 +7,7 @@ import net.blay09.mods.balm.platform.event.EventPhases;
 import net.blay09.mods.balm.platform.event.callback.LivingEntityCallback;
 import net.blay09.mods.balm.platform.event.callback.ServerPlayerCallback;
 import net.blay09.mods.balm.platform.event.callback.ServerTickCallback;
+import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.PlayerHardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.api.PlayerAboutToKnockOutEvent;
@@ -114,22 +115,27 @@ public class KnockoutHandler {
 
     public static void onPlayerTick(ServerPlayer player) {
         //if (event.phase == TickEvent.Phase.START && event.side == LogicalSide.SERVER) {
-        if (PlayerHardcoreRevivalManager.isKnockedOut(player) && player.isAlive()) {
-            // Make sure health stays locked at half a heart
-            player.setHealth(1f);
-            player.setAirSupply(Math.max(89, player.getAirSupply()));
+        if (PlayerHardcoreRevivalManager.isKnockedOut(player)) {
+            if (player.isAlive()) {
+                // Make sure health stays locked at half a heart
+                player.setHealth(1f);
+                player.setAirSupply(Math.max(89, player.getAirSupply()));
 
-            player.travel(Vec3.ZERO);
+                player.travel(Vec3.ZERO);
 
-            PlayerHardcoreRevivalManager.setKnockoutTicksPassed(player, PlayerHardcoreRevivalManager.getKnockoutTicksPassed(player) + 1);
+                PlayerHardcoreRevivalManager.setKnockoutTicksPassed(player, PlayerHardcoreRevivalManager.getKnockoutTicksPassed(player) + 1);
 
-            if (player.tickCount % 20 == 0) {
-                Balm.hooks().setForcedPose(player, PlayerHardcoreRevivalManager.isKnockedOut(player) ? Pose.FALL_FLYING : null);
-            }
+                if (player.tickCount % 20 == 0) {
+                    Balm.hooks().setForcedPose(player, PlayerHardcoreRevivalManager.isKnockedOut(player) ? Pose.FALL_FLYING : null);
+                }
 
-            int maxTicksUntilDeath = HardcoreRevivalConfig.getActive().secondsUntilDeath * 20;
-            if (maxTicksUntilDeath > 0 && PlayerHardcoreRevivalManager.getKnockoutTicksPassed(player) >= maxTicksUntilDeath) {
-                HardcoreRevivalManager.notRescuedInTime(player);
+                int maxTicksUntilDeath = HardcoreRevivalConfig.getActive().secondsUntilDeath * 20;
+                if (maxTicksUntilDeath > 0 && PlayerHardcoreRevivalManager.getKnockoutTicksPassed(player) >= maxTicksUntilDeath) {
+                    HardcoreRevivalManager.notRescuedInTime(player);
+                }
+            } else {
+                HardcoreRevival.logger.error("Found non-alive player {} ({}) in knocked out state; resetting knockout state", player.getName().getString(), player.getUUID());
+                HardcoreRevivalManager.reset(player);
             }
         }
     }
