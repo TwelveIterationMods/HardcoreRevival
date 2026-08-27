@@ -170,7 +170,10 @@ public class HardcoreRevivalManager {
         final var damageSource = knockoutAttacker != null
                 ? new DamageSource(damageType, knockoutAttacker)
                 : new DamageSource(damageType);
-        player.hurt(damageSource, Float.MAX_VALUE);
+        final var damageApplied = player.hurt(damageSource, Float.MAX_VALUE);
+        if (!damageApplied) {
+            HardcoreRevival.logger.error("Failed to apply knockout timeout damage to player {} ({})", player.getName().getString(), player.getUUID());
+        }
         reset(player);
     }
 
