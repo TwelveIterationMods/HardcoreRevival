@@ -105,22 +105,27 @@ public class KnockoutHandler {
     public static void onPlayerTick(ServerPlayer player) {
         //if (event.phase == TickEvent.Phase.START && event.side == LogicalSide.SERVER) {
         HardcoreRevivalData revivalData = HardcoreRevival.getRevivalData(player);
-        if (revivalData.isKnockedOut() && player.isAlive()) {
-            // Make sure health stays locked at half a heart
-            player.setHealth(1f);
-            player.setAirSupply(Math.max(90, player.getAirSupply()));
+        if (revivalData.isKnockedOut()) {
+            if (player.isAlive()) {
+                // Make sure health stays locked at half a heart
+                player.setHealth(1f);
+                player.setAirSupply(Math.max(90, player.getAirSupply()));
 
-            player.travel(Vec3.ZERO);
+                player.travel(Vec3.ZERO);
 
-            revivalData.setKnockoutTicksPassed(revivalData.getKnockoutTicksPassed() + 1);
+                revivalData.setKnockoutTicksPassed(revivalData.getKnockoutTicksPassed() + 1);
 
-            if (player.tickCount % 20 == 0) {
-                Balm.getHooks().setForcedPose(player, revivalData.isKnockedOut() ? Pose.FALL_FLYING : null);
-            }
+                if (player.tickCount % 20 == 0) {
+                    Balm.getHooks().setForcedPose(player, revivalData.isKnockedOut() ? Pose.FALL_FLYING : null);
+                }
 
-            int maxTicksUntilDeath = HardcoreRevivalConfig.getActive().ticksUntilDeath;
-            if (maxTicksUntilDeath > 0 && revivalData.getKnockoutTicksPassed() >= maxTicksUntilDeath) {
-                HardcoreRevival.getManager().notRescuedInTime(player);
+                int maxTicksUntilDeath = HardcoreRevivalConfig.getActive().ticksUntilDeath;
+                if (maxTicksUntilDeath > 0 && revivalData.getKnockoutTicksPassed() >= maxTicksUntilDeath) {
+                    HardcoreRevival.getManager().notRescuedInTime(player);
+                }
+            } else {
+                HardcoreRevival.logger.error("Found non-alive player {} ({}) in knocked out state; resetting knockout state", player.getName().getString(), player.getUUID());
+                HardcoreRevival.getManager().reset(player);
             }
         }
     }
