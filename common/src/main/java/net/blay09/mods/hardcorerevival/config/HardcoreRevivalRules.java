@@ -85,7 +85,7 @@ public class HardcoreRevivalRules {
     private static Either<Boolean, ?> applyDefaultRevivedEffects(ShogiContext context) {
         final var player = context.requirePlayer();
         final var config = HardcoreRevivalConfig.getActive();
-        player.setHealth(config.rescueRespawnHealth);
+        player.setHealth(Math.max(1, config.rescueRespawnHealth));
         final var foodData = player.getFoodData();
         foodData.setFoodLevel(Math.min(foodData.getFoodLevel() - config.rescueRespawnFoodLevelDecrease, config.rescueRespawnFoodLevel));
         // client only, won't bother: player.getFoodStats().setFoodSaturationLevel((float) config.getRescueRespawnFoodSaturation());
