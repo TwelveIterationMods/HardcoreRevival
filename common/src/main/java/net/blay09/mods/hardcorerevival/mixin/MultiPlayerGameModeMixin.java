@@ -1,22 +1,21 @@
 package net.blay09.mods.hardcorerevival.mixin;
 
 import net.blay09.mods.hardcorerevival.MixinHooks;
+import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(LocalPlayer.class)
-public class LocalPlayerMixin {
-    @Inject(method = "drop(Z)Z", at = @At("HEAD"), cancellable = true)
-    public void drop(boolean all, CallbackInfoReturnable<Boolean> cir) {
-        final var player = (Player) (Object) this;
+@Mixin(MultiPlayerGameMode.class)
+public class MultiPlayerGameModeMixin {
+    @Inject(method = "dropItem(Lnet/minecraft/client/player/LocalPlayer;Z)V", at = @At("HEAD"), cancellable = true)
+    public void drop(LocalPlayer player, boolean all, CallbackInfo ci) {
         if (all && MixinHooks.shouldCancelTossAll(player)) {
-            cir.setReturnValue(false);
+            ci.cancel();
         } else if (!all && MixinHooks.shouldCancelToss(player, player.getInventory().getSelectedItem())) {
-            cir.setReturnValue(false);
+            ci.cancel();
         }
     }
 }

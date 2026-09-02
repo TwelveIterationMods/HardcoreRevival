@@ -13,7 +13,7 @@
     "LivingEntityAccessor"
   ],
   "client": [
-    "LocalPlayerMixin"
+    "MultiPlayerGameModeMixin"
   ],
   "injectors": {
     "defaultRequire": 1
