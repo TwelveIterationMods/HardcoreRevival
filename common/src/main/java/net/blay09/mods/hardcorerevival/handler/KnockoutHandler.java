@@ -29,10 +29,27 @@ import net.minecraft.world.phys.Vec3;
 public class KnockoutHandler {
 
     public static void initialize() {
+        LivingEntityCallback.Damage.Before.EVENT.register(EventPhases.HIGH, KnockoutHandler::computePlayerDamage);
         LivingEntityCallback.Death.Before.EVENT.register(EventPhases.HIGH, KnockoutHandler::allowPlayerDeath);
         ServerPlayerCallback.Respawn.EVENT.register(KnockoutHandler::onPlayerRespawn);
 
         ServerTickCallback.ServerPlayerTick.BEFORE.register(KnockoutHandler::onPlayerTick);
+    }
+
+    public static float computePlayerDamage(LivingEntity entity, DamageSource damageSource, float damageAmount) {
+        if (entity instanceof ServerPlayer player
+                && PlayerHardcoreRevivalManager.isKnockedOut(player)
+                && !damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)
+                && !bypassesKnockout(player, damageSource)) {
+            final var attacker = damageSource.getEntity();
+            if (attacker instanceof Mob mob) {
+                mob.setTarget(null);
+            }
+
+            return 0f;
+        }
+
+        return damageAmount;
     }
 
     public static boolean allowPlayerDeath(LivingEntity entity, DamageSource damageSource, float damage) {
