@@ -27,4 +27,11 @@ public class LivingEntityMixin {
             cir.setReturnValue(false);
         }
     }
+
+    @Inject(method = "canAttack(Lnet/minecraft/world/entity/LivingEntity;)Z", at = @At("HEAD"), cancellable = true)
+    private void canAttack(LivingEntity target, CallbackInfoReturnable<Boolean> cir) {
+        if (target instanceof Player player && PlayerHardcoreRevivalManager.isKnockedOut(player)) {
+            cir.setReturnValue(false);
+        }
+    }
 }
