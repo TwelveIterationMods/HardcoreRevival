@@ -2,11 +2,7 @@ package net.blay09.mods.hardcorerevival.handler;
 
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.event.EventPriority;
-import net.blay09.mods.balm.api.event.LivingDeathEvent;
-import net.blay09.mods.balm.api.event.PlayerRespawnEvent;
-import net.blay09.mods.balm.api.event.TickPhase;
-import net.blay09.mods.balm.api.event.TickType;
+import net.blay09.mods.balm.api.event.*;
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.PlayerHardcoreRevivalManager;
@@ -29,10 +25,26 @@ import net.minecraft.world.phys.Vec3;
 public class KnockoutHandler {
 
     public static void initialize() {
+        Balm.getEvents().onEvent(LivingDamageEvent.class, KnockoutHandler::onPlayerDamage, EventPriority.High);
         Balm.getEvents().onEvent(LivingDeathEvent.class, KnockoutHandler::onPlayerDeath, EventPriority.High);
         Balm.getEvents().onEvent(PlayerRespawnEvent.class, KnockoutHandler::onPlayerRespawn);
 
         Balm.getEvents().onTickEvent(TickType.ServerPlayer, TickPhase.Start, KnockoutHandler::onPlayerTick);
+    }
+
+    public static void onPlayerDamage(LivingDamageEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player
+                && PlayerHardcoreRevivalManager.isKnockedOut(player)) {
+            final var damageSource = event.getDamageSource();
+            if (!damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && !bypassesKnockout(player, damageSource)) {
+                event.setCanceled(true);
+
+                final var attacker = damageSource.getEntity();
+                if (attacker instanceof Mob mob) {
+                    mob.setTarget(null);
+                }
+            }
+        }
     }
 
     public static void onPlayerDeath(LivingDeathEvent event) {
