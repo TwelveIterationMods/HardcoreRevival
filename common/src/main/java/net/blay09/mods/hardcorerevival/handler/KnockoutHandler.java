@@ -26,10 +26,26 @@ import java.util.Objects;
 public class KnockoutHandler {
 
     public static void initialize() {
+        Balm.getEvents().onEvent(LivingDamageEvent.class, KnockoutHandler::onPlayerDamage, EventPriority.High);
         Balm.getEvents().onEvent(LivingDeathEvent.class, KnockoutHandler::onPlayerDeath, EventPriority.High);
         Balm.getEvents().onEvent(PlayerRespawnEvent.class, KnockoutHandler::onPlayerRespawn);
 
         Balm.getEvents().onTickEvent(TickType.ServerPlayer, TickPhase.Start, KnockoutHandler::onPlayerTick);
+    }
+
+    public static void onPlayerDamage(LivingDamageEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player
+                && HardcoreRevival.getRevivalData(player).isKnockedOut()) {
+            final var damageSource = event.getDamageSource();
+            if (!damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && !bypassesKnockout(player, damageSource)) {
+                event.setCanceled(true);
+
+                final var attacker = damageSource.getEntity();
+                if (attacker instanceof Mob mob) {
+                    mob.setTarget(null);
+                }
+            }
+        }
     }
 
     public static void onPlayerDeath(LivingDeathEvent event) {
