@@ -21,6 +21,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.gamerules.GameRules;
@@ -47,6 +48,10 @@ public class HardcoreRevivalManager {
         PlayerHardcoreRevivalManager.setKnockoutTicksPassed(player, 0);
         Entity attacker = source.getEntity();
         PlayerHardcoreRevivalManager.setKnockoutAttackerId(player, attacker != null ? attacker.getUUID() : null);
+        if (attacker instanceof Mob mob && mob.getTarget() == player) {
+            mob.setTarget(null);
+        }
+
         PlayerHardcoreRevivalManager.setLastKnockoutAt(player, System.currentTimeMillis());
         player.awardStat(ModStats.knockouts);
 
