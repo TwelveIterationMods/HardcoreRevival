@@ -153,7 +153,7 @@ public class HardcoreRevivalManager {
         }
     }
 
-    public static void notRescuedInTime(Player player) {
+    public static void notRescuedInTime(ServerPlayer player) {
         final var damageTypes = player.level().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE);
         final var damageType = damageTypes.getOrThrow(NOT_RESCUED_IN_TIME);
         final var knockoutAttackerId = PlayerHardcoreRevivalManager.getKnockoutAttackerId(player);
@@ -162,7 +162,7 @@ public class HardcoreRevivalManager {
                 ? new DamageSource(damageType, knockoutAttacker)
                 : new DamageSource(damageType);
         PlayerHardcoreRevivalManager.setLastKnockoutTicksPassed(player, 0);
-        final var damageApplied = player.hurt(damageSource, Float.MAX_VALUE);
+        final var damageApplied = player.hurtServer(player.level(), damageSource, Float.MAX_VALUE);
         if (!damageApplied) {
             HardcoreRevival.logger.error("Failed to apply knockout timeout damage to player {} ({})", player.getName().getString(), player.getUUID());
         }
