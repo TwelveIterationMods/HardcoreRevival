@@ -3,11 +3,13 @@ package net.blay09.mods.hardcorerevival.handler;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.event.*;
+import net.blay09.mods.balm.api.proxy.LoaderPlatforms;
 import net.blay09.mods.hardcorerevival.HardcoreRevival;
 import net.blay09.mods.hardcorerevival.HardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.PlayerHardcoreRevivalManager;
 import net.blay09.mods.hardcorerevival.api.PlayerAboutToKnockOutEvent;
 import net.blay09.mods.hardcorerevival.config.HardcoreRevivalConfig;
+import net.blay09.mods.hardcorerevival.mixin.LivingEntityAccessor;
 import net.blay09.mods.hardcorerevival.tag.ModDamageTypeTags;
 import net.blay09.mods.hardcorerevival.tag.ModItemTags;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -65,6 +67,11 @@ public class KnockoutHandler {
             }
 
             if (isKnockoutEnabledFor(player, damageSource)) {
+                if (checkTotemDeathProtection(player, damageSource)) {
+                    event.setCanceled(true);
+                    return;
+                }
+
                 final var aboutToKnockOutEvent = new PlayerAboutToKnockOutEvent(player, damageSource);
                 Balm.getEvents().fireEvent(aboutToKnockOutEvent);
 
@@ -86,6 +93,15 @@ public class KnockoutHandler {
         }
 
         return false;
+    }
+
+    private static boolean checkTotemDeathProtection(ServerPlayer player, DamageSource damageSource) {
+        // Fabric fires before totems are checked, NeoForge fires after totems are checked.
+        // Fabric is more correct here, because a canceled death shouldn't have resulted in a Totem of Undying being consumed.
+        // NeoForge has a separate LivingTotemUseEvent, but that's a pain because it means double logic.
+        // Therefore, just restrict our own totem check to Fabric.
+        return Balm.getPlatform().equals(LoaderPlatforms.FABRIC)
+                && ((LivingEntityAccessor) player).callCheckTotemDeathProtection(damageSource);
     }
 
     private static boolean isKnockoutEnabledFor(ServerPlayer player, DamageSource damageSource) {
